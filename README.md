@@ -14,6 +14,7 @@
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.8%2B-10b981?style=for-the-badge&logo=python&logoColor=white" alt="Python Version"></a>
   <a href="https://github.com/udityamerit"><img src="https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge" alt="License"></a>
   <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/Scikit--Learn-Compatible-f59e0b?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn"></a>
+  <a href="https://udityamerit.github.io/Multimodel-Analysis-Pacakge-Documentation/"><img src="https://img.shields.io/badge/Documentation-Live-2563eb?style=for-the-badge&logo=githubpages&logoColor=white" alt="Live Documentation"></a>
 </p>
 
 <p align="center">
