@@ -1,1 +1,11 @@
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+.idea/
+.vscode/
+
+# Build & Scratch Artifacts
 DOCUMENTATION_REQUIREMENTS_AND_THEME.md
+scratch/
