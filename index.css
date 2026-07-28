@@ -1550,7 +1550,7 @@ svg {
         gap: 16px;
     }
     /* Hide PePy and GitHub in top navbar on <= 1024px; accessible via slide-out drawer */
-    .btn-analytics, .btn-github {
+    .navbar .btn-analytics, .navbar .btn-github {
         display: none !important;
     }
     .sidebar {
@@ -1700,7 +1700,7 @@ svg {
         font-size: 1rem;
     }
     /* Hide all top navbar external buttons on mobile phones; accessible via sidebar drawer */
-    .btn-analytics, .btn-pypi, .btn-github {
+    .navbar .btn-analytics, .navbar .btn-pypi, .navbar .btn-github {
         display: none !important;
     }
     .hero-title {
