@@ -590,6 +590,7 @@ body {
     user-select: all;
     flex: 1;
     overflow-x: auto;
+    white-space: nowrap;
     letter-spacing: 0.01em;
 }
 
@@ -1644,9 +1645,12 @@ svg {
     }
     .feature-grid,
     .gallery-grid,
-    .platform-grid,
     .calc-grid {
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+    }
+    .platform-grid {
+        grid-template-columns: 1fr !important;
         gap: 16px;
     }
     .calc-metrics-grid {
@@ -1786,9 +1790,6 @@ svg {
         padding: 8px 10px;
         flex-direction: column;
         text-align: center;
-    }
-    .btn-copy {
-        width: 100%;
     }
     .install-cmd {
         font-size: 0.82rem;
