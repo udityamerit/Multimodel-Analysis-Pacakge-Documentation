@@ -95,7 +95,7 @@ function initThemeToggle() {
     
     if (!toggleBtn || !themeIcon) return;
 
-    const savedTheme = localStorage.getItem('multimodel_theme') || 'dark';
+    const savedTheme = localStorage.getItem('multimodel_theme') || 'light';
     setTheme(savedTheme);
 
     toggleBtn.addEventListener('click', () => {
