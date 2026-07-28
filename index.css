@@ -210,38 +210,7 @@ body {
     gap: 16px;
 }
 
-/* Search Bar Simulation */
-.search-box {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
 
-.search-input {
-    background: var(--bg-surface);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    padding: 8px 16px 8px 36px;
-    color: var(--text-main);
-    font-size: 0.875rem;
-    width: 240px;
-    transition: all var(--transition-fast);
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 3px var(--accent-cyan-glow);
-    width: 280px;
-}
-
-.search-icon {
-    position: absolute;
-    left: 12px;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    pointer-events: none;
-}
 
 /* Nav Buttons & Badges */
 .btn-icon {
