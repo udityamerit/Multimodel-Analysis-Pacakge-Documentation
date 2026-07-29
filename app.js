@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initApiSearch();
     initSimulator();
     initFormulaPlayground();
+    initApiModal();
 });
 
 /* ==========================================================================
@@ -653,3 +654,884 @@ window.switchInstallOS = function(osType) {
     copyBtn.style.background = '';
     copyBtn.style.color = '';
 };
+
+/* ==========================================================================
+   Interactive API Code Example Modal Data & Logic
+   ========================================================================== */
+const API_EXAMPLES_DATA = {
+    // --- 1. STANDALONE & ALIASES ---
+    'save_report': {
+        tag: 'STANDALONE UTILITY — NONE',
+        title: 'save_report(df=None, filepath="report.csv")',
+        desc: 'Exports comparison tabular report DataFrame to disk. Automatically detects file format (.csv, .xlsx, .xls, .html, .json) from file extension.',
+        codeRaw: `import pandas as pd
+from multimodel_analysis import save_report
+
+# 1. Prepare metrics report DataFrame
+df_report = pd.DataFrame({
+    'Model': ['Random Forest', 'Logistic Regression'],
+    'Accuracy': [0.95, 0.88],
+    'F1 Score': [0.94, 0.87]
+})
+
+# 2. Export to multiple publication formats
+save_report(df_report, "metrics.csv")
+save_report(df_report, "metrics.xlsx")
+save_report(df_report, "metrics.html")
+save_report(df_report, "metrics.json")`,
+        codeHtml: `<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="fn">save_report</span>
+
+<span class="cm"># 1. Prepare metrics report DataFrame</span>
+<span class="var">df_report</span> = pd.<span class="cls">DataFrame</span>({
+    <span class="str">'Model'</span>: [<span class="str">'Random Forest'</span>, <span class="str">'Logistic Regression'</span>],
+    <span class="str">'Accuracy'</span>: [<span class="num">0.95</span>, <span class="num">0.88</span>],
+    <span class="str">'F1 Score'</span>: [<span class="num">0.94</span>, <span class="num">0.87</span>]
+})
+
+<span class="cm"># 2. Export to multiple publication formats</span>
+<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.csv"</span>)
+<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.xlsx"</span>)
+<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.html"</span>)
+<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.json"</span>)`
+    },
+    'reg_alias_class': {
+        tag: 'BACKWARD COMPATIBILITY — CLASS ALIAS',
+        title: 'MultiModelRegressior',
+        desc: 'Backward-compatibility class alias mapping directly to MultiModelRegressor to ensure non-breaking integration for legacy codebases.',
+        codeRaw: `import pandas as pd
+import numpy as np
+from multimodel_analysis import MultiModelRegressior
+
+# MultiModelRegressior is an exact alias for MultiModelRegressor
+X = pd.DataFrame(np.random.randn(100, 4))
+y = pd.Series(np.random.randn(100))
+
+reg = MultiModelRegressior(X=X, y=y, test_size=0.2, random_state=42)
+results = reg.run_all_models()
+
+print(f"Alias works seamlessly: {type(reg).__name__}")
+# Output: Alias works seamlessly: MultiModelRegressor`,
+        codeHtml: `<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressior</span>
+
+<span class="cm"># MultiModelRegressior is an exact alias for MultiModelRegressor</span>
+<span class="var">X</span> = pd.<span class="cls">DataFrame</span>(np.random.<span class="fn">randn</span>(<span class="num">100</span>, <span class="num">4</span>))
+<span class="var">y</span> = pd.<span class="cls">Series</span>(np.random.<span class="fn">randn</span>(<span class="num">100</span>))
+
+<span class="var">reg</span> = <span class="cls">MultiModelRegressior</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+<span class="var">results</span> = <span class="var">reg</span>.<span class="fn">run_all_models</span>()
+
+<span class="fn">print</span>(<span class="str">f"Alias works seamlessly: {<span class="fn">type</span>(<span class="var">reg</span>).__name__}"</span>)
+<span class="cm"># Output: Alias works seamlessly: MultiModelRegressor</span>`
+    },
+
+    // --- 2. MULTIMODELCLASSIFIER METHODS ---
+    'clf_Logistic_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'Logistic_model(random_state=None, max_iter=1000, **kwargs)',
+        desc: 'Trains a Logistic Regression classifier and evaluates metrics. Supports random seed overrides and custom hyperparameters like C and solver.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+# Default run with instance random_state (42)
+metrics = classifier.Logistic_model()
+
+# Override parameters: max_iter and regularization C
+custom_metrics = classifier.Logistic_model(random_state=100, max_iter=2000, C=0.5)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># Default run with instance random_state (42)</span>
+<span class="var">metrics</span> = <span class="var">classifier</span>.<span class="fn">Logistic_model</span>()
+
+<span class="cm"># Override parameters: max_iter and regularization C</span>
+<span class="var">custom_metrics</span> = <span class="var">classifier</span>.<span class="fn">Logistic_model</span>(random_state=<span class="num">100</span>, max_iter=<span class="num">2000</span>, C=<span class="num">0.5</span>)`
+    },
+    'clf_Support_vector_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'Support_vector_model(random_state=None, kernel=\'linear\', probability=True, **kwargs)',
+        desc: 'Trains a Support Vector Classifier (SVC) with probability estimation enabled for ROC-AUC scoring.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+# Default linear kernel SVC
+svc_res = classifier.Support_vector_model()
+
+# Custom RBF kernel with specified random_state
+svc_custom = classifier.Support_vector_model(random_state=99, kernel='rbf', C=1.5)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># Default linear kernel SVC</span>
+<span class="var">svc_res</span> = <span class="var">classifier</span>.<span class="fn">Support_vector_model</span>()
+
+<span class="cm"># Custom RBF kernel with specified random_state</span>
+<span class="var">svc_custom</span> = <span class="var">classifier</span>.<span class="fn">Support_vector_model</span>(random_state=<span class="num">99</span>, kernel=<span class="str">'rbf'</span>, C=<span class="num">1.5</span>)`
+    },
+    'clf_DecisionTree_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'DecisionTree_model(random_state=None, **kwargs)',
+        desc: 'Trains a Decision Tree Classifier and evaluates split performance and accuracy.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+dt_res = classifier.DecisionTree_model(random_state=123, max_depth=5)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="var">dt_res</span> = <span class="var">classifier</span>.<span class="fn">DecisionTree_model</span>(random_state=<span class="num">123</span>, max_depth=<span class="num">5</span>)`
+    },
+    'clf_KNN_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'KNN_model(n_neighbors=None, **kwargs)',
+        desc: 'Trains a K-Nearest Neighbors Classifier. Automatically calculates optimal n_neighbors if omitted and strips random_state safely.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+# Auto-detects n_neighbors based on dataset size
+knn_res = classifier.KNN_model()
+
+# Custom n_neighbors
+knn_custom = classifier.KNN_model(n_neighbors=7)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># Auto-detects n_neighbors based on dataset size</span>
+<span class="var">knn_res</span> = <span class="var">classifier</span>.<span class="fn">KNN_model</span>()
+
+<span class="cm"># Custom n_neighbors</span>
+<span class="var">knn_custom</span> = <span class="var">classifier</span>.<span class="fn">KNN_model</span>(n_neighbors=<span class="num">7</span>)`
+    },
+    'clf_Naive_Bayes_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'Naive_Bayes_model(**kwargs)',
+        desc: 'Trains a Gaussian Naive Bayes Classifier. Safely handles and strips random_state if passed.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+nb_res = classifier.Naive_Bayes_model()`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="var">nb_res</span> = <span class="var">classifier</span>.<span class="fn">Naive_Bayes_model</span>()`
+    },
+    'clf_RandomForest_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'RandomForest_model(n_estimators=100, random_state=None, **kwargs)',
+        desc: 'Trains an ensemble Random Forest Classifier across parallel CPU threads.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+rf_res = classifier.RandomForest_model(n_estimators=150, random_state=42, max_depth=10)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="var">rf_res</span> = <span class="var">classifier</span>.<span class="fn">RandomForest_model</span>(n_estimators=<span class="num">150</span>, random_state=<span class="num">42</span>, max_depth=<span class="num">10</span>)`
+    },
+    'clf_GradientBoosting_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'GradientBoosting_model(n_estimators=100, random_state=None, **kwargs)',
+        desc: 'Trains a Gradient Boosting Classifier and computes stage-wise residual loss.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+gb_res = classifier.GradientBoosting_model(n_estimators=120, random_state=42, learning_rate=0.05)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="var">gb_res</span> = <span class="var">classifier</span>.<span class="fn">GradientBoosting_model</span>(n_estimators=<span class="num">120</span>, random_state=<span class="num">42</span>, learning_rate=<span class="num">0.05</span>)`
+    },
+    'clf_AdaBoost_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'AdaBoost_model(n_estimators=50, random_state=None, **kwargs)',
+        desc: 'Trains an adaptive boosting classifier using decision stumps.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+ada_res = classifier.AdaBoost_model(n_estimators=80, random_state=42)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="var">ada_res</span> = <span class="var">classifier</span>.<span class="fn">AdaBoost_model</span>(n_estimators=<span class="num">80</span>, random_state=<span class="num">42</span>)`
+    },
+    'clf_run_all_models': {
+        tag: 'MULTIMODELCLASSIFIER — LIST[TUPLE]',
+        title: 'run_all_models(custom_models=None, random_state=None)',
+        desc: 'Fits all 8 built-in classifiers plus optional custom estimators. Caches evaluated model results in classifier.models_.',
+        codeRaw: `from sklearn.datasets import make_classification
+from sklearn.ensemble import ExtraTreesClassifier
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+# 1. Run standard baselines
+models = classifier.run_all_models()
+
+# 2. Run with custom models and random seed
+custom_clf = ExtraTreesClassifier(n_estimators=50, random_state=42)
+models = classifier.run_all_models(
+    custom_models={'Extra Trees': custom_clf},
+    random_state=123
+)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> ExtraTreesClassifier
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># 1. Run standard baselines</span>
+<span class="var">models</span> = <span class="var">classifier</span>.<span class="fn">run_all_models</span>()
+
+<span class="cm"># 2. Run with custom models and random seed</span>
+<span class="var">custom_clf</span> = <span class="cls">ExtraTreesClassifier</span>(n_estimators=<span class="num">50</span>, random_state=<span class="num">42</span>)
+<span class="var">models</span> = <span class="var">classifier</span>.<span class="fn">run_all_models</span>(
+    custom_models={<span class="str">'Extra Trees'</span>: <span class="var">custom_clf</span>},
+    random_state=<span class="num">123</span>
+)`
+    },
+    'clf_evaluate_model': {
+        tag: 'MULTIMODELCLASSIFIER — TUPLE',
+        title: 'evaluate_model(model, X_test=None, y_true=None)',
+        desc: 'Evaluates a single fitted classifier model on test set data. Computes Accuracy, Precision, Recall, F1 Score, and ROC-AUC metrics.',
+        codeRaw: `from sklearn.datasets import make_classification
+from sklearn.ensemble import RandomForestClassifier
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+rf = RandomForestClassifier(random_state=42)
+rf.fit(classifier.X_train_scaled, classifier.y_train)
+
+# Evaluate using default instance test set
+eval_res = classifier.evaluate_model(rf)
+report, matrix, accuracy, precision, recall, f1, fpr_dict, tpr_dict, roc_auc = eval_res
+print(f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}")`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="var">rf</span> = <span class="cls">RandomForestClassifier</span>(random_state=<span class="num">42</span>)
+<span class="var">rf</span>.<span class="fn">fit</span>(<span class="var">classifier</span>.X_train_scaled, <span class="var">classifier</span>.y_train)
+
+<span class="cm"># Evaluate using default instance test set</span>
+<span class="var">eval_res</span> = <span class="var">classifier</span>.<span class="fn">evaluate_model</span>(<span class="var">rf</span>)
+<span class="var">report</span>, <span class="var">matrix</span>, <span class="var">accuracy</span>, <span class="var">precision</span>, <span class="var">recall</span>, <span class="var">f1</span>, <span class="var">fpr_dict</span>, <span class="var">tpr_dict</span>, <span class="var">roc_auc</span> = <span class="var">eval_res</span>
+<span class="fn">print</span>(<span class="str">f"Accuracy: {<span class="var">accuracy</span>:.4f}, F1: {<span class="var">f1</span>:.4f}"</span>)`
+    },
+    'clf_show_tabular_report': {
+        tag: 'MULTIMODELCLASSIFIER — PD.DATAFRAME | NONE',
+        title: 'show_tabular_report(models=None, return_df=False)',
+        desc: 'Prints a formatted comparison table of all model evaluation metrics sorted by accuracy and identifies the best performing model.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+# Automatically runs all models if models argument is omitted
+df_report = classifier.show_tabular_report(return_df=True)
+print(df_report.head())`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># Automatically runs all models if models argument is omitted</span>
+<span class="var">df_report</span> = <span class="var">classifier</span>.<span class="fn">show_tabular_report</span>(return_df=<span class="num">True</span>)
+<span class="fn">print</span>(<span class="var">df_report</span>.<span class="fn">head</span>())`
+    },
+    'clf_plot_confusion_matrices': {
+        tag: 'MULTIMODELCLASSIFIER — NONE',
+        title: 'plot_confusion_matrices(models=None, save_path=None, show_plot=True)',
+        desc: 'Generates a grid heatmap of confusion matrices for all evaluated models with decoded class labels.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+classifier.run_all_models()
+
+# Display plot on screen
+classifier.plot_confusion_matrices()
+
+# Save plot to PNG without displaying
+classifier.plot_confusion_matrices(save_path="confusion_matrices.png", show_plot=False)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
+
+<span class="cm"># Display plot on screen</span>
+<span class="var">classifier</span>.<span class="fn">plot_confusion_matrices</span>()
+
+<span class="cm"># Save plot to PNG without displaying</span>
+<span class="var">classifier</span>.<span class="fn">plot_confusion_matrices</span>(save_path=<span class="str">"confusion_matrices.png"</span>, show_plot=<span class="kw">False</span>)`
+    },
+    'clf_plot_roc_curves': {
+        tag: 'MULTIMODELCLASSIFIER — NONE',
+        title: 'plot_roc_curves(models=None, save_path=None, show_plot=True)',
+        desc: 'Plots Receiver Operating Characteristic (ROC) curves for all models in a single comparative chart. Supports binary and multiclass tasks.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+classifier.run_all_models()
+
+classifier.plot_roc_curves(save_path="roc_curves.png", show_plot=True)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
+
+<span class="var">classifier</span>.<span class="fn">plot_roc_curves</span>(save_path=<span class="str">"roc_curves.png"</span>, show_plot=<span class="kw">True</span>)`
+    },
+    'clf_plot_comparison': {
+        tag: 'MULTIMODELCLASSIFIER — NONE',
+        title: 'plot_comparison(models=None, save_path=None, show_plot=True)',
+        desc: 'Renders a grouped bar chart comparing Accuracy, Precision, Recall, and F1 Score across all models.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+classifier.run_all_models()
+
+classifier.plot_comparison(save_path="classifier_comparison.png")`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
+
+<span class="var">classifier</span>.<span class="fn">plot_comparison</span>(save_path=<span class="str">"classifier_comparison.png"</span>)`
+    },
+    'clf_get_summary': {
+        tag: 'MULTIMODELCLASSIFIER — NONE',
+        title: 'get_summary(models=None, save_prefix=None, show_plot=True)',
+        desc: 'Runs the full evaluation and visualization pipeline: prints tabular report and generates confusion matrices, ROC curves, and comparison bar charts.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+
+# Display all reports and plots
+classifier.get_summary()
+
+# Export all reports and plots to files with a prefix
+classifier.get_summary(save_prefix="iris_experiment", show_plot=False)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># Display all reports and plots</span>
+<span class="var">classifier</span>.<span class="fn">get_summary</span>()
+
+<span class="cm"># Export all reports and plots to files with a prefix</span>
+<span class="var">classifier</span>.<span class="fn">get_summary</span>(save_prefix=<span class="str">"iris_experiment"</span>, show_plot=<span class="kw">False</span>)`
+    },
+    'clf_save_report': {
+        tag: 'MULTIMODELCLASSIFIER — NONE',
+        title: 'save_report(df_or_filepath=None, filepath=None)',
+        desc: 'Saves the classifier\'s latest tabular performance report to disk.',
+        codeRaw: `from sklearn.datasets import make_classification
+from multimodel_analysis import MultiModelClassifier
+
+X, y = make_classification(n_samples=200, n_features=6, random_state=42)
+classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
+classifier.run_all_models()
+classifier.show_tabular_report()
+
+# Save report using default path 'report.csv'
+classifier.save_report()
+
+# Save report to specific filename
+classifier.save_report("classifier_results.xlsx")`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
+<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
+<span class="var">classifier</span>.<span class="fn">show_tabular_report</span>()
+
+<span class="cm"># Save report using default path 'report.csv'</span>
+<span class="var">classifier</span>.<span class="fn">save_report</span>()
+
+<span class="cm"># Save report to specific filename</span>
+<span class="var">classifier</span>.<span class="fn">save_report</span>(<span class="str">"classifier_results.xlsx"</span>)`
+    },
+
+    // --- 3. MULTIMODELREGRESSOR METHODS ---
+    'reg_LinearRegression_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'LinearRegression_model(**kwargs)',
+        desc: 'Trains an Ordinary Least Squares Linear Regression model. Safely handles random_state parameter.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+lin_res = regressor.LinearRegression_model()`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">lin_res</span> = <span class="var">regressor</span>.<span class="fn">LinearRegression_model</span>()`
+    },
+    'reg_Lasso_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'Lasso_model(alpha=0.1, random_state=None, **kwargs)',
+        desc: 'Trains a Lasso (L1 Regularized) Regression model for feature selection.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+lasso_res = regressor.Lasso_model(alpha=0.05, random_state=42)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">lasso_res</span> = <span class="var">regressor</span>.<span class="fn">Lasso_model</span>(alpha=<span class="num">0.05</span>, random_state=<span class="num">42</span>)`
+    },
+    'reg_Ridge_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'Ridge_model(alpha=1.0, random_state=None, **kwargs)',
+        desc: 'Trains a Ridge (L2 Regularized) Regression model to mitigate multicollinearity.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+ridge_res = regressor.Ridge_model(alpha=0.5, random_state=42)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">ridge_res</span> = <span class="var">regressor</span>.<span class="fn">Ridge_model</span>(alpha=<span class="num">0.5</span>, random_state=<span class="num">42</span>)`
+    },
+    'reg_SVR_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'SVR_model(kernel=\'rbf\', **kwargs)',
+        desc: 'Trains a Support Vector Regressor (SVR). Safely strips random_state parameter.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+svr_res = regressor.SVR_model(kernel='rbf', C=2.0)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">svr_res</span> = <span class="var">regressor</span>.<span class="fn">SVR_model</span>(kernel=<span class="str">'rbf'</span>, C=<span class="num">2.0</span>)`
+    },
+    'reg_DecisionTree_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'DecisionTree_model(random_state=None, **kwargs)',
+        desc: 'Trains a Decision Tree Regressor for non-linear regression tasks.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+dt_reg = regressor.DecisionTree_model(random_state=42, max_depth=6)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">dt_reg</span> = <span class="var">regressor</span>.<span class="fn">DecisionTree_model</span>(random_state=<span class="num">42</span>, max_depth=<span class="num">6</span>)`
+    },
+    'reg_RandomForest_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'RandomForest_model(n_estimators=100, random_state=None, **kwargs)',
+        desc: 'Trains an ensemble Random Forest Regressor across parallel cores.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+rf_reg = regressor.RandomForest_model(n_estimators=120, random_state=42)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">rf_reg</span> = <span class="var">regressor</span>.<span class="fn">RandomForest_model</span>(n_estimators=<span class="num">120</span>, random_state=<span class="num">42</span>)`
+    },
+    'reg_GradientBoosting_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'GradientBoosting_model(n_estimators=100, random_state=None, **kwargs)',
+        desc: 'Trains a Gradient Boosting Regressor and evaluates error metrics.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+gb_reg = regressor.GradientBoosting_model(n_estimators=100, random_state=42, learning_rate=0.08)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">gb_reg</span> = <span class="var">regressor</span>.<span class="fn">GradientBoosting_model</span>(n_estimators=<span class="num">100</span>, random_state=<span class="num">42</span>, learning_rate=<span class="num">0.08</span>)`
+    },
+    'reg_AdaBoost_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'AdaBoost_model(n_estimators=50, random_state=None, **kwargs)',
+        desc: 'Trains an AdaBoost Regressor using decision tree base estimators.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+ada_reg = regressor.AdaBoost_model(n_estimators=60, random_state=42)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">ada_reg</span> = <span class="var">regressor</span>.<span class="fn">AdaBoost_model</span>(n_estimators=<span class="num">60</span>, random_state=<span class="num">42</span>)`
+    },
+    'reg_run_all_models': {
+        tag: 'MULTIMODELREGRESSOR — LIST[TUPLE]',
+        title: 'run_all_models(custom_models=None, random_state=None)',
+        desc: 'Fits all 7 built-in regression baseline models plus optional custom regressor estimators. Caches results in regressor.models_.',
+        codeRaw: `from sklearn.datasets import make_regression
+from sklearn.ensemble import ExtraTreesRegressor
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+models = regressor.run_all_models(
+    custom_models={'Extra Trees Regressor': ExtraTreesRegressor(random_state=42)},
+    random_state=99
+)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> ExtraTreesRegressor
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">models</span> = <span class="var">regressor</span>.<span class="fn">run_all_models</span>(
+    custom_models={<span class="str">'Extra Trees Regressor'</span>: <span class="cls">ExtraTreesRegressor</span>(random_state=<span class="num">42</span>)},
+    random_state=<span class="num">99</span>
+)`
+    },
+    'reg_evaluate_model': {
+        tag: 'MULTIMODELREGRESSOR — TUPLE',
+        title: 'evaluate_model(model, X_test=None, y_true=None)',
+        desc: 'Evaluates a single fitted regressor model on test set data. Computes MAE, MSE, RMSE, and R2 Score metrics.',
+        codeRaw: `from sklearn.datasets import make_regression
+from sklearn.ensemble import RandomForestRegressor
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+rf = RandomForestRegressor(random_state=42)
+rf.fit(regressor.X_train_scaled, regressor.y_train)
+
+mae, mse, rmse, r2, y_pred = regressor.evaluate_model(rf)
+print(f"MAE: {mae:.4f}, R2 Score: {r2:.4f}")`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestRegressor
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="var">rf</span> = <span class="cls">RandomForestRegressor</span>(random_state=<span class="num">42</span>)
+<span class="var">rf</span>.<span class="fn">fit</span>(<span class="var">regressor</span>.X_train_scaled, <span class="var">regressor</span>.y_train)
+
+<span class="var">mae</span>, <span class="var">mse</span>, <span class="var">rmse</span>, <span class="var">r2</span>, <span class="var">y_pred</span> = <span class="var">regressor</span>.<span class="fn">evaluate_model</span>(<span class="var">rf</span>)
+<span class="fn">print</span>(<span class="str">f"MAE: {<span class="var">mae</span>:.4f}, R2 Score: {<span class="var">r2</span>:.4f}"</span>)`
+    },
+    'reg_show_tabular_report': {
+        tag: 'MULTIMODELREGRESSOR — PD.DATAFRAME | NONE',
+        title: 'show_tabular_report(models=None, return_df=False)',
+        desc: 'Prints a formatted comparison table of all regression model evaluation metrics sorted by R2 Score and identifies the best model.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+regressor.run_all_models()
+
+df_reg_report = regressor.show_tabular_report(return_df=True)
+print(df_reg_report.head())`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
+
+<span class="var">df_reg_report</span> = <span class="var">regressor</span>.<span class="fn">show_tabular_report</span>(return_df=<span class="num">True</span>)
+<span class="fn">print</span>(<span class="var">df_reg_report</span>.<span class="fn">head</span>())`
+    },
+    'reg_plot_true_vs_predicted': {
+        tag: 'MULTIMODELREGRESSOR — NONE',
+        title: 'plot_true_vs_predicted(models=None, save_path=None, show_plot=True)',
+        desc: 'Generates a grid scatter plot of True vs. Predicted target values with identity (y = x) reference lines for all models.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+regressor.run_all_models()
+
+regressor.plot_true_vs_predicted(save_path="true_vs_pred.png", show_plot=True)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
+
+<span class="var">regressor</span>.<span class="fn">plot_true_vs_predicted</span>(save_path=<span class="str">"true_vs_pred.png"</span>, show_plot=<span class="kw">True</span>)`
+    },
+    'reg_plot_comparison': {
+        tag: 'MULTIMODELREGRESSOR — NONE',
+        title: 'plot_comparison(models=None, save_path=None, show_plot=True)',
+        desc: 'Renders a bar chart comparing R2 Scores across all regression models.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+regressor.run_all_models()
+
+regressor.plot_comparison(save_path="r2_comparison.png")`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
+
+<span class="var">regressor</span>.<span class="fn">plot_comparison</span>(save_path=<span class="str">"r2_comparison.png"</span>)`
+    },
+    'reg_get_summary': {
+        tag: 'MULTIMODELREGRESSOR — NONE',
+        title: 'get_summary(models=None, save_prefix=None, show_plot=True)',
+        desc: 'Runs the full evaluation and visualization pipeline: prints tabular report and generates True vs. Predicted scatter plots and R2 Score comparison bar charts.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+
+# Export summary files
+regressor.get_summary(save_prefix="housing_exp", show_plot=False)`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+
+<span class="cm"># Export summary files</span>
+<span class="var">regressor</span>.<span class="fn">get_summary</span>(save_prefix=<span class="str">"housing_exp"</span>, show_plot=<span class="kw">False</span>)`
+    },
+    'reg_save_report': {
+        tag: 'MULTIMODELREGRESSOR — NONE',
+        title: 'save_report(df_or_filepath=None, filepath=None)',
+        desc: 'Saves the regressor\'s latest tabular performance report to disk.',
+        codeRaw: `from sklearn.datasets import make_regression
+from multimodel_analysis import MultiModelRegressor
+
+X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
+regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
+regressor.run_all_models()
+regressor.show_tabular_report()
+
+# Save report using default path 'report.csv'
+regressor.save_report()
+
+# Save report to specific filename
+regressor.save_report("regression_metrics.xlsx")`,
+        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
+
+<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
+<span class="var">regressor</span>.<span class="fn">show_tabular_report</span>()
+
+<span class="cm"># Save report using default path 'report.csv'</span>
+<span class="var">regressor</span>.<span class="fn">save_report</span>()
+
+<span class="cm"># Save report to specific filename</span>
+<span class="var">regressor</span>.<span class="fn">save_report</span>(<span class="str">"regression_metrics.xlsx"</span>)`
+    }
+};
+
+function initApiModal() {
+    const overlay = document.getElementById('api-modal-overlay');
+    const tagEl = document.getElementById('api-modal-tag');
+    const titleEl = document.getElementById('api-modal-title');
+    const descEl = document.getElementById('api-modal-desc');
+    const codeContentEl = document.getElementById('api-modal-code-content');
+    const closeBtn = document.getElementById('api-modal-close');
+    const copyBtn = document.getElementById('api-modal-copy-btn');
+
+    if (!overlay || !closeBtn) return;
+
+    let activeRawCode = '';
+
+    // Delegate clicks on API table rows and method links
+    const tableBody = document.querySelector('#api-table tbody');
+    if (tableBody) {
+        tableBody.addEventListener('click', (e) => {
+            const linkEl = e.target.closest('[data-api-key]');
+            if (!linkEl) return;
+
+            const apiKey = linkEl.getAttribute('data-api-key');
+            if (apiKey && API_EXAMPLES_DATA[apiKey]) {
+                openModal(API_EXAMPLES_DATA[apiKey]);
+            }
+        });
+    }
+
+    function openModal(data) {
+        if (tagEl) tagEl.textContent = data.tag;
+        if (titleEl) titleEl.textContent = data.title;
+        if (descEl) descEl.textContent = data.desc;
+        if (codeContentEl) codeContentEl.innerHTML = data.codeHtml;
+        activeRawCode = data.codeRaw;
+
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            if (!activeRawCode) return;
+            navigator.clipboard.writeText(activeRawCode).then(() => {
+                const span = copyBtn.querySelector('span');
+                if (span) span.textContent = 'Copied! ✓';
+                copyBtn.style.background = 'var(--accent-emerald, #10b981)';
+                copyBtn.style.color = '#ffffff';
+
+                setTimeout(() => {
+                    if (span) span.textContent = 'Copy';
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy code: ', err);
+            });
+        });
+    }
+}
+

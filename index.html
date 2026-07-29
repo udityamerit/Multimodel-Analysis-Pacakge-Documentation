@@ -22,7 +22,7 @@
                 <div class="brand-logo" aria-hidden="true">
                     <img src="machine_learning_project_logo.png" alt="Multimodel Analysis ML Logo" class="brand-logo-img">
                 </div>
-                <span>Multimodel Analysis Documentation</span>
+                <span>Multimodel Analysis</span>
             </a>
         </div>
 
@@ -624,57 +624,54 @@
                         <!-- Tab 1: Classification -->
                         <div id="tab-clf" class="code-pane active" role="tabpanel">
                             <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_breast_cancer
 <span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="fn">MultiModelClassifier</span>, <span class="fn">save_report</span>
 
-<span class="com"># 1. Load dataset &amp; separate features from target label</span>
-df = pd.<span class="fn">read_csv</span>(<span class="str">"customer_churn.csv"</span>)
-X = df.<span class="fn">drop</span>(columns=[<span class="str">"Churn"</span>])
-y = df[<span class="str">"Churn"</span>]  <span class="com"># Categorical string labels auto-encoded!</span>
+<span class="com"># 1. Load benchmark dataset &amp; prepare feature matrix</span>
+data = <span class="fn">load_breast_cancer</span>()
+X = pd.<span class="cls">DataFrame</span>(data.data, columns=data.feature_names)
+y = data.target
 
-<span class="com"># 2. Initialize classifier with automatic feature scaling</span>
+<span class="com"># 2. Instantiate pipeline with stratification and feature scaling</span>
 clf = <span class="fn">MultiModelClassifier</span>(
-    X=X, y=y, test_size=<span class="num">0.25</span>, scaled_data=<span class="kw">True</span>, random_state=<span class="num">42</span>, stratify=<span class="kw">True</span>
+    X=X, y=y, test_size=<span class="num">0.2</span>, scaled_data=<span class="kw">True</span>, random_state=<span class="num">42</span>, stratify=<span class="kw">True</span>
 )
 
 <span class="com"># 3. Train &amp; evaluate all 8 built-in classifiers in parallel</span>
-results = clf.<span class="fn">run_all_models</span>()
+results = clf.<span class="fn">run_all_models</span>(random_state=<span class="num">42</span>)
 
-<span class="com"># 4. Generate sorted performance leaderboard &amp; export report</span>
-df_report = clf.<span class="fn">show_tabular_report</span>(results, return_df=<span class="kw">True</span>)
-<span class="fn">save_report</span>(df_report, <span class="str">"classification_report.csv"</span>)
+<span class="com"># 4. Display tabular leaderboard &amp; export report to CSV</span>
+df_report = clf.<span class="fn">show_tabular_report</span>(return_df=<span class="kw">True</span>)
+clf.<span class="fn">save_report</span>(<span class="str">"breast_cancer_metrics.csv"</span>)
 
-<span class="com"># 5. Render diagnostic ROC, Confusion Matrix &amp; Comparison charts</span>
-clf.<span class="fn">plot_confusion_matrices</span>(results, save_path=<span class="str">"confusion_matrix.png"</span>, show_plot=<span class="kw">False</span>)
-clf.<span class="fn">plot_roc_curves</span>(results, save_path=<span class="str">"roc_curve.png"</span>, show_plot=<span class="kw">False</span>)
-clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str">"metrics_comparison.png"</span>, show_plot=<span class="kw">False</span>)</code></pre>
+<span class="com"># 5. One-line diagnostic summary &amp; figure exports</span>
+clf.<span class="fn">get_summary</span>(save_prefix=<span class="str">"breast_cancer"</span>, show_plot=<span class="kw">False</span>)</code></pre>
                         </div>
 
                         <!-- Tab 2: Regression -->
                         <div id="tab-reg" class="code-pane" role="tabpanel">
                             <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="fn">MultiModelRegressor</span>, <span class="fn">save_report</span>
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> fetch_california_housing
+<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="fn">MultiModelRegressor</span>
 
 <span class="com"># 1. Load continuous target dataset &amp; prepare feature matrix</span>
-df = pd.<span class="fn">read_csv</span>(<span class="str">"housing_prices.csv"</span>)
-X = df.<span class="fn">drop</span>(columns=[<span class="str">"SalePrice"</span>])
-y = df[<span class="str">"SalePrice"</span>]  <span class="com"># Continuous numerical target variable</span>
+data = <span class="fn">fetch_california_housing</span>()
+X = pd.<span class="cls">DataFrame</span>(data.data, columns=data.feature_names).<span class="fn">iloc</span>[:<span class="num">500</span>]  <span class="com"># Subset for fast execution</span>
+y = data.target[:<span class="num">500</span>]
 
-<span class="com"># 2. Initialize regressor with standard scaling guard</span>
+<span class="com"># 2. Instantiate regression pipeline with scaling</span>
 reg = <span class="fn">MultiModelRegressor</span>(
-    X=X, y=y, test_size=<span class="num">0.20</span>, scaled_data=<span class="kw">True</span>, random_state=<span class="num">42</span>
+    X=X, y=y, test_size=<span class="num">0.2</span>, scaled_data=<span class="kw">True</span>, random_state=<span class="num">42</span>
 )
 
-<span class="com"># 3. Train all 7 regression models (Ridge, Lasso, SVR, Random Forest, etc.)</span>
-results = reg.<span class="fn">run_all_models</span>()
+<span class="com"># 3. Train &amp; evaluate all 7 built-in regression models</span>
+results = reg.<span class="fn">run_all_models</span>(random_state=<span class="num">42</span>)
 
-<span class="com"># 4. Generate tabular evaluation leaderboard (R², MAE, MSE, RMSE)</span>
-df_report = reg.<span class="fn">show_tabular_report</span>(results, return_df=<span class="kw">True</span>)
-<span class="fn">save_report</span>(df_report, <span class="str">"regression_report.csv"</span>)
+<span class="com"># 4. Display tabular evaluation leaderboard</span>
+reg.<span class="fn">show_tabular_report</span>()
 
-<span class="com"># 5. One-line diagnostic summary &amp; residual charts</span>
-reg.<span class="fn">plot_residuals</span>(results, save_path=<span class="str">"residuals.png"</span>, show_plot=<span class="kw">False</span>)
-reg.<span class="fn">plot_true_vs_pred</span>(results, save_path=<span class="str">"true_vs_pred.png"</span>, show_plot=<span class="kw">False</span>)
-reg.<span class="fn">plot_comparison</span>(results, save_path=<span class="str">"regression_metrics.png"</span>, show_plot=<span class="kw">False</span>)</code></pre>
+<span class="com"># 5. Export summary reports &amp; diagnostic scatter plots</span>
+reg.<span class="fn">get_summary</span>(save_prefix=<span class="str">"california_housing"</span>, show_plot=<span class="kw">False</span>)</code></pre>
                         </div>
 
                         <!-- Tab 3: Custom Models -->
@@ -746,8 +743,7 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                     <div
                         style="padding: 16px 24px; background: var(--code-header); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight: 700;">Methods & Utilities Index</span>
-                        <span style="font-size: 0.8rem; color: var(--text-muted);" id="api-count-label">Showing 15 of 15
-                            entries</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);" id="api-count-label">Showing 33 of 33 entries</span>
                     </div>
                     <div class="table-responsive">
                         <table class="data-table" id="api-table">
@@ -761,141 +757,280 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="api-row"
-                                    data-search="multimodelclassifier run_all_models custom_models list tuple fit classifiers">
+                                <!-- Standalone Utility Functions -->
+                                <tr class="api-row" data-api-key="save_report"
+                                    data-search="multimodel_analysis save_report df filepath export csv xlsx html json dataframe standalone">
+                                    <td><code>multimodel_analysis</code></td>
+                                    <td><button class="api-method-link" data-api-key="save_report"><code>save_report()</code></button></td>
+                                    <td><code>df: DataFrame = None, filepath: str = "report.csv"</code></td>
+                                    <td><code>None</code></td>
+                                    <td>Exports report DataFrame to disk (.csv, .xlsx, .xls, .html, .json) based on file extension.</td>
+                                </tr>
+
+                                <!-- MultiModelClassifier Baseline Model Methods -->
+                                <tr class="api-row" data-api-key="clf_Logistic_model"
+                                    data-search="multimodelclassifier logistic_model random_state max_iter classification logistic regression">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>run_all_models()</code></strong></td>
-                                    <td><code>custom_models: dict = None</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_Logistic_model"><code>Logistic_model()</code></button></td>
+                                    <td><code>random_state: int = None, max_iter: int = 1000, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Logistic Regression classifier and computes evaluation metrics.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_Support_vector_model"
+                                    data-search="multimodelclassifier support_vector_model svc svm kernel probability classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_Support_vector_model"><code>Support_vector_model()</code></button></td>
+                                    <td><code>random_state: int = None, kernel: str = 'linear', probability: bool = True, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Support Vector Classifier (SVC) with probability estimation for ROC-AUC.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_DecisionTree_model"
+                                    data-search="multimodelclassifier decisiontree_model random_state decision tree classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_DecisionTree_model"><code>DecisionTree_model()</code></button></td>
+                                    <td><code>random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Decision Tree Classifier and evaluates split accuracy metrics.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_KNN_model"
+                                    data-search="multimodelclassifier knn_model n_neighbors knearest neighbors classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_KNN_model"><code>KNN_model()</code></button></td>
+                                    <td><code>n_neighbors: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains K-Nearest Neighbors Classifier. Auto-calculates optimal n_neighbors if omitted.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_Naive_Bayes_model"
+                                    data-search="multimodelclassifier naive_bayes_model gaussian nb bayes classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_Naive_Bayes_model"><code>Naive_Bayes_model()</code></button></td>
+                                    <td><code>**kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Gaussian Naive Bayes Classifier with automatic random state handling.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_RandomForest_model"
+                                    data-search="multimodelclassifier randomforest_model n_estimators random_state forest ensemble classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_RandomForest_model"><code>RandomForest_model()</code></button></td>
+                                    <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains an ensemble Random Forest Classifier across parallel CPU cores.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_GradientBoosting_model"
+                                    data-search="multimodelclassifier gradientboosting_model n_estimators learning_rate boosting classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_GradientBoosting_model"><code>GradientBoosting_model()</code></button></td>
+                                    <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Gradient Boosting Classifier and evaluates stage-wise residual loss.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_AdaBoost_model"
+                                    data-search="multimodelclassifier adaboost_model n_estimators random_state adaboost classification">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_AdaBoost_model"><code>AdaBoost_model()</code></button></td>
+                                    <td><code>n_estimators: int = 50, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains an AdaBoost Classifier using decision stump base estimators.</td>
+                                </tr>
+
+                                <!-- MultiModelClassifier Pipeline & Reporting Methods -->
+                                <tr class="api-row" data-api-key="clf_run_all_models"
+                                    data-search="multimodelclassifier run_all_models custom_models random_state fit baseline classifiers">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_run_all_models"><code>run_all_models()</code></button></td>
+                                    <td><code>custom_models: dict = None, random_state: int = None</code></td>
                                     <td><code>list[tuple]</code></td>
-                                    <td>Fits all 8 built-in classifiers plus optional custom estimators. Returns a list
-                                        of evaluation tuples.</td>
+                                    <td>Fits all 8 built-in classifiers plus optional custom estimators. Returns evaluation tuples.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelclassifier show_tabular_report models return_df dataframe leaderboard">
+                                <tr class="api-row" data-api-key="clf_evaluate_model"
+                                    data-search="multimodelclassifier evaluate_model model x_test y_true single evaluation metrics">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>show_tabular_report()</code></strong></td>
-                                    <td><code>models: list, return_df: bool = False</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_evaluate_model"><code>evaluate_model()</code></button></td>
+                                    <td><code>model: estimator, X_test: array = None, y_true: array = None</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Evaluates a single fitted classifier model on test set data (Report, Matrix, Acc, Prec, Rec, F1, ROC-AUC).</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="clf_show_tabular_report"
+                                    data-search="multimodelclassifier show_tabular_report models return_df dataframe leaderboard accuracy">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_show_tabular_report"><code>show_tabular_report()</code></button></td>
+                                    <td><code>models: list = None, return_df: bool = False</code></td>
                                     <td><code>pd.DataFrame | None</code></td>
-                                    <td>Displays formatted console leaderboard sorted by Accuracy and recommends the
-                                        optimal classifier.</td>
+                                    <td>Displays formatted console leaderboard sorted by Accuracy and recommends the optimal classifier.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelclassifier plot_confusion_matrices models save_path show_plot heatmap seaborn">
+                                <tr class="api-row" data-api-key="clf_plot_confusion_matrices"
+                                    data-search="multimodelclassifier plot_confusion_matrices models save_path show_plot heatmap confusion matrix">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>plot_confusion_matrices()</code></strong></td>
-                                    <td><code>models: list, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_plot_confusion_matrices"><code>plot_confusion_matrices()</code></button></td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>Renders colorful confusion matrix heatmaps with original decoded labels. Exports
-                                        PNG if save_path is set.</td>
+                                    <td>Generates colorful confusion matrix heatmaps with original decoded class labels.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelclassifier plot_roc_curves models save_path show_plot auc roc">
+                                <tr class="api-row" data-api-key="clf_plot_roc_curves"
+                                    data-search="multimodelclassifier plot_roc_curves models save_path show_plot auc roc curves">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>plot_roc_curves()</code></strong></td>
-                                    <td><code>models: list, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_plot_roc_curves"><code>plot_roc_curves()</code></button></td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>Plots combined binary or multiclass One-vs-Rest ROC curves with AUC scores for
-                                        all evaluated classifiers.</td>
+                                    <td>Plots Receiver Operating Characteristic (ROC) curves with AUC metrics for all models.</td>
                                 </tr>
-                                <tr class="api-row"
+                                <tr class="api-row" data-api-key="clf_plot_comparison"
                                     data-search="multimodelclassifier plot_comparison models save_path show_plot bar chart accuracy precision recall f1">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>plot_comparison()</code></strong></td>
-                                    <td><code>models: list, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_plot_comparison"><code>plot_comparison()</code></button></td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>Renders grouped bar charts comparing Accuracy, Precision, Recall, and F1 Score
-                                        across all models.</td>
+                                    <td>Renders grouped bar charts comparing Accuracy, Precision, Recall, and F1 Score across models.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelclassifier get_summary models save_prefix show_plot automated summary">
+                                <tr class="api-row" data-api-key="clf_get_summary"
+                                    data-search="multimodelclassifier get_summary models save_prefix show_plot summary automated pipeline">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>get_summary()</code></strong></td>
-                                    <td><code>models: list, save_prefix: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_get_summary"><code>get_summary()</code></button></td>
+                                    <td><code>models: list = None, save_prefix: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>Executes full reporting and plotting suite in one call. Auto-exports report CSV
-                                        and PNG charts if save_prefix is set.</td>
+                                    <td>Runs full reporting and plotting suite in one call with automated file exporting.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor run_all_models custom_models list tuple fit regressors">
+                                <tr class="api-row" data-api-key="clf_save_report"
+                                    data-search="multimodelclassifier save_report df_or_filepath filepath export csv xlsx instance method">
+                                    <td><code>MultiModelClassifier</code></td>
+                                    <td><button class="api-method-link" data-api-key="clf_save_report"><code>save_report()</code></button></td>
+                                    <td><code>df_or_filepath: DataFrame|str = None, filepath: str = None</code></td>
+                                    <td><code>None</code></td>
+                                    <td>Saves the classifier's latest tabular performance report to disk.</td>
+                                </tr>
+
+                                <!-- MultiModelRegressor Baseline Model Methods -->
+                                <tr class="api-row" data-api-key="reg_LinearRegression_model"
+                                    data-search="multimodelregressor linearregression_model linear regression ols continuous">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><strong><code>run_all_models()</code></strong></td>
-                                    <td><code>custom_models: dict = None</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_LinearRegression_model"><code>LinearRegression_model()</code></button></td>
+                                    <td><code>**kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains an Ordinary Least Squares Linear Regression model.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_Lasso_model"
+                                    data-search="multimodelregressor lasso_model alpha random_state l1 regularization regression">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_Lasso_model"><code>Lasso_model()</code></button></td>
+                                    <td><code>alpha: float = 0.1, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Lasso (L1 Regularized) Regression model.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_Ridge_model"
+                                    data-search="multimodelregressor ridge_model alpha random_state l2 regularization regression">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_Ridge_model"><code>Ridge_model()</code></button></td>
+                                    <td><code>alpha: float = 1.0, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Ridge (L2 Regularized) Regression model.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_SVR_model"
+                                    data-search="multimodelregressor svr_model kernel support vector regressor regression">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_SVR_model"><code>SVR_model()</code></button></td>
+                                    <td><code>kernel: str = 'rbf', **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Support Vector Regressor (SVR).</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_DecisionTree_model"
+                                    data-search="multimodelregressor decisiontree_model random_state decision tree regression">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_DecisionTree_model"><code>DecisionTree_model()</code></button></td>
+                                    <td><code>random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Decision Tree Regressor.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_RandomForest_model"
+                                    data-search="multimodelregressor randomforest_model n_estimators random_state random forest regressor">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_RandomForest_model"><code>RandomForest_model()</code></button></td>
+                                    <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains an ensemble Random Forest Regressor across parallel cores.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_GradientBoosting_model"
+                                    data-search="multimodelregressor gradientboosting_model n_estimators learning_rate gradient boosting regressor">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_GradientBoosting_model"><code>GradientBoosting_model()</code></button></td>
+                                    <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains a Gradient Boosting Regressor.</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_AdaBoost_model"
+                                    data-search="multimodelregressor adaboost_model n_estimators random_state adaboost regressor">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_AdaBoost_model"><code>AdaBoost_model()</code></button></td>
+                                    <td><code>n_estimators: int = 50, random_state: int = None, **kwargs</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Trains an AdaBoost Regressor.</td>
+                                </tr>
+
+                                <!-- MultiModelRegressor Pipeline & Reporting Methods -->
+                                <tr class="api-row" data-api-key="reg_run_all_models"
+                                    data-search="multimodelregressor run_all_models custom_models random_state fit baseline regressors">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_run_all_models"><code>run_all_models()</code></button></td>
+                                    <td><code>custom_models: dict = None, random_state: int = None</code></td>
                                     <td><code>list[tuple]</code></td>
-                                    <td>Fits all 7 built-in regressors (Linear, Lasso, Ridge, SVR, Trees, RF, GB) plus
-                                        optional custom regressors.</td>
+                                    <td>Fits all 7 built-in regressors plus optional custom estimators. Caches results in regressor.models_.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor show_tabular_report models return_df dataframe r2 mae mse rmse">
+                                <tr class="api-row" data-api-key="reg_evaluate_model"
+                                    data-search="multimodelregressor evaluate_model model x_test y_true single regressor evaluation mae mse rmse r2">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><strong><code>show_tabular_report()</code></strong></td>
-                                    <td><code>models: list, return_df: bool = False</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_evaluate_model"><code>evaluate_model()</code></button></td>
+                                    <td><code>model: estimator, X_test: array = None, y_true: array = None</code></td>
+                                    <td><code>tuple</code></td>
+                                    <td>Evaluates a single fitted regressor model on test set data (MAE, MSE, RMSE, R2, y_pred).</td>
+                                </tr>
+                                <tr class="api-row" data-api-key="reg_show_tabular_report"
+                                    data-search="multimodelregressor show_tabular_report models return_df dataframe r2 mae mse rmse leaderboard">
+                                    <td><code>MultiModelRegressor</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_show_tabular_report"><code>show_tabular_report()</code></button></td>
+                                    <td><code>models: list = None, return_df: bool = False</code></td>
                                     <td><code>pd.DataFrame | None</code></td>
-                                    <td>Displays formatted leaderboard sorted descending by R² Score (includes MAE, MSE,
-                                        RMSE).</td>
+                                    <td>Displays formatted leaderboard sorted descending by R² Score (includes MAE, MSE, RMSE).</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor plot_true_vs_predicted models save_path show_plot scatter identity">
+                                <tr class="api-row" data-api-key="reg_plot_true_vs_predicted"
+                                    data-search="multimodelregressor plot_true_vs_predicted models save_path show_plot scatter identity line true vs predicted">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><strong><code>plot_true_vs_predicted()</code></strong></td>
-                                    <td><code>models: list, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_plot_true_vs_predicted"><code>plot_true_vs_predicted()</code></button></td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>Renders True vs. Predicted scatter plots with identity line bounds. Exports PNG
-                                        if save_path is given.</td>
+                                    <td>Generates a grid scatter plot of True vs. Predicted target values with identity (y = x) reference lines.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor plot_comparison models save_path show_plot bar chart r2 score">
+                                <tr class="api-row" data-api-key="reg_plot_comparison"
+                                    data-search="multimodelregressor plot_comparison models save_path show_plot bar chart r2 score regressor comparison">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><strong><code>plot_comparison()</code></strong></td>
-                                    <td><code>models: list, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_plot_comparison"><code>plot_comparison()</code></button></td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>Renders a comparative bar chart of R² Scores across all evaluated regressor
-                                        models.</td>
+                                    <td>Renders a comparative bar chart of R² Scores across all evaluated regressor models.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor get_summary models save_prefix show_plot automated summary">
+                                <tr class="api-row" data-api-key="reg_get_summary"
+                                    data-search="multimodelregressor get_summary models save_prefix show_plot summary automated regressor pipeline">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><strong><code>get_summary()</code></strong></td>
-                                    <td><code>models: list, save_prefix: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link" data-api-key="reg_get_summary"><code>get_summary()</code></button></td>
+                                    <td><code>models: list = None, save_prefix: str = None, show_plot: bool = True</code></td>
                                     <td><code>None</code></td>
-                                    <td>One-call execution of regressor tabular report and diagnostic scatter/bar
-                                        charts.</td>
+                                    <td>Runs full evaluation and visualization pipeline for regressors (prints report, plots scatter & bar charts).</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="standalone utility save_report df_or_filepath filepath csv xlsx html json export">
-                                    <td><code>multimodel_analysis</code></td>
-                                    <td><strong><code>save_report()</code></strong></td>
-                                    <td><code>df_or_filepath: DataFrame|str, filepath: str = None</code></td>
-                                    <td><code>None</code></td>
-                                    <td>Exports report DataFrame to CSV, Excel, HTML, or JSON. Can be called as a
-                                        standalone utility or instance method.</td>
-                                </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelclassifier evaluate_model model x_test y_true single evaluation">
-                                    <td><code>MultiModelClassifier</code></td>
-                                    <td><strong><code>evaluate_model()</code></strong></td>
-                                    <td><code>model: estimator, X_test: array, y_true: array</code></td>
-                                    <td><code>tuple</code></td>
-                                    <td>Evaluates a single classifier instance with exception handling and probability
-                                        fallback.</td>
-                                </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor evaluate_model model x_test y_true single evaluation">
+                                <tr class="api-row" data-api-key="reg_save_report"
+                                    data-search="multimodelregressor save_report df_or_filepath filepath export csv xlsx instance method regressor">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><strong><code>evaluate_model()</code></strong></td>
-                                    <td><code>model: estimator, X_test: array, y_true: array</code></td>
-                                    <td><code>tuple</code></td>
-                                    <td>Evaluates a single regressor instance and returns (mae, mse, rmse, r2, y_pred).
-                                    </td>
+                                    <td><button class="api-method-link" data-api-key="reg_save_report"><code>save_report()</code></button></td>
+                                    <td><code>df_or_filepath: DataFrame|str = None, filepath: str = None</code></td>
+                                    <td><code>None</code></td>
+                                    <td>Saves the regressor's latest tabular performance report to disk.</td>
                                 </tr>
-                                <tr class="api-row"
-                                    data-search="multimodelregressor multimodelregressior alias backward compatibility">
+
+                                <!-- Class Aliases -->
+                                <tr class="api-row" data-api-key="reg_alias_class"
+                                    data-search="multimodelregressor multimodelregressior alias class backward compatibility">
                                     <td><code>MultiModelRegressior</code></td>
-                                    <td><strong><code>Alias Class</code></strong></td>
+                                    <td><button class="api-method-link" data-api-key="reg_alias_class"><code>Alias Class</code></button></td>
                                     <td><code>Same as MultiModelRegressor</code></td>
                                     <td><code>Class</code></td>
-                                    <td>Backward-compatibility class alias mapping directly to
-                                        <code>MultiModelRegressor</code>.
-                                    </td>
+                                    <td>Backward-compatibility class alias mapping directly to <code>MultiModelRegressor</code>.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1183,6 +1318,40 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
             </ul>
         </div>
     </footer>
+
+    <!-- API Code Example Modal Popup -->
+    <div id="api-modal-overlay" class="api-modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="api-modal-card">
+            <div class="api-modal-header">
+                <div>
+                    <div class="api-modal-tag" id="api-modal-tag">GENERAL FEATURE EXTRACTION — INT</div>
+                    <h3 class="api-modal-title" id="api-modal-title">sentence_count(x)</h3>
+                </div>
+                <button class="api-modal-close" id="api-modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <p class="api-modal-desc" id="api-modal-desc">Counts total sentences using punctuation delimiters (. ! ?).</p>
+            <div class="api-modal-code-box">
+                <div class="api-modal-code-header">
+                    <div class="code-controls">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                        <span class="code-lang">PYTHON</span>
+                    </div>
+                    <button class="code-modal-copy-btn" id="api-modal-copy-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <div class="api-modal-code-body">
+                    <pre><code id="api-modal-code-content"></code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript Application Logic -->
     <script src="app.js"></script>

@@ -9,3 +9,5 @@ Thumbs.db
 # Build & Scratch Artifacts
 DOCUMENTATION_REQUIREMENTS_AND_THEME.md
 scratch/
+
+test.ipynb

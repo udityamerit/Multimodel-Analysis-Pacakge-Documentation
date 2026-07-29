@@ -1296,8 +1296,11 @@ input[type="range"]::-moz-range-thumb:hover {
 /* Clean, zero-collapse pre & code block formatting */
 .code-pane pre {
     margin: 0;
-    padding: 20px 24px;
+    padding: 48px 24px 20px 24px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    box-sizing: border-box;
     background: transparent;
     border: none;
 }
@@ -1692,11 +1695,17 @@ svg {
         padding: 16px 3% 40px 3%;
     }
     .nav-brand span {
-        font-size: 1rem;
+        display: inline-block !important;
+        font-size: 0.92rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
     }
     .brand-logo {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         font-size: 1rem;
     }
     /* Hide all top navbar external buttons on mobile phones; accessible via sidebar drawer */
@@ -1747,7 +1756,13 @@ svg {
 /* 4. Small Phones & Narrow Screens (max-width: 400px) */
 @media (max-width: 400px) {
     .nav-brand span {
-        display: none; /* Show only logo on ultra-narrow 320px screens */
+        display: inline-block !important;
+        font-size: 0.85rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
     }
     .hero-title {
         font-size: 1.5rem;
@@ -1768,3 +1783,417 @@ svg {
         gap: 12px;
     }
 }
+
+/* ==========================================================================
+   API Reference Table Interactive Links & Code Example Modal
+   ========================================================================== */
+
+/* Interactive Method Link Button in API Table */
+.api-method-link {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--accent-primary, #0284c7);
+    cursor: pointer;
+    text-align: left;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.api-method-link:hover {
+    color: var(--accent-cyan, #06b6d4);
+    text-decoration: underline;
+    transform: translateX(2px);
+}
+
+.api-method-link code {
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.api-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.api-row:hover {
+    background-color: var(--hover-row, rgba(2, 132, 199, 0.04));
+}
+
+/* Modal Overlay Backdrop */
+.api-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.api-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Modal Card Box */
+.api-modal-card {
+    background: var(--bg-surface, #ffffff);
+    border: 1px solid var(--glass-border, #e2e8f0);
+    border-radius: 20px;
+    max-width: 680px;
+    width: 100%;
+    padding: 28px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transform: scale(0.92) translateY(10px);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.api-modal-overlay.active .api-modal-card {
+    transform: scale(1) translateY(0);
+}
+
+/* Modal Header & Tag */
+.api-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.api-modal-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-primary, #0284c7);
+    margin-bottom: 6px;
+}
+
+.api-modal-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text-main, #0f172a);
+    margin: 0;
+    font-family: var(--font-mono, monospace);
+    line-height: 1.2;
+}
+
+.api-modal-close {
+    background: var(--code-header, #f1f5f9);
+    border: 1px solid var(--glass-border, #cbd5e1);
+    color: var(--text-muted, #64748b);
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.api-modal-close:hover {
+    background: var(--accent-rose, #f43f5e);
+    color: #ffffff;
+    border-color: var(--accent-rose, #f43f5e);
+    transform: rotate(90deg);
+}
+
+/* Modal Description */
+.api-modal-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted, #475569);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Code Block Container Inside Modal - Theme Responsive */
+.api-modal-code-box {
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--code-bg, #f8fafc);
+    border: 1px solid var(--glass-border, #cbd5e1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.api-modal-code-header {
+    padding: 10px 16px;
+    background: var(--code-header, #e2e8f0);
+    border-bottom: 1px solid var(--glass-border, #cbd5e1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.api-modal-code-header .code-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.api-modal-code-header .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.api-modal-code-header .code-lang {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted, #64748b);
+    margin-left: 6px;
+}
+
+.code-modal-copy-btn {
+    background: var(--bg-surface, #ffffff);
+    border: 1px solid var(--glass-border, #cbd5e1);
+    color: var(--text-main, #0f172a);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.code-modal-copy-btn:hover {
+    background: var(--accent-primary, #0284c7);
+    color: #ffffff !important;
+    border-color: var(--accent-primary, #0284c7);
+}
+
+.api-modal-code-body {
+    position: relative;
+    padding: 18px 20px;
+    background: var(--code-bg, #f8fafc);
+    border-left: 4px solid var(--accent-primary, #0284c7);
+    overflow-x: auto;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.api-modal-code-body pre {
+    margin: 0;
+    font-family: 'Fira Code', Consolas, Monaco, monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-main, #0f172a); /* High contrast theme text */
+}
+
+.api-modal-code-body code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-family: inherit;
+}
+
+/* Syntax Highlighting Tokens - Light Mode Default */
+.api-modal-code-body .kw  { color: #dc2626; font-weight: 700; } /* Keywords: from, import, def, return */
+.api-modal-code-body .cls { color: #0284c7; font-weight: 600; } /* Class Names & Types: MultiModelClassifier */
+.api-modal-code-body .fn  { color: #7c3aed; font-weight: 600; } /* Functions & Methods: plot_comparison, print */
+.api-modal-code-body .var { color: #334155; }                   /* Variables & Params: save_path, X_train, reg, clf */
+.api-modal-code-body .str { color: #0369a1; }                   /* Strings: "..." */
+.api-modal-code-body .num { color: #c2410c; font-weight: 600; } /* Numbers & Booleans: True, False, 42, 0.2 */
+.api-modal-code-body .cm  { color: #64748b; font-style: italic; } /* Comments: # ... */
+.api-modal-code-body .op  { color: #475569; }                   /* Operators: =, ,, (, ) */
+
+/* Syntax Highlighting Tokens - Dark Mode Overrides */
+[data-theme="dark"] .api-modal-code-body pre {
+    color: #f8fafc;
+}
+[data-theme="dark"] .api-modal-code-body .kw  { color: #f43f5e; }
+[data-theme="dark"] .api-modal-code-body .cls { color: #34d399; }
+[data-theme="dark"] .api-modal-code-body .fn  { color: #c084fc; }
+[data-theme="dark"] .api-modal-code-body .var { color: #93c5fd; }
+[data-theme="dark"] .api-modal-code-body .str { color: #38bdf8; }
+[data-theme="dark"] .api-modal-code-body .num { color: #fbbf24; }
+[data-theme="dark"] .api-modal-code-body .cm  { color: #94a3b8; }
+[data-theme="dark"] .api-modal-code-body .op  { color: #cbd5e1; }
+
+/* ==========================================================================
+   Mobile Responsiveness for Code Blocks, Modals & Terminals
+   ========================================================================== */
+
+/* Universal Code Box Overflow & Touch Scroll Guards */
+pre, code, .code-content, .install-cmd, .api-modal-code-body {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+pre::-webkit-scrollbar,
+.code-content::-webkit-scrollbar,
+.api-modal-code-body::-webkit-scrollbar,
+.install-tab-bar::-webkit-scrollbar,
+.code-header-tabs::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+pre::-webkit-scrollbar-thumb,
+.code-content::-webkit-scrollbar-thumb,
+.api-modal-code-body::-webkit-scrollbar-thumb,
+.install-tab-bar::-webkit-scrollbar-thumb,
+.code-header-tabs::-webkit-scrollbar-thumb {
+    background: rgba(6, 182, 212, 0.3);
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-track,
+.code-content::-webkit-scrollbar-track,
+.api-modal-code-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Tablet & Mobile Breakpoint (<= 768px) */
+@media (max-width: 768px) {
+    /* Showcase Code Tabs */
+    .code-header-tabs {
+        padding: 0 4px;
+    }
+    .code-tab {
+        padding: 10px 14px;
+        font-size: 0.78rem;
+        flex-shrink: 0;
+    }
+    .code-pane pre {
+        padding: 44px 14px 14px 14px;
+    }
+    .code-pane pre code {
+        font-size: 0.8rem;
+        line-height: 1.55;
+    }
+    .code-copy-btn {
+        top: 10px;
+        right: 10px;
+        padding: 4px 10px;
+        font-size: 0.72rem;
+    }
+
+    /* API Modal Card Responsiveness */
+    .api-modal-overlay {
+        padding: 12px;
+    }
+    .api-modal-card {
+        padding: 16px;
+        border-radius: 14px;
+        max-width: 100%;
+        width: calc(100vw - 24px);
+        max-height: 88vh;
+        margin: 0 auto;
+    }
+    .api-modal-title {
+        font-size: 1.15rem;
+        word-break: break-word;
+    }
+    .api-modal-desc {
+        font-size: 0.85rem;
+        margin-bottom: 14px;
+    }
+    .api-modal-code-header {
+        padding: 8px 12px;
+    }
+    .api-modal-code-body {
+        padding: 12px;
+    }
+    .api-modal-code-body pre {
+        font-size: 0.78rem;
+        line-height: 1.5;
+    }
+
+    /* Installation Terminal Responsiveness */
+    .install-hub {
+        max-width: 100%;
+    }
+    .install-tab-bar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+        padding: 4px 4px 0 4px;
+    }
+    .install-tab {
+        padding: 7px 10px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+    .terminal-body {
+        padding: 12px 14px;
+    }
+    .terminal-line {
+        gap: 8px;
+    }
+    .terminal-prompt {
+        font-size: 0.8rem;
+    }
+    .install-cmd {
+        font-size: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Small Mobile Phones (<= 480px) */
+@media (max-width: 480px) {
+    .code-pane pre {
+        padding: 42px 10px 12px 10px;
+    }
+    .code-pane pre code {
+        font-size: 0.75rem;
+    }
+    .api-modal-card {
+        padding: 14px 12px;
+    }
+    .api-modal-title {
+        font-size: 1.05rem;
+    }
+    .api-modal-code-body {
+        padding: 10px 8px;
+    }
+    .api-modal-code-body pre {
+        font-size: 0.74rem;
+        line-height: 1.45;
+    }
+    .terminal-line {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .terminal-copy {
+        align-self: flex-end;
+        margin-top: 4px;
+    }
+}
+
+
+
