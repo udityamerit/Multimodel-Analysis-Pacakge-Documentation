@@ -1471,6 +1471,11 @@ function initApiModal() {
     // Delegate clicks on API table rows and method links
     const tableBody = document.querySelector('#api-table tbody');
     if (tableBody) {
+        // Add native tooltip hints to all API rows
+        tableBody.querySelectorAll('.api-row').forEach(row => {
+            row.setAttribute('title', 'Click to view example code');
+        });
+
         tableBody.addEventListener('click', (e) => {
             const linkEl = e.target.closest('[data-api-key]');
             if (!linkEl) return;

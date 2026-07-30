@@ -1793,10 +1793,10 @@ svg {
     background: transparent;
     border: none;
     padding: 0;
-    margin: 0;
-    font: inherit;
-    color: var(--accent-primary, #0284c7);
+    color: var(--accent-cyan, #06b6d4);
     cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
     text-align: left;
     display: inline-flex;
     align-items: center;
@@ -1813,6 +1813,19 @@ svg {
 .api-method-link code {
     font-weight: 700;
     cursor: pointer;
+}
+
+.api-note-banner {
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    border-left: 4px solid var(--accent-cyan, #06b6d4);
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.04);
 }
 
 .api-row {

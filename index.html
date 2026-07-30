@@ -20,7 +20,8 @@
             <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Toggle Navigation">☰</button>
             <a href="#overview" class="nav-brand">
                 <div class="brand-logo" aria-hidden="true">
-                    <img src="machine_learning_project_logo.png" alt="Multimodel Analysis ML Logo" class="brand-logo-img">
+                    <img src="machine_learning_project_logo.png" alt="Multimodel Analysis ML Logo"
+                        class="brand-logo-img">
                 </div>
                 <span>Multimodel Analysis</span>
             </a>
@@ -112,8 +113,16 @@
                 <!-- CTA Buttons -->
                 <div style="display: flex; justify-content: center; margin-bottom: 2.5rem;">
                     <a href="https://pypi.org/project/multimodel-analysis/" target="_blank" rel="noopener noreferrer"
-                        class="nav-link-btn btn-pypi" style="font-size: 1.1rem; padding: 14px 28px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25); border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s;">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        class="nav-link-btn btn-pypi"
+                        style="font-size: 1.1rem; padding: 14px 28px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25); border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
                         <span>View on PyPI</span>
                     </a>
                 </div>
@@ -121,20 +130,33 @@
                 <!-- OS Platform Switcher -->
                 <div class="install-hub">
                     <div class="install-tab-bar" role="tablist" aria-label="Select Operating System">
-                        <button class="install-tab active" data-os="windows" onclick="switchInstallOS('windows')" role="tab">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.57H3zM20.565 4.285L12 5.71v6.29h8.565V4.285zM12 12.71l-9 1.1V18l9 1.35V12.71zM12.435 14l8.13.975V20.29L12.435 19V14z"/></svg>
+                        <button class="install-tab active" data-os="windows" onclick="switchInstallOS('windows')"
+                            role="tab">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M3 12V6.75l6-1.32v6.57H3zM20.565 4.285L12 5.71v6.29h8.565V4.285zM12 12.71l-9 1.1V18l9 1.35V12.71zM12.435 14l8.13.975V20.29L12.435 19V14z" />
+                            </svg>
                             Windows
                         </button>
                         <button class="install-tab" data-os="mac" onclick="switchInstallOS('mac')" role="tab">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.2 1.28-2.18 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.77M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.2 1.28-2.18 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.77M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                            </svg>
                             macOS
                         </button>
                         <button class="install-tab" data-os="linux" onclick="switchInstallOS('linux')" role="tab">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.504 0C6.03 0 1.44 4.947 1.44 10.747c0 3.637 1.937 6.833 4.867 8.693L3.942 24l2.543-1.74c1.61.587 3.374.905 5.22.905 6.477 0 11.062-4.947 11.062-10.748C22.768 6.474 18.183.001 12.504 0zm4.17 15.28c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm-8.34 0c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm4.17-8.56c.93 0 1.685.755 1.685 1.685S13.434 10.09 12.504 10.09s-1.685-.755-1.685-1.685.755-1.685 1.685-1.685z"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12.504 0C6.03 0 1.44 4.947 1.44 10.747c0 3.637 1.937 6.833 4.867 8.693L3.942 24l2.543-1.74c1.61.587 3.374.905 5.22.905 6.477 0 11.062-4.947 11.062-10.748C22.768 6.474 18.183.001 12.504 0zm4.17 15.28c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm-8.34 0c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm4.17-8.56c.93 0 1.685.755 1.685 1.685S13.434 10.09 12.504 10.09s-1.685-.755-1.685-1.685.755-1.685 1.685-1.685z" />
+                            </svg>
                             Linux
                         </button>
                         <button class="install-tab" data-os="conda" onclick="switchInstallOS('conda')" role="tab">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.11 0C8.34 0 5.95 1.49 4.7 3.72L3.5 3.1C5.05.82 8 0 11.11 0zM.56 8.39C.2 9.54 0 10.75 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12S18.63 0 12 0c-.9 0-1.77.1-2.61.29l.49 1.93C10.58 2.08 11.28 2 12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12c0-1.08.17-2.11.48-3.09L.56 8.39z"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M11.11 0C8.34 0 5.95 1.49 4.7 3.72L3.5 3.1C5.05.82 8 0 11.11 0zM.56 8.39C.2 9.54 0 10.75 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12S18.63 0 12 0c-.9 0-1.77.1-2.61.29l.49 1.93C10.58 2.08 11.28 2 12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12c0-1.08.17-2.11.48-3.09L.56 8.39z" />
+                            </svg>
                             Conda
                         </button>
                     </div>
@@ -151,14 +173,22 @@
                         <div class="terminal-body">
                             <div class="terminal-line">
                                 <span class="terminal-prompt" id="install-prompt">PS C:\&gt;</span>
-                                <code class="install-cmd" id="install-command">py -m pip install multimodel-analysis</code>
-                                <button class="btn-copy terminal-copy" id="copy-install-btn" data-clipboard="py -m pip install multimodel-analysis" aria-label="Copy to clipboard">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                <code class="install-cmd"
+                                    id="install-command">py -m pip install multimodel-analysis</code>
+                                <button class="btn-copy terminal-copy" id="copy-install-btn"
+                                    data-clipboard="py -m pip install multimodel-analysis"
+                                    aria-label="Copy to clipboard">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" />
+                                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                                    </svg>
                                     <span>Copy</span>
                                 </button>
                             </div>
                         </div>
-                        <p class="install-hint" id="install-subtext">Recommended for Windows PowerShell and Command Prompt using the Python Launcher (<code>py</code>).</p>
+                        <p class="install-hint" id="install-subtext">Recommended for Windows PowerShell and Command
+                            Prompt using the Python Launcher (<code>py</code>).</p>
                     </div>
                 </div>
 
@@ -192,7 +222,8 @@
             <section id="installation" class="section">
                 <div class="section-header">
                     <h2 class="section-title">Platform Installation Guide</h2>
-                    <p class="section-desc">Full setup instructions with virtual environment configuration for every major platform.</p>
+                    <p class="section-desc">Full setup instructions with virtual environment configuration for every
+                        major platform.</p>
                 </div>
 
                 <div class="platform-grid">
@@ -201,7 +232,10 @@
                     <div class="platform-card" id="card-windows">
                         <div class="platform-card-header platform-windows">
                             <div class="platform-icon-wrap">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M3 12V6.75l6-1.32v6.57H3zM20.565 4.285L12 5.71v6.29h8.565V4.285zM12 12.71l-9 1.1V18l9 1.35V12.71zM12.435 14l8.13.975V20.29L12.435 19V14z"/></svg>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                                    <path
+                                        d="M3 12V6.75l6-1.32v6.57H3zM20.565 4.285L12 5.71v6.29h8.565V4.285zM12 12.71l-9 1.1V18l9 1.35V12.71zM12.435 14l8.13.975V20.29L12.435 19V14z" />
+                                </svg>
                             </div>
                             <div>
                                 <div class="platform-name">Windows</div>
@@ -210,18 +244,23 @@
                             <div class="platform-badge">Recommended</div>
                         </div>
                         <div class="platform-card-body">
-                            <p class="platform-desc">Use the official Python 3 Launcher (<code class="inline-code">py</code>) to avoid PATH conflicts across multiple Python versions on Windows.</p>
+                            <p class="platform-desc">Use the official Python 3 Launcher (<code
+                                    class="inline-code">py</code>) to avoid PATH conflicts across multiple Python
+                                versions on Windows.</p>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">PowerShell</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('py -m pip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('py -m pip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
-                                <pre class="code-content"><span class="code-prompt">PS C:\&gt;</span> py -m pip install multimodel-analysis</pre>
+                                <pre
+                                    class="code-content"><span class="code-prompt">PS C:\&gt;</span> py -m pip install multimodel-analysis</pre>
                             </div>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">VirtualEnv Setup</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('py -m venv venv\n.\\venv\\Scripts\\activate\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('py -m venv venv\n.\\venv\\Scripts\\activate\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
                                 <pre class="code-content"><span class="code-prompt">PS C:\&gt;</span> py -m venv venv
 <span class="code-prompt">PS C:\&gt;</span> .\venv\Scripts\activate
@@ -234,7 +273,10 @@
                     <div class="platform-card" id="card-mac">
                         <div class="platform-card-header platform-mac">
                             <div class="platform-icon-wrap">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.2 1.28-2.18 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.77M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                                    <path
+                                        d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.2 1.28-2.18 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.77M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                                </svg>
                             </div>
                             <div>
                                 <div class="platform-name">macOS</div>
@@ -242,18 +284,23 @@
                             </div>
                         </div>
                         <div class="platform-card-body">
-                            <p class="platform-desc">Works natively on Intel and Apple Silicon (M1/M2/M3). For Homebrew-managed Python, always call <code class="inline-code">python3</code> explicitly.</p>
+                            <p class="platform-desc">Works natively on Intel and Apple Silicon (M1/M2/M3). For
+                                Homebrew-managed Python, always call <code class="inline-code">python3</code>
+                                explicitly.</p>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">Terminal (Quick Install)</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('python3 -m pip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('python3 -m pip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
-                                <pre class="code-content"><span class="code-prompt">$</span> python3 -m pip install multimodel-analysis</pre>
+                                <pre
+                                    class="code-content"><span class="code-prompt">$</span> python3 -m pip install multimodel-analysis</pre>
                             </div>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">Homebrew + VirtualEnv</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('brew install python@3.11\npython3.11 -m venv ml_env\nsource ml_env/bin/activate\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('brew install python@3.11\npython3.11 -m venv ml_env\nsource ml_env/bin/activate\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
                                 <pre class="code-content"><span class="code-prompt">$</span> brew install python@3.11
 <span class="code-prompt">$</span> python3.11 -m venv ml_env
@@ -267,7 +314,10 @@
                     <div class="platform-card" id="card-linux">
                         <div class="platform-card-header platform-linux">
                             <div class="platform-icon-wrap">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12.504 0C6.03 0 1.44 4.947 1.44 10.747c0 3.637 1.937 6.833 4.867 8.693L3.942 24l2.543-1.74c1.61.587 3.374.905 5.22.905 6.477 0 11.062-4.947 11.062-10.748C22.768 6.474 18.183.001 12.504 0zm4.17 15.28c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm-8.34 0c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm4.17-8.56c.93 0 1.685.755 1.685 1.685S13.434 10.09 12.504 10.09s-1.685-.755-1.685-1.685.755-1.685 1.685-1.685z"/></svg>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                                    <path
+                                        d="M12.504 0C6.03 0 1.44 4.947 1.44 10.747c0 3.637 1.937 6.833 4.867 8.693L3.942 24l2.543-1.74c1.61.587 3.374.905 5.22.905 6.477 0 11.062-4.947 11.062-10.748C22.768 6.474 18.183.001 12.504 0zm4.17 15.28c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm-8.34 0c-.247.624-.786 1.13-1.494 1.348-.537.162-1.137.086-1.636-.2-.49-.28-.834-.74-.982-1.27-.15-.53-.085-1.088.18-1.56.267-.473.696-.83 1.21-.99.513-.16 1.065-.11 1.543.14.477.252.82.677.958 1.185.138.508.07 1.044-.2 1.502l.42-.155zm4.17-8.56c.93 0 1.685.755 1.685 1.685S13.434 10.09 12.504 10.09s-1.685-.755-1.685-1.685.755-1.685 1.685-1.685z" />
+                                </svg>
                             </div>
                             <div>
                                 <div class="platform-name">Linux</div>
@@ -275,18 +325,22 @@
                             </div>
                         </div>
                         <div class="platform-card-body">
-                            <p class="platform-desc">For modern Debian/Ubuntu with PEP 668 protection, always install inside a virtual environment — the system Python is managed by the OS.</p>
+                            <p class="platform-desc">For modern Debian/Ubuntu with PEP 668 protection, always install
+                                inside a virtual environment — the system Python is managed by the OS.</p>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">Bash (Quick Install)</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('pip3 install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('pip3 install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
-                                <pre class="code-content"><span class="code-prompt">$</span> pip3 install multimodel-analysis</pre>
+                                <pre
+                                    class="code-content"><span class="code-prompt">$</span> pip3 install multimodel-analysis</pre>
                             </div>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">PEP 668 Compliant Setup</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('sudo apt install python3-venv\npython3 -m venv ~/.venv/ml\nsource ~/.venv/ml/bin/activate\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('sudo apt install python3-venv\npython3 -m venv ~/.venv/ml\nsource ~/.venv/ml/bin/activate\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
                                 <pre class="code-content"><span class="code-prompt">$</span> sudo apt install python3-venv
 <span class="code-prompt">$</span> python3 -m venv ~/.venv/ml
@@ -300,7 +354,10 @@
                     <div class="platform-card" id="card-conda">
                         <div class="platform-card-header platform-conda">
                             <div class="platform-icon-wrap">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M11.11 0C8.34 0 5.95 1.49 4.7 3.72L3.5 3.1C5.05.82 8 0 11.11 0zM.56 8.39C.2 9.54 0 10.75 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12S18.63 0 12 0c-.9 0-1.77.1-2.61.29l.49 1.93C10.58 2.08 11.28 2 12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12c0-1.08.17-2.11.48-3.09L.56 8.39z"/></svg>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                                    <path
+                                        d="M11.11 0C8.34 0 5.95 1.49 4.7 3.72L3.5 3.1C5.05.82 8 0 11.11 0zM.56 8.39C.2 9.54 0 10.75 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12S18.63 0 12 0c-.9 0-1.77.1-2.61.29l.49 1.93C10.58 2.08 11.28 2 12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12c0-1.08.17-2.11.48-3.09L.56 8.39z" />
+                                </svg>
                             </div>
                             <div>
                                 <div class="platform-name">Conda / Mamba</div>
@@ -308,11 +365,13 @@
                             </div>
                         </div>
                         <div class="platform-card-body">
-                            <p class="platform-desc">Conda automatically resolves C-level dependencies like OpenMP, BLAS, and MKL — critical for XGBoost and Scikit-learn performance on all platforms.</p>
+                            <p class="platform-desc">Conda automatically resolves C-level dependencies like OpenMP,
+                                BLAS, and MKL — critical for XGBoost and Scikit-learn performance on all platforms.</p>
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">Conda Environment Setup</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('conda create -n ml-env python=3.11 -y\nconda activate ml-env\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('conda create -n ml-env python=3.11 -y\nconda activate ml-env\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
                                 <pre class="code-content"><span class="code-prompt">(base) $</span> conda create -n ml-env python=3.11 -y
 <span class="code-prompt">(base) $</span> conda activate ml-env
@@ -321,7 +380,8 @@
                             <div class="code-block-pro">
                                 <div class="code-block-header">
                                     <span class="code-lang-label">Mamba (Faster Alternative)</span>
-                                    <button class="btn-copy-pro" onclick="copyToClipboard('mamba create -n ml-env python=3.11 -y\nmamba activate ml-env\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
+                                    <button class="btn-copy-pro"
+                                        onclick="copyToClipboard('mamba create -n ml-env python=3.11 -y\nmamba activate ml-env\npip install multimodel-analysis', this, 'Copy', '✓ Copied!')">Copy</button>
                                 </div>
                                 <pre class="code-content"><span class="code-prompt">(base) $</span> mamba create -n ml-env python=3.11 -y
 <span class="code-prompt">(base) $</span> mamba activate ml-env
@@ -335,7 +395,11 @@
                 <!-- System Requirements Note -->
                 <div class="install-requirements">
                     <div class="req-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4M12 8h.01" />
+                        </svg>
                     </div>
                     <div class="req-content">
                         <strong>System Requirements</strong>
@@ -603,22 +667,31 @@
             <section id="quickstart" class="section">
                 <div class="section-header">
                     <h2 class="section-title">Quickstart Code Showcase</h2>
-                    <p class="section-desc">Copy and paste these production-ready templates directly into your Jupyter Notebook or Python IDE.</p>
+                    <p class="section-desc">Copy and paste these production-ready templates directly into your Jupyter
+                        Notebook or Python IDE.</p>
                 </div>
 
                 <div class="code-showcase">
                     <div class="code-header-tabs">
                         <div class="tab-list" role="tablist">
-                            <button class="code-tab active" data-target="tab-clf" role="tab" aria-selected="true">1. Classification Pipeline</button>
-                            <button class="code-tab" data-target="tab-reg" role="tab" aria-selected="false">2. Regression Pipeline</button>
-                            <button id="custom-models" class="code-tab" data-target="tab-custom" role="tab" aria-selected="false">3. Custom Estimators (XGBoost)</button>
-                            <button id="exporting" class="code-tab" data-target="tab-export" role="tab" aria-selected="false">4. Multi-Format Exporting</button>
+                            <button class="code-tab active" data-target="tab-clf" role="tab" aria-selected="true">1.
+                                Classification Pipeline</button>
+                            <button class="code-tab" data-target="tab-reg" role="tab" aria-selected="false">2.
+                                Regression Pipeline</button>
+                            <button id="custom-models" class="code-tab" data-target="tab-custom" role="tab"
+                                aria-selected="false">3. Custom Estimators (XGBoost)</button>
+                            <button id="exporting" class="code-tab" data-target="tab-export" role="tab"
+                                aria-selected="false">4. Multi-Format Exporting</button>
                         </div>
                     </div>
 
                     <div class="showcase-body">
                         <button class="code-copy-btn" id="code-copy-btn" aria-label="Copy Code">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" />
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                            </svg>
                             <span>Copy Code</span>
                         </button>
                         <!-- Tab 1: Classification -->
@@ -739,18 +812,47 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                         modules.</p>
                 </div>
 
+                <!-- API Interactive Note Banner -->
+                <div class="api-note-banner">
+                    <div
+                        style="background: rgba(6, 182, 212, 0.15); border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.25rem;">
+                        💡</div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 0.98rem; margin-bottom: 2px;">
+                            Interactive API Explorer</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">Click on any
+                            function or method name in the index below (or hover over any row) to open runnable Python
+                            code examples, parameter details, and usage snippets in an interactive modal dialog.</div>
+                    </div>
+                </div>
+
                 <div class="playground-card" style="padding: 0;">
                     <div
-                        style="padding: 16px 24px; background: var(--code-header); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 700;">Methods & Utilities Index</span>
-                        <span style="font-size: 0.8rem; color: var(--text-muted);" id="api-count-label">Showing 33 of 33 entries</span>
+                        style="padding: 16px 24px; background: var(--code-header); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-weight: 700;">Methods & Utilities Index</span>
+                            <span
+                                style="font-size: 0.78rem; background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.3); padding: 3px 10px; border-radius: 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                <span>⚡ Click any function to see example code</span>
+                            </span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="position: relative;">
+                                <input type="text" id="api-search-input"
+                                    placeholder="Filter methods or keywords... (Press /)"
+                                    style="background: var(--bg-obsidian); border: 1px solid var(--glass-border); color: var(--text-main); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; width: 260px; outline: none;">
+                            </div>
+
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="data-table" id="api-table">
                             <thead>
                                 <tr>
                                     <th>Class / Module</th>
-                                    <th>Method Name</th>
+                                    <th>Method Name <span
+                                            style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 600; display: block; margin-top: 2px;">(Click
+                                            to view code example)</span></th>
                                     <th>Parameters</th>
                                     <th>Return Type</th>
                                     <th>Description</th>
@@ -761,17 +863,21 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="save_report"
                                     data-search="multimodel_analysis save_report df filepath export csv xlsx html json dataframe standalone">
                                     <td><code>multimodel_analysis</code></td>
-                                    <td><button class="api-method-link" data-api-key="save_report"><code>save_report()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="save_report"><code>save_report()</code></button></td>
                                     <td><code>df: DataFrame = None, filepath: str = "report.csv"</code></td>
                                     <td><code>None</code></td>
-                                    <td>Exports report DataFrame to disk (.csv, .xlsx, .xls, .html, .json) based on file extension.</td>
+                                    <td>Exports report DataFrame to disk (.csv, .xlsx, .xls, .html, .json) based on file
+                                        extension.</td>
                                 </tr>
 
                                 <!-- MultiModelClassifier Baseline Model Methods -->
                                 <tr class="api-row" data-api-key="clf_Logistic_model"
                                     data-search="multimodelclassifier logistic_model random_state max_iter classification logistic regression">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_Logistic_model"><code>Logistic_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_Logistic_model"><code>Logistic_model()</code></button>
+                                    </td>
                                     <td><code>random_state: int = None, max_iter: int = 1000, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Logistic Regression classifier and computes evaluation metrics.</td>
@@ -779,15 +885,21 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="clf_Support_vector_model"
                                     data-search="multimodelclassifier support_vector_model svc svm kernel probability classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_Support_vector_model"><code>Support_vector_model()</code></button></td>
-                                    <td><code>random_state: int = None, kernel: str = 'linear', probability: bool = True, **kwargs</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_Support_vector_model"><code>Support_vector_model()</code></button>
+                                    </td>
+                                    <td><code>random_state: int = None, kernel: str = 'linear', probability: bool = True, **kwargs</code>
+                                    </td>
                                     <td><code>tuple</code></td>
-                                    <td>Trains a Support Vector Classifier (SVC) with probability estimation for ROC-AUC.</td>
+                                    <td>Trains a Support Vector Classifier (SVC) with probability estimation for
+                                        ROC-AUC.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_DecisionTree_model"
                                     data-search="multimodelclassifier decisiontree_model random_state decision tree classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_DecisionTree_model"><code>DecisionTree_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_DecisionTree_model"><code>DecisionTree_model()</code></button>
+                                    </td>
                                     <td><code>random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Decision Tree Classifier and evaluates split accuracy metrics.</td>
@@ -795,23 +907,30 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="clf_KNN_model"
                                     data-search="multimodelclassifier knn_model n_neighbors knearest neighbors classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_KNN_model"><code>KNN_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_KNN_model"><code>KNN_model()</code></button></td>
                                     <td><code>n_neighbors: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
-                                    <td>Trains K-Nearest Neighbors Classifier. Auto-calculates optimal n_neighbors if omitted.</td>
+                                    <td>Trains K-Nearest Neighbors Classifier. Auto-calculates optimal n_neighbors if
+                                        omitted.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_Naive_Bayes_model"
                                     data-search="multimodelclassifier naive_bayes_model gaussian nb bayes classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_Naive_Bayes_model"><code>Naive_Bayes_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_Naive_Bayes_model"><code>Naive_Bayes_model()</code></button>
+                                    </td>
                                     <td><code>**kwargs</code></td>
                                     <td><code>tuple</code></td>
-                                    <td>Trains a Gaussian Naive Bayes Classifier with automatic random state handling.</td>
+                                    <td>Trains a Gaussian Naive Bayes Classifier with automatic random state handling.
+                                    </td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_RandomForest_model"
                                     data-search="multimodelclassifier randomforest_model n_estimators random_state forest ensemble classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_RandomForest_model"><code>RandomForest_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_RandomForest_model"><code>RandomForest_model()</code></button>
+                                    </td>
                                     <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains an ensemble Random Forest Classifier across parallel CPU cores.</td>
@@ -819,15 +938,20 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="clf_GradientBoosting_model"
                                     data-search="multimodelclassifier gradientboosting_model n_estimators learning_rate boosting classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_GradientBoosting_model"><code>GradientBoosting_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_GradientBoosting_model"><code>GradientBoosting_model()</code></button>
+                                    </td>
                                     <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
-                                    <td>Trains a Gradient Boosting Classifier and evaluates stage-wise residual loss.</td>
+                                    <td>Trains a Gradient Boosting Classifier and evaluates stage-wise residual loss.
+                                    </td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_AdaBoost_model"
                                     data-search="multimodelclassifier adaboost_model n_estimators random_state adaboost classification">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_AdaBoost_model"><code>AdaBoost_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_AdaBoost_model"><code>AdaBoost_model()</code></button>
+                                    </td>
                                     <td><code>n_estimators: int = 50, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains an AdaBoost Classifier using decision stump base estimators.</td>
@@ -837,63 +961,88 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="clf_run_all_models"
                                     data-search="multimodelclassifier run_all_models custom_models random_state fit baseline classifiers">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_run_all_models"><code>run_all_models()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_run_all_models"><code>run_all_models()</code></button>
+                                    </td>
                                     <td><code>custom_models: dict = None, random_state: int = None</code></td>
                                     <td><code>list[tuple]</code></td>
-                                    <td>Fits all 8 built-in classifiers plus optional custom estimators. Returns evaluation tuples.</td>
+                                    <td>Fits all 8 built-in classifiers plus optional custom estimators. Returns
+                                        evaluation tuples.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_evaluate_model"
                                     data-search="multimodelclassifier evaluate_model model x_test y_true single evaluation metrics">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_evaluate_model"><code>evaluate_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_evaluate_model"><code>evaluate_model()</code></button>
+                                    </td>
                                     <td><code>model: estimator, X_test: array = None, y_true: array = None</code></td>
                                     <td><code>tuple</code></td>
-                                    <td>Evaluates a single fitted classifier model on test set data (Report, Matrix, Acc, Prec, Rec, F1, ROC-AUC).</td>
+                                    <td>Evaluates a single fitted classifier model on test set data (Report, Matrix,
+                                        Acc, Prec, Rec, F1, ROC-AUC).</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_show_tabular_report"
                                     data-search="multimodelclassifier show_tabular_report models return_df dataframe leaderboard accuracy">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_show_tabular_report"><code>show_tabular_report()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_show_tabular_report"><code>show_tabular_report()</code></button>
+                                    </td>
                                     <td><code>models: list = None, return_df: bool = False</code></td>
                                     <td><code>pd.DataFrame | None</code></td>
-                                    <td>Displays formatted console leaderboard sorted by Accuracy and recommends the optimal classifier.</td>
+                                    <td>Displays formatted console leaderboard sorted by Accuracy and recommends the
+                                        optimal classifier.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_plot_confusion_matrices"
                                     data-search="multimodelclassifier plot_confusion_matrices models save_path show_plot heatmap confusion matrix">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_plot_confusion_matrices"><code>plot_confusion_matrices()</code></button></td>
-                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_plot_confusion_matrices"><code>plot_confusion_matrices()</code></button>
+                                    </td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Generates colorful confusion matrix heatmaps with original decoded class labels.</td>
+                                    <td>Generates colorful confusion matrix heatmaps with original decoded class labels.
+                                    </td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_plot_roc_curves"
                                     data-search="multimodelclassifier plot_roc_curves models save_path show_plot auc roc curves">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_plot_roc_curves"><code>plot_roc_curves()</code></button></td>
-                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_plot_roc_curves"><code>plot_roc_curves()</code></button>
+                                    </td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Plots Receiver Operating Characteristic (ROC) curves with AUC metrics for all models.</td>
+                                    <td>Plots Receiver Operating Characteristic (ROC) curves with AUC metrics for all
+                                        models.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_plot_comparison"
                                     data-search="multimodelclassifier plot_comparison models save_path show_plot bar chart accuracy precision recall f1">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_plot_comparison"><code>plot_comparison()</code></button></td>
-                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_plot_comparison"><code>plot_comparison()</code></button>
+                                    </td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Renders grouped bar charts comparing Accuracy, Precision, Recall, and F1 Score across models.</td>
+                                    <td>Renders grouped bar charts comparing Accuracy, Precision, Recall, and F1 Score
+                                        across models.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_get_summary"
                                     data-search="multimodelclassifier get_summary models save_prefix show_plot summary automated pipeline">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_get_summary"><code>get_summary()</code></button></td>
-                                    <td><code>models: list = None, save_prefix: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_get_summary"><code>get_summary()</code></button></td>
+                                    <td><code>models: list = None, save_prefix: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Runs full reporting and plotting suite in one call with automated file exporting.</td>
+                                    <td>Runs full reporting and plotting suite in one call with automated file
+                                        exporting.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="clf_save_report"
                                     data-search="multimodelclassifier save_report df_or_filepath filepath export csv xlsx instance method">
                                     <td><code>MultiModelClassifier</code></td>
-                                    <td><button class="api-method-link" data-api-key="clf_save_report"><code>save_report()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="clf_save_report"><code>save_report()</code></button></td>
                                     <td><code>df_or_filepath: DataFrame|str = None, filepath: str = None</code></td>
                                     <td><code>None</code></td>
                                     <td>Saves the classifier's latest tabular performance report to disk.</td>
@@ -903,7 +1052,9 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_LinearRegression_model"
                                     data-search="multimodelregressor linearregression_model linear regression ols continuous">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_LinearRegression_model"><code>LinearRegression_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_LinearRegression_model"><code>LinearRegression_model()</code></button>
+                                    </td>
                                     <td><code>**kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains an Ordinary Least Squares Linear Regression model.</td>
@@ -911,7 +1062,8 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_Lasso_model"
                                     data-search="multimodelregressor lasso_model alpha random_state l1 regularization regression">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_Lasso_model"><code>Lasso_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_Lasso_model"><code>Lasso_model()</code></button></td>
                                     <td><code>alpha: float = 0.1, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Lasso (L1 Regularized) Regression model.</td>
@@ -919,7 +1071,8 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_Ridge_model"
                                     data-search="multimodelregressor ridge_model alpha random_state l2 regularization regression">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_Ridge_model"><code>Ridge_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_Ridge_model"><code>Ridge_model()</code></button></td>
                                     <td><code>alpha: float = 1.0, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Ridge (L2 Regularized) Regression model.</td>
@@ -927,7 +1080,8 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_SVR_model"
                                     data-search="multimodelregressor svr_model kernel support vector regressor regression">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_SVR_model"><code>SVR_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_SVR_model"><code>SVR_model()</code></button></td>
                                     <td><code>kernel: str = 'rbf', **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Support Vector Regressor (SVR).</td>
@@ -935,7 +1089,9 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_DecisionTree_model"
                                     data-search="multimodelregressor decisiontree_model random_state decision tree regression">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_DecisionTree_model"><code>DecisionTree_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_DecisionTree_model"><code>DecisionTree_model()</code></button>
+                                    </td>
                                     <td><code>random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Decision Tree Regressor.</td>
@@ -943,7 +1099,9 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_RandomForest_model"
                                     data-search="multimodelregressor randomforest_model n_estimators random_state random forest regressor">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_RandomForest_model"><code>RandomForest_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_RandomForest_model"><code>RandomForest_model()</code></button>
+                                    </td>
                                     <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains an ensemble Random Forest Regressor across parallel cores.</td>
@@ -951,7 +1109,9 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_GradientBoosting_model"
                                     data-search="multimodelregressor gradientboosting_model n_estimators learning_rate gradient boosting regressor">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_GradientBoosting_model"><code>GradientBoosting_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_GradientBoosting_model"><code>GradientBoosting_model()</code></button>
+                                    </td>
                                     <td><code>n_estimators: int = 100, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains a Gradient Boosting Regressor.</td>
@@ -959,7 +1119,9 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_AdaBoost_model"
                                     data-search="multimodelregressor adaboost_model n_estimators random_state adaboost regressor">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_AdaBoost_model"><code>AdaBoost_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_AdaBoost_model"><code>AdaBoost_model()</code></button>
+                                    </td>
                                     <td><code>n_estimators: int = 50, random_state: int = None, **kwargs</code></td>
                                     <td><code>tuple</code></td>
                                     <td>Trains an AdaBoost Regressor.</td>
@@ -969,55 +1131,76 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_run_all_models"
                                     data-search="multimodelregressor run_all_models custom_models random_state fit baseline regressors">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_run_all_models"><code>run_all_models()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_run_all_models"><code>run_all_models()</code></button>
+                                    </td>
                                     <td><code>custom_models: dict = None, random_state: int = None</code></td>
                                     <td><code>list[tuple]</code></td>
-                                    <td>Fits all 7 built-in regressors plus optional custom estimators. Caches results in regressor.models_.</td>
+                                    <td>Fits all 7 built-in regressors plus optional custom estimators. Caches results
+                                        in regressor.models_.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="reg_evaluate_model"
                                     data-search="multimodelregressor evaluate_model model x_test y_true single regressor evaluation mae mse rmse r2">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_evaluate_model"><code>evaluate_model()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_evaluate_model"><code>evaluate_model()</code></button>
+                                    </td>
                                     <td><code>model: estimator, X_test: array = None, y_true: array = None</code></td>
                                     <td><code>tuple</code></td>
-                                    <td>Evaluates a single fitted regressor model on test set data (MAE, MSE, RMSE, R2, y_pred).</td>
+                                    <td>Evaluates a single fitted regressor model on test set data (MAE, MSE, RMSE, R2,
+                                        y_pred).</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="reg_show_tabular_report"
                                     data-search="multimodelregressor show_tabular_report models return_df dataframe r2 mae mse rmse leaderboard">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_show_tabular_report"><code>show_tabular_report()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_show_tabular_report"><code>show_tabular_report()</code></button>
+                                    </td>
                                     <td><code>models: list = None, return_df: bool = False</code></td>
                                     <td><code>pd.DataFrame | None</code></td>
-                                    <td>Displays formatted leaderboard sorted descending by R² Score (includes MAE, MSE, RMSE).</td>
+                                    <td>Displays formatted leaderboard sorted descending by R² Score (includes MAE, MSE,
+                                        RMSE).</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="reg_plot_true_vs_predicted"
                                     data-search="multimodelregressor plot_true_vs_predicted models save_path show_plot scatter identity line true vs predicted">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_plot_true_vs_predicted"><code>plot_true_vs_predicted()</code></button></td>
-                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_plot_true_vs_predicted"><code>plot_true_vs_predicted()</code></button>
+                                    </td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Generates a grid scatter plot of True vs. Predicted target values with identity (y = x) reference lines.</td>
+                                    <td>Generates a grid scatter plot of True vs. Predicted target values with identity
+                                        (y = x) reference lines.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="reg_plot_comparison"
                                     data-search="multimodelregressor plot_comparison models save_path show_plot bar chart r2 score regressor comparison">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_plot_comparison"><code>plot_comparison()</code></button></td>
-                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_plot_comparison"><code>plot_comparison()</code></button>
+                                    </td>
+                                    <td><code>models: list = None, save_path: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Renders a comparative bar chart of R² Scores across all evaluated regressor models.</td>
+                                    <td>Renders a comparative bar chart of R² Scores across all evaluated regressor
+                                        models.</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="reg_get_summary"
                                     data-search="multimodelregressor get_summary models save_prefix show_plot summary automated regressor pipeline">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_get_summary"><code>get_summary()</code></button></td>
-                                    <td><code>models: list = None, save_prefix: str = None, show_plot: bool = True</code></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_get_summary"><code>get_summary()</code></button></td>
+                                    <td><code>models: list = None, save_prefix: str = None, show_plot: bool = True</code>
+                                    </td>
                                     <td><code>None</code></td>
-                                    <td>Runs full evaluation and visualization pipeline for regressors (prints report, plots scatter & bar charts).</td>
+                                    <td>Runs full evaluation and visualization pipeline for regressors (prints report,
+                                        plots scatter & bar charts).</td>
                                 </tr>
                                 <tr class="api-row" data-api-key="reg_save_report"
                                     data-search="multimodelregressor save_report df_or_filepath filepath export csv xlsx instance method regressor">
                                     <td><code>MultiModelRegressor</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_save_report"><code>save_report()</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_save_report"><code>save_report()</code></button></td>
                                     <td><code>df_or_filepath: DataFrame|str = None, filepath: str = None</code></td>
                                     <td><code>None</code></td>
                                     <td>Saves the regressor's latest tabular performance report to disk.</td>
@@ -1027,10 +1210,12 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                 <tr class="api-row" data-api-key="reg_alias_class"
                                     data-search="multimodelregressor multimodelregressior alias class backward compatibility">
                                     <td><code>MultiModelRegressior</code></td>
-                                    <td><button class="api-method-link" data-api-key="reg_alias_class"><code>Alias Class</code></button></td>
+                                    <td><button class="api-method-link"
+                                            data-api-key="reg_alias_class"><code>Alias Class</code></button></td>
                                     <td><code>Same as MultiModelRegressor</code></td>
                                     <td><code>Class</code></td>
-                                    <td>Backward-compatibility class alias mapping directly to <code>MultiModelRegressor</code>.</td>
+                                    <td>Backward-compatibility class alias mapping directly to
+                                        <code>MultiModelRegressor</code>.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1042,7 +1227,8 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
             <section id="visualizations" class="section">
                 <div class="section-header">
                     <h2 class="section-title">Diagnostic Visualizations Gallery</h2>
-                    <p class="section-desc">Generate publication-quality seaborn and matplotlib charts with zero boilerplate plotting code.</p>
+                    <p class="section-desc">Generate publication-quality seaborn and matplotlib charts with zero
+                        boilerplate plotting code.</p>
                 </div>
 
                 <div class="gallery-grid">
@@ -1063,20 +1249,24 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                         stroke="var(--glass-border)" stroke-width="1.5" />
 
                                     <!-- Y-Axis Labels (Actual Class) -->
-                                    <text x="32" y="55" fill="var(--text-main)" font-size="11" font-family="Fira Code, monospace"
-                                        font-weight="600" text-anchor="end">0</text>
-                                    <text x="32" y="127" fill="var(--text-main)" font-size="11" font-family="Fira Code, monospace"
-                                        font-weight="600" text-anchor="end">1</text>
-                                    <text x="14" y="88" fill="var(--text-muted)" font-size="10" font-family="Inter, sans-serif"
-                                        font-weight="600" text-anchor="middle" transform="rotate(-90 14 88)">Actual Class</text>
+                                    <text x="32" y="55" fill="var(--text-main)" font-size="11"
+                                        font-family="Fira Code, monospace" font-weight="600" text-anchor="end">0</text>
+                                    <text x="32" y="127" fill="var(--text-main)" font-size="11"
+                                        font-family="Fira Code, monospace" font-weight="600" text-anchor="end">1</text>
+                                    <text x="14" y="88" fill="var(--text-muted)" font-size="10"
+                                        font-family="Inter, sans-serif" font-weight="600" text-anchor="middle"
+                                        transform="rotate(-90 14 88)">Actual Class</text>
 
                                     <!-- X-Axis Labels (Predicted Class) -->
-                                    <text x="90" y="182" fill="var(--text-main)" font-size="11" font-family="Fira Code, monospace"
-                                        font-weight="600" text-anchor="middle">0</text>
-                                    <text x="182" y="182" fill="var(--text-main)" font-size="11" font-family="Fira Code, monospace"
-                                        font-weight="600" text-anchor="middle">1</text>
-                                    <text x="136" y="199" fill="var(--text-muted)" font-size="10" font-family="Inter, sans-serif"
-                                        font-weight="600" text-anchor="middle">Predicted Class</text>
+                                    <text x="90" y="182" fill="var(--text-main)" font-size="11"
+                                        font-family="Fira Code, monospace" font-weight="600"
+                                        text-anchor="middle">0</text>
+                                    <text x="182" y="182" fill="var(--text-main)" font-size="11"
+                                        font-family="Fira Code, monospace" font-weight="600"
+                                        text-anchor="middle">1</text>
+                                    <text x="136" y="199" fill="var(--text-muted)" font-size="10"
+                                        font-family="Inter, sans-serif" font-weight="600" text-anchor="middle">Predicted
+                                        Class</text>
 
                                     <!-- Heatmap Cell 1: True Neg (Cyan) -->
                                     <rect x="49" y="20" width="82" height="66" rx="6" fill="#06b6d4" opacity="0.95" />
@@ -1088,38 +1278,45 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                     <!-- Heatmap Cell 2: False Pos (Rose) -->
                                     <rect x="141" y="20" width="82" height="66" rx="6" fill="#f43f5e" opacity="0.18"
                                         stroke="#f43f5e" stroke-width="1.5" />
-                                    <text x="182" y="50" fill="var(--text-main)" font-size="16" font-family="Fira Code, monospace"
-                                        font-weight="800" text-anchor="middle">5</text>
-                                    <text x="182" y="67" fill="var(--text-muted)" font-size="9" font-family="Inter, sans-serif"
-                                        text-anchor="middle">False Pos</text>
+                                    <text x="182" y="50" fill="var(--text-main)" font-size="16"
+                                        font-family="Fira Code, monospace" font-weight="800"
+                                        text-anchor="middle">5</text>
+                                    <text x="182" y="67" fill="var(--text-muted)" font-size="9"
+                                        font-family="Inter, sans-serif" text-anchor="middle">False Pos</text>
 
                                     <!-- Heatmap Cell 3: False Neg (Amber) -->
                                     <rect x="49" y="93" width="82" height="65" rx="6" fill="#f59e0b" opacity="0.18"
                                         stroke="#f59e0b" stroke-width="1.5" />
-                                    <text x="90" y="123" fill="var(--text-main)" font-size="16" font-family="Fira Code, monospace"
-                                        font-weight="800" text-anchor="middle">8</text>
-                                    <text x="90" y="140" fill="var(--text-muted)" font-size="9" font-family="Inter, sans-serif"
-                                        text-anchor="middle">False Neg</text>
+                                    <text x="90" y="123" fill="var(--text-main)" font-size="16"
+                                        font-family="Fira Code, monospace" font-weight="800"
+                                        text-anchor="middle">8</text>
+                                    <text x="90" y="140" fill="var(--text-muted)" font-size="9"
+                                        font-family="Inter, sans-serif" text-anchor="middle">False Neg</text>
 
                                     <!-- Heatmap Cell 4: True Pos (Emerald) -->
                                     <rect x="141" y="93" width="82" height="65" rx="6" fill="#10b981" opacity="0.95" />
-                                    <text x="182" y="123" fill="#ffffff" font-size="16" font-family="Fira Code, monospace"
-                                        font-weight="800" text-anchor="middle">165</text>
+                                    <text x="182" y="123" fill="#ffffff" font-size="16"
+                                        font-family="Fira Code, monospace" font-weight="800"
+                                        text-anchor="middle">165</text>
                                     <text x="182" y="140" fill="#ffffff" font-size="9" font-family="Inter, sans-serif"
                                         opacity="0.9" text-anchor="middle">True Pos</text>
 
                                     <!-- Colorbar Legend -->
                                     <rect x="246" y="20" width="12" height="138" rx="4" fill="url(#cbar-grad)"
                                         stroke="var(--glass-border)" stroke-width="1" />
-                                    <text x="265" y="26" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace">170</text>
-                                    <text x="265" y="92" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace">85</text>
-                                    <text x="265" y="157" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace">0</text>
+                                    <text x="265" y="26" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace">170</text>
+                                    <text x="265" y="92" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace">85</text>
+                                    <text x="265" y="157" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace">0</text>
                                 </svg>
                             </div>
                         </div>
                         <div class="gallery-caption">
                             <div class="gallery-title">Colorful Confusion Matrices</div>
-                            <p class="gallery-desc">Automatically decodes label-encoded integers back to original string class names for intuitive error diagnosis.</p>
+                            <p class="gallery-desc">Automatically decodes label-encoded integers back to original string
+                                class names for intuitive error diagnosis.</p>
                         </div>
                     </div>
 
@@ -1139,47 +1336,71 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                                         stroke="var(--glass-border)" stroke-width="1.5" />
 
                                     <!-- Grid lines -->
-                                    <line x1="42" y1="49.5" x2="282" y2="49.5" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="42" y1="87" x2="282" y2="87" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="42" y1="124.5" x2="282" y2="124.5" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="122" y1="12" x2="122" y2="162" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="202" y1="12" x2="202" y2="162" stroke="var(--glass-border)" stroke-dasharray="3 3" />
+                                    <line x1="42" y1="49.5" x2="282" y2="49.5" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="42" y1="87" x2="282" y2="87" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="42" y1="124.5" x2="282" y2="124.5" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="122" y1="12" x2="122" y2="162" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="202" y1="12" x2="202" y2="162" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
 
                                     <!-- Axes Ticks -->
-                                    <text x="34" y="165" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="end">0.0</text>
-                                    <text x="34" y="90" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="end">0.5</text>
-                                    <text x="34" y="17" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="end">1.0</text>
-                                    <text x="42" y="178" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="middle">0.0</text>
-                                    <text x="162" y="178" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="middle">0.5</text>
-                                    <text x="282" y="178" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="middle">1.0</text>
-                                    <text x="162" y="198" fill="var(--text-main)" font-size="10" font-family="Inter, sans-serif" font-weight="600" text-anchor="middle">False Positive Rate (FPR)</text>
-                                    <text x="14" y="87" fill="var(--text-main)" font-size="10" font-family="Inter, sans-serif" font-weight="600" text-anchor="middle" transform="rotate(-90 14 87)">True Positive Rate</text>
+                                    <text x="34" y="165" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="end">0.0</text>
+                                    <text x="34" y="90" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="end">0.5</text>
+                                    <text x="34" y="17" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="end">1.0</text>
+                                    <text x="42" y="178" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="middle">0.0</text>
+                                    <text x="162" y="178" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="middle">0.5</text>
+                                    <text x="282" y="178" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="middle">1.0</text>
+                                    <text x="162" y="198" fill="var(--text-main)" font-size="10"
+                                        font-family="Inter, sans-serif" font-weight="600" text-anchor="middle">False
+                                        Positive Rate (FPR)</text>
+                                    <text x="14" y="87" fill="var(--text-main)" font-size="10"
+                                        font-family="Inter, sans-serif" font-weight="600" text-anchor="middle"
+                                        transform="rotate(-90 14 87)">True Positive Rate</text>
 
                                     <!-- Shaded AUC Area -->
                                     <path d="M 42 162 Q 62 20 282 12 L 282 162 Z" fill="url(#roc-area-grad)" />
 
                                     <!-- Chance Diagonal Line -->
-                                    <line x1="42" y1="162" x2="282" y2="12" stroke="var(--text-dim)" stroke-dasharray="4 4" stroke-width="1.5" />
+                                    <line x1="42" y1="162" x2="282" y2="12" stroke="var(--text-dim)"
+                                        stroke-dasharray="4 4" stroke-width="1.5" />
 
                                     <!-- Model ROC Curves -->
-                                    <path d="M 42 162 Q 58 16 282 12" fill="none" stroke="#06b6d4" stroke-width="3" stroke-linecap="round" />
-                                    <path d="M 42 162 Q 82 28 282 12" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
-                                    <path d="M 42 162 Q 112 45 282 12" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M 42 162 Q 58 16 282 12" fill="none" stroke="#06b6d4" stroke-width="3"
+                                        stroke-linecap="round" />
+                                    <path d="M 42 162 Q 82 28 282 12" fill="none" stroke="#10b981" stroke-width="2.5"
+                                        stroke-linecap="round" />
+                                    <path d="M 42 162 Q 112 45 282 12" fill="none" stroke="#8b5cf6" stroke-width="2"
+                                        stroke-linecap="round" />
 
                                     <!-- Legend Box -->
-                                    <rect x="168" y="92" width="106" height="63" rx="6" fill="var(--bg-surface)" stroke="var(--glass-border)" stroke-width="1.5" />
+                                    <rect x="168" y="92" width="106" height="63" rx="6" fill="var(--bg-surface)"
+                                        stroke="var(--glass-border)" stroke-width="1.5" />
                                     <circle cx="180" cy="106" r="4" fill="#06b6d4" />
-                                    <text x="190" y="109" fill="var(--text-main)" font-size="10" font-family="Fira Code, monospace" font-weight="700">RF (0.98)</text>
+                                    <text x="190" y="109" fill="var(--text-main)" font-size="10"
+                                        font-family="Fira Code, monospace" font-weight="700">RF (0.98)</text>
                                     <circle cx="180" cy="123" r="4" fill="#10b981" />
-                                    <text x="190" y="126" fill="var(--text-main)" font-size="10" font-family="Fira Code, monospace" font-weight="700">GB (0.96)</text>
+                                    <text x="190" y="126" fill="var(--text-main)" font-size="10"
+                                        font-family="Fira Code, monospace" font-weight="700">GB (0.96)</text>
                                     <circle cx="180" cy="140" r="4" fill="#8b5cf6" />
-                                    <text x="190" y="143" fill="var(--text-main)" font-size="10" font-family="Fira Code, monospace" font-weight="700">XGB (0.94)</text>
+                                    <text x="190" y="143" fill="var(--text-main)" font-size="10"
+                                        font-family="Fira Code, monospace" font-weight="700">XGB (0.94)</text>
                                 </svg>
                             </div>
                         </div>
                         <div class="gallery-caption">
                             <div class="gallery-title">Multi-Model ROC Curves</div>
-                            <p class="gallery-desc">Plots combined ROC curves with exact AUC scores. Supports binary classification and One-vs-Rest multiclass macro AUC.</p>
+                            <p class="gallery-desc">Plots combined ROC curves with exact AUC scores. Supports binary
+                                classification and One-vs-Rest multiclass macro AUC.</p>
                         </div>
                     </div>
 
@@ -1189,65 +1410,102 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                             <div class="chart-mock">
                                 <svg viewBox="0 0 300 210" width="100%" height="100%">
                                     <!-- Chart Background Frame -->
-                                    <rect x="42" y="12" width="240" height="150" rx="8" fill="var(--code-bg)" stroke="var(--glass-border)" stroke-width="1.5" />
+                                    <rect x="42" y="12" width="240" height="150" rx="8" fill="var(--code-bg)"
+                                        stroke="var(--glass-border)" stroke-width="1.5" />
 
                                     <!-- Grid lines -->
-                                    <line x1="42" y1="49.5" x2="282" y2="49.5" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="42" y1="87" x2="282" y2="87" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="42" y1="124.5" x2="282" y2="124.5" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="122" y1="12" x2="122" y2="162" stroke="var(--glass-border)" stroke-dasharray="3 3" />
-                                    <line x1="202" y1="12" x2="202" y2="162" stroke="var(--glass-border)" stroke-dasharray="3 3" />
+                                    <line x1="42" y1="49.5" x2="282" y2="49.5" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="42" y1="87" x2="282" y2="87" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="42" y1="124.5" x2="282" y2="124.5" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="122" y1="12" x2="122" y2="162" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
+                                    <line x1="202" y1="12" x2="202" y2="162" stroke="var(--glass-border)"
+                                        stroke-dasharray="3 3" />
 
                                     <!-- Axes Ticks -->
-                                    <text x="34" y="165" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="end">0</text>
-                                    <text x="34" y="90" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="end">50</text>
-                                    <text x="34" y="17" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="end">100</text>
-                                    <text x="42" y="178" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="middle">0</text>
-                                    <text x="162" y="178" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="middle">50</text>
-                                    <text x="282" y="178" fill="var(--text-muted)" font-size="9" font-family="Fira Code, monospace" text-anchor="middle">100</text>
-                                    <text x="162" y="198" fill="var(--text-main)" font-size="10" font-family="Inter, sans-serif" font-weight="600" text-anchor="middle">Actual Target (y_true)</text>
-                                    <text x="14" y="87" fill="var(--text-main)" font-size="10" font-family="Inter, sans-serif" font-weight="600" text-anchor="middle" transform="rotate(-90 14 87)">Predicted (y_pred)</text>
+                                    <text x="34" y="165" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="end">0</text>
+                                    <text x="34" y="90" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="end">50</text>
+                                    <text x="34" y="17" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="end">100</text>
+                                    <text x="42" y="178" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="middle">0</text>
+                                    <text x="162" y="178" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="middle">50</text>
+                                    <text x="282" y="178" fill="var(--text-muted)" font-size="9"
+                                        font-family="Fira Code, monospace" text-anchor="middle">100</text>
+                                    <text x="162" y="198" fill="var(--text-main)" font-size="10"
+                                        font-family="Inter, sans-serif" font-weight="600" text-anchor="middle">Actual
+                                        Target (y_true)</text>
+                                    <text x="14" y="87" fill="var(--text-main)" font-size="10"
+                                        font-family="Inter, sans-serif" font-weight="600" text-anchor="middle"
+                                        transform="rotate(-90 14 87)">Predicted (y_pred)</text>
 
                                     <!-- 95% Confidence Band / Residual Corridor -->
                                     <polygon points="42,145 282,5 282,25 42,172" fill="#06b6d4" opacity="0.1" />
 
                                     <!-- Ideal Identity Line (y = x) -->
-                                    <line x1="42" y1="162" x2="282" y2="12" stroke="#f43f5e" stroke-dasharray="6 4" stroke-width="2" />
+                                    <line x1="42" y1="162" x2="282" y2="12" stroke="#f43f5e" stroke-dasharray="6 4"
+                                        stroke-width="2" />
 
                                     <!-- Scatter Points Model A (Ridge - Cyan) -->
-                                    <circle cx="68" cy="144" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="95" cy="128" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="125" cy="108" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="155" cy="88" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="185" cy="69" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="225" cy="42" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="255" cy="24" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)" stroke-width="1.5" />
+                                    <circle cx="68" cy="144" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="95" cy="128" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="125" cy="108" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="155" cy="88" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="185" cy="69" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="225" cy="42" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="255" cy="24" r="4.5" fill="#06b6d4" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
 
                                     <!-- Scatter Points Model B (Gradient Boost - Emerald) -->
-                                    <circle cx="78" cy="136" r="4" fill="#10b981" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="110" cy="116" r="4" fill="#10b981" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="140" cy="96" r="4" fill="#10b981" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="170" cy="76" r="4" fill="#10b981" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="210" cy="50" r="4" fill="#10b981" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <circle cx="245" cy="30" r="4" fill="#10b981" stroke="var(--bg-surface)" stroke-width="1.5" />
+                                    <circle cx="78" cy="136" r="4" fill="#10b981" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="110" cy="116" r="4" fill="#10b981" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="140" cy="96" r="4" fill="#10b981" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="170" cy="76" r="4" fill="#10b981" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="210" cy="50" r="4" fill="#10b981" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <circle cx="245" cy="30" r="4" fill="#10b981" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
 
                                     <!-- Outlier Point & Residual Annotation -->
-                                    <circle cx="205" cy="108" r="4.5" fill="#f43f5e" stroke="var(--bg-surface)" stroke-width="1.5" />
-                                    <line x1="205" y1="60" x2="205" y2="108" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="2 2" />
-                                    <text x="213" y="87" fill="#f43f5e" font-size="9" font-family="Fira Code, monospace" font-weight="700">Δ Error</text>
+                                    <circle cx="205" cy="108" r="4.5" fill="#f43f5e" stroke="var(--bg-surface)"
+                                        stroke-width="1.5" />
+                                    <line x1="205" y1="60" x2="205" y2="108" stroke="#f43f5e" stroke-width="1.5"
+                                        stroke-dasharray="2 2" />
+                                    <text x="213" y="87" fill="#f43f5e" font-size="9" font-family="Fira Code, monospace"
+                                        font-weight="700">Δ Error</text>
 
                                     <!-- Legend Box -->
-                                    <rect x="52" y="20" width="125" height="52" rx="6" fill="var(--bg-surface)" stroke="var(--glass-border)" stroke-width="1.5" />
+                                    <rect x="52" y="20" width="125" height="52" rx="6" fill="var(--bg-surface)"
+                                        stroke="var(--glass-border)" stroke-width="1.5" />
                                     <circle cx="64" cy="35" r="4" fill="#06b6d4" />
-                                    <text x="74" y="38" fill="var(--text-main)" font-size="10" font-family="Fira Code, monospace" font-weight="700">Ridge (R²=0.92)</text>
+                                    <text x="74" y="38" fill="var(--text-main)" font-size="10"
+                                        font-family="Fira Code, monospace" font-weight="700">Ridge (R²=0.92)</text>
                                     <circle cx="64" cy="56" r="4" fill="#10b981" />
-                                    <text x="74" y="59" fill="var(--text-main)" font-size="10" font-family="Fira Code, monospace" font-weight="700">XGB (R²=0.96)</text>
+                                    <text x="74" y="59" fill="var(--text-main)" font-size="10"
+                                        font-family="Fira Code, monospace" font-weight="700">XGB (R²=0.96)</text>
                                 </svg>
                             </div>
                         </div>
                         <div class="gallery-caption">
                             <div class="gallery-title">True vs. Predicted Scatters</div>
-                            <p class="gallery-desc">Visualizes regression residuals against the ideal identity line (<code>y = x</code>) to spot non-linear bias and variance.</p>
+                            <p class="gallery-desc">Visualizes regression residuals against the ideal identity line
+                                (<code>y = x</code>) to spot non-linear bias and variance.</p>
                         </div>
                     </div>
                 </div>
@@ -1329,7 +1587,8 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                 </div>
                 <button class="api-modal-close" id="api-modal-close" aria-label="Close modal">&times;</button>
             </div>
-            <p class="api-modal-desc" id="api-modal-desc">Counts total sentences using punctuation delimiters (. ! ?).</p>
+            <p class="api-modal-desc" id="api-modal-desc">Counts total sentences using punctuation delimiters (. ! ?).
+            </p>
             <div class="api-modal-code-box">
                 <div class="api-modal-code-header">
                     <div class="code-controls">
@@ -1339,7 +1598,8 @@ clf.<span class="fn">plot_comparison</span>(results, save_path=<span class="str"
                         <span class="code-lang">PYTHON</span>
                     </div>
                     <button class="code-modal-copy-btn" id="api-modal-copy-btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
