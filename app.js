@@ -1,1542 +1,464 @@
-/**
- * Multimodel Analysis Package — Enterprise Documentation Application Logic
- * Author: Uditya Narayan Tiwari (udityamerit)
- * Version: 1.1.0 (Enhanced with Dataset Profiles & Real-time Formula Playground)
- */
+/* multimodel-analysis documentation: behaviour.
+   No dependencies. Data: window.API_DATA (assets/js/api-data.js) and assets/data/results.json. */
+(function () {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-    initThemeToggle();
-    initMobileMenu();
-    initScrollSpy();
-    initClipboardCopy();
-    initCodeTabs();
-    initApiSearch();
-    initSimulator();
-    initFormulaPlayground();
-    initApiModal();
-});
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ==========================================================================
-   Dataset Profiles (Data Sources & Specifications for Simulation)
-   ========================================================================== */
-const DATASET_PROFILES = {
-    classification: [
-        {
-            id: 'churn',
-            name: 'Customer Churn Prediction',
-            unit: 'Binary Label ("Yes" / "No")',
-            desc: 'Predicting customer attrition in telecom/SaaS. Feature matrix (X) includes customer tenure, monthly billing, and support ticket frequency. Target variable (y) is label-encoded automatically. Evaluated under realistic 80/20 class distribution.',
-            accBase: 0.948,
-            aucBase: 0.984
-        },
-        {
-            id: 'iris',
-            name: 'Botanical Species Taxonomic ID',
-            unit: 'Categorical (3 Balanced Classes)',
-            desc: 'Multiclass classification across Iris setosa, versicolor, and virginica using petal and sepal continuous morphological dimensions. Evaluated using One-vs-Rest (OvR) macro ROC-AUC calculation.',
-            accBase: 0.975,
-            aucBase: 0.992
-        },
-        {
-            id: 'fraud',
-            name: 'Financial Transaction Fraud Detection',
-            unit: 'Binary Label (Fraud / Legitimate)',
-            desc: 'High-dimensional anonymized banking transaction logs featuring extreme 99.2% / 0.8% class imbalance. Highlights the necessity of weighted Precision, Recall, and F1 scoring over raw accuracy.',
-            accBase: 0.991,
-            aucBase: 0.965
-        }
-    ],
-    regression: [
-        {
-            id: 'weather',
-            name: 'Atmospheric Temperature Forecasting',
-            unit: 'Temperature (°C)',
-            prefix: '',
-            suffix: ' °C',
-            desc: 'Predicting continuous surface air temperature (°C) 24 hours ahead using barometric pressure, relative humidity, and wind vector time-series features. Notice: All error metrics (MAE, RMSE) are expressed in unit °C.',
-            r2Base: 0.945,
-            maeBase: 0.85,
-            mseBase: 1.42,
-            rmseBase: 1.19
-        },
-        {
-            id: 'demand',
-            name: 'Supply Chain Warehouse Demand',
-            unit: 'Unit Volume (Item Count)',
-            prefix: '',
-            suffix: ' units',
-            desc: 'Forecasting daily SKU order volume across regional fulfillment centers. Target represents physical inventory count. Error metrics reflect absolute unit discrepancies without monetary units.',
-            r2Base: 0.889,
-            maeBase: 124.3,
-            mseBase: 28900,
-            rmseBase: 170.0
-        },
-        {
-            id: 'housing',
-            name: 'Real Estate Property Valuation',
-            unit: 'Currency ($ USD)',
-            prefix: '$',
-            suffix: '',
-            desc: 'Estimating continuous residential real estate sale prices using square footage, neighborhood indices, and construction year. Because target variable y is US Dollars, MAE and RMSE represent financial currency errors ($).',
-            r2Base: 0.912,
-            maeBase: 1420.5,
-            mseBase: 3241000,
-            rmseBase: 1800.2
-        }
-    ]
-};
+  /* ------------------------------------------------------------------ toast */
+  var toastEl = $('#toast'), toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.hidden = false;
+    toastEl.style.animation = 'none'; void toastEl.offsetWidth; toastEl.style.animation = '';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 1800);
+  }
 
-/* ==========================================================================
-   1. Theme Toggler (Dark / Light Mode)
-   ========================================================================== */
-function initThemeToggle() {
-    const toggleBtn = document.getElementById('theme-toggle-btn');
-    const themeIcon = document.getElementById('theme-icon');
-    const htmlEl = document.documentElement;
-    
-    if (!toggleBtn || !themeIcon) return;
-
-    const savedTheme = localStorage.getItem('multimodel_theme') || 'light';
-    setTheme(savedTheme);
-
-    toggleBtn.addEventListener('click', () => {
-        const currentTheme = htmlEl.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        setTheme(newTheme);
-    });
-
-    function setTheme(theme) {
-        htmlEl.setAttribute('data-theme', theme);
-        localStorage.setItem('multimodel_theme', theme);
-        themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+  /* -------------------------------------------------------------- clipboard */
+  function copyText(text, onDone) {
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      onDone(ok);
     }
-}
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { onDone(true); }, fallback);
+    } else { fallback(); }
+  }
+  function flashCopied(btn, ok) {
+    var old = btn.textContent;
+    btn.textContent = ok ? 'Copied' : 'Copy failed';
+    btn.classList.toggle('done', ok);
+    toast(ok ? 'Copied to clipboard' : 'Could not copy, select the text manually');
+    setTimeout(function () { btn.textContent = old; btn.classList.remove('done'); }, 1500);
+  }
 
-/* ==========================================================================
-   2. Mobile Sidebar Toggle
-   ========================================================================== */
-function initMobileMenu() {
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const sidebar = document.getElementById('sidebar');
-    
-    if (!menuBtn || !sidebar) return;
-
-    const navLinks = sidebar.querySelectorAll('.sidebar-link');
-
-    menuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sidebar.classList.toggle('open');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 1024 && !sidebar.contains(e.target) && e.target !== menuBtn) {
-            sidebar.classList.remove('open');
-        }
-    });
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (window.innerWidth <= 1024) {
-                sidebar.classList.remove('open');
-            }
-        });
-    });
-}
-
-/* ==========================================================================
-   3. Scroll-Spy Navigation
-   ========================================================================== */
-function initScrollSpy() {
-    const sections = document.querySelectorAll('main section[id]');
-    const navLinks = document.querySelectorAll('.sidebar-nav .sidebar-link');
-
-    if (!sections.length || !navLinks.length) return;
-
-    window.addEventListener('scroll', () => {
-        let currentSectionId = '';
-        const scrollPosition = window.scrollY + 120;
-
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                currentSectionId = section.getAttribute('id');
-            }
-        });
-
-        if (currentSectionId) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${currentSectionId}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
-    }, { passive: true });
-}
-
-/* ==========================================================================
-   4. Copy to Clipboard Utility
-   ========================================================================== */
-function initClipboardCopy() {
-    const copyInstallBtn = document.getElementById('copy-install-btn');
-    if (copyInstallBtn) {
-        copyInstallBtn.addEventListener('click', () => {
-            const textToCopy = copyInstallBtn.getAttribute('data-clipboard');
-            copyToClipboard(textToCopy, copyInstallBtn, 'Copy', 'Copied! ✓');
-        });
+  /* ------------------------------------------------------ syntax highlighting */
+  var PY_KW = /^(?:and|as|assert|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|None|nonlocal|not|or|pass|raise|return|try|True|False|while|with|yield)$/;
+  var TOKEN = /(#[^\n]*)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(\b\d+(?:\.\d+)?(?:e-?\d+)?\b)|(\b[A-Za-z_]\w*\b)(\s*\()?/g;
+  function highlight(code, lang) {
+    var out = '', last = 0, m;
+    var py = lang === 'python';
+    TOKEN.lastIndex = 0;
+    while ((m = TOKEN.exec(code))) {
+      out += esc(code.slice(last, m.index));
+      if (m[1]) out += '<span class="tk-com">' + esc(m[1]) + '</span>';
+      else if (m[2]) out += '<span class="tk-str">' + esc(m[2]) + '</span>';
+      else if (m[3]) out += py ? '<span class="tk-num">' + m[3] + '</span>' : m[3];
+      else if (m[4]) {
+        if (py && PY_KW.test(m[4])) out += '<span class="tk-kw">' + m[4] + '</span>' + esc(m[5] || '');
+        else if (py && m[5]) out += '<span class="tk-fn">' + m[4] + '</span>' + esc(m[5]);
+        else out += esc(m[4]) + esc(m[5] || '');
+      }
+      last = TOKEN.lastIndex;
     }
+    return out + esc(code.slice(last));
+  }
+  function decorateCode(block) {
+    if (block.dataset.ready) return;
+    var pre = $('pre', block), codeEl = $('code', pre);
+    var raw = codeEl.textContent.replace(/^\n+|\s+$/g, '');
+    var lang = block.dataset.lang || 'text';
+    codeEl.innerHTML = highlight(raw, lang);
+    var head = document.createElement('div');
+    head.className = 'code-head';
+    var label = block.dataset.file || ({ python: 'Python', bash: 'Shell', powershell: 'PowerShell' }[lang] || lang);
+    head.innerHTML = '<span class="code-label">' + esc(label) + '</span><button type="button" class="copy-btn" aria-label="Copy code">Copy</button>';
+    block.insertBefore(head, pre);
+    $('.copy-btn', head).addEventListener('click', function (e) { var b = e.currentTarget; copyText(raw, function (ok) { flashCopied(b, ok); }); });
+    block.dataset.ready = '1';
+  }
+  $$('.code').forEach(decorateCode);
 
-    const codeCopyBtn = document.getElementById('code-copy-btn');
-    if (codeCopyBtn) {
-        codeCopyBtn.addEventListener('click', () => {
-            const activePane = document.querySelector('.code-pane.active');
-            if (activePane) {
-                const textToCopy = activePane.innerText || activePane.textContent;
-                copyToClipboard(textToCopy, codeCopyBtn, 'Copy Code', 'Copied! ✓');
-            }
-        });
-    }
-
-    function copyToClipboard(text, buttonEl, originalLabel, successLabel) {
-        navigator.clipboard.writeText(text).then(() => {
-            const span = buttonEl.querySelector('span');
-            if (span) {
-                span.textContent = successLabel;
-            } else {
-                buttonEl.textContent = successLabel;
-            }
-            buttonEl.style.background = 'var(--accent-emerald)';
-            buttonEl.style.color = '#fff';
-            buttonEl.style.borderColor = 'var(--accent-emerald)';
-            
-            setTimeout(() => {
-                if (span) {
-                    span.textContent = originalLabel;
-                } else {
-                    buttonEl.textContent = originalLabel;
-                }
-                buttonEl.style.background = '';
-                buttonEl.style.color = '';
-                buttonEl.style.borderColor = '';
-            }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-            const span = buttonEl.querySelector('span');
-            if (span) span.textContent = 'Error!'; else buttonEl.textContent = 'Error!';
-        });
-    }
-}
-
-/* ==========================================================================
-   5. Tabbed Code Showcase
-   ========================================================================== */
-function initCodeTabs() {
-    const tabs = document.querySelectorAll('.code-tab');
-    const panes = document.querySelectorAll('.code-pane');
-
-    if (!tabs.length || !panes.length) return;
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetId = tab.getAttribute('data-target');
-
-            tabs.forEach(t => {
-                t.classList.remove('active');
-                t.setAttribute('aria-selected', 'false');
-            });
-            panes.forEach(p => p.classList.remove('active'));
-
-            tab.classList.add('active');
-            tab.setAttribute('aria-selected', 'true');
-            const targetPane = document.getElementById(targetId);
-            if (targetPane) {
-                targetPane.classList.add('active');
-            }
-        });
+  $$('.cmd').forEach(function (c) {
+    $('.copy-btn', c).addEventListener('click', function (e) {
+      var b = e.currentTarget; copyText(c.dataset.copy, function (ok) { flashCopied(b, ok); });
     });
-}
+  });
 
-/* ==========================================================================
-   6. API Search & Table Filtering
-   ========================================================================== */
-function initApiSearch() {
-    const searchInput = document.getElementById('api-search-input');
-    const tableRows = document.querySelectorAll('#api-table tbody tr.api-row');
-    const countLabel = document.getElementById('api-count-label');
+  /* ------------------------------------------------------------------ theme */
+  var root = document.documentElement;
+  function currentTheme() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  $('#theme-btn').addEventListener('click', function () {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('mma_theme', next); } catch (e) {}
+  });
 
-    if (!searchInput || !tableRows.length) return;
+  /* --------------------------------------------------------- mobile sidebar */
+  var sidebar = $('#sidebar'), menuBtn = $('#menu-btn'), scrim = $('#scrim');
+  function setMenu(open) {
+    sidebar.classList.toggle('open', open);
+    scrim.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  menuBtn.addEventListener('click', function () { setMenu(!sidebar.classList.contains('open')); });
+  scrim.addEventListener('click', function () { setMenu(false); });
+  sidebar.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === '/' && document.activeElement !== searchInput) {
-            e.preventDefault();
-            searchInput.focus();
-        }
+  /* ------------------------------------------------------------------- tabs */
+  function activateTab(tab, focus) {
+    var list = tab.parentElement;
+    $$('[role="tab"]', list).forEach(function (t) {
+      var sel = t === tab;
+      t.setAttribute('aria-selected', sel ? 'true' : 'false');
+      t.tabIndex = sel ? 0 : -1;
+      var p = document.getElementById(t.getAttribute('aria-controls'));
+      if (p) p.hidden = !sel;
     });
-
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        let visibleCount = 0;
-
-        tableRows.forEach(row => {
-            const searchData = row.getAttribute('data-search') || '';
-            const rowText = row.textContent.toLowerCase();
-            const matches = searchData.includes(query) || rowText.includes(query);
-
-            if (matches) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        if (countLabel) {
-            countLabel.textContent = `Showing ${visibleCount} of ${tableRows.length} entries`;
-        }
+    if (focus) tab.focus();
+  }
+  $$('[data-tabs] [role="tablist"]').forEach(function (list) {
+    list.addEventListener('click', function (e) { var t = e.target.closest('[role="tab"]'); if (t) activateTab(t); });
+    list.addEventListener('keydown', function (e) {
+      var tabs = $$('[role="tab"]', list), i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      var n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') n = tabs[0];
+      else if (e.key === 'End') n = tabs[tabs.length - 1];
+      if (n) { e.preventDefault(); activateTab(n, true); }
     });
-}
+  });
 
-/* ==========================================================================
-   7. Interactive Benchmarking Simulator (Playground)
-   ========================================================================== */
-function initSimulator() {
-    const runBtn = document.getElementById('run-sim-btn');
-    const taskSelect = document.getElementById('sim-task-type');
-    const datasetSelect = document.getElementById('sim-dataset');
-    const samplesSelect = document.getElementById('sim-samples');
-    const progressBox = document.getElementById('sim-progress-box');
-    const progressBar = document.getElementById('sim-progress-bar');
-    const statusText = document.getElementById('progress-status-text');
-    const percentText = document.getElementById('progress-percent-text');
-    const tableHeader = document.getElementById('sim-table-header');
-    const tableBody = document.getElementById('sim-table-body');
-
-    // Dataset Info Banner Elements
-    const dsTitle = document.getElementById('ds-title');
-    const dsBadge = document.getElementById('ds-target-badge');
-    const dsDesc = document.getElementById('ds-description');
-
-    if (!runBtn || !taskSelect || !datasetSelect || !tableBody) return;
-
-    // Populate dataset dropdown when task changes
-    function populateDatasets(taskType) {
-        const profiles = DATASET_PROFILES[taskType] || [];
-        datasetSelect.innerHTML = '';
-        profiles.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.id;
-            opt.textContent = `${p.name} (${p.unit})`;
-            datasetSelect.appendChild(opt);
-        });
-        updateDatasetBanner(taskType, profiles[0].id);
+  /* -------------------------------------------------------- overlay manager */
+  var overlayStack = [];
+  function focusables(el) {
+    return $$('a[href], button:not([disabled]), input, select, textarea, summary, [tabindex]:not([tabindex="-1"])', el)
+      .filter(function (n) { return n.offsetParent !== null; });
+  }
+  function openOverlay(ov, focusEl) {
+    ov.classList.remove('closing');
+    ov.hidden = false;
+    overlayStack.push({ el: ov, returnTo: document.activeElement });
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { (focusEl || focusables(ov)[0] || ov).focus(); }, 0);
+  }
+  function closeOverlay(ov) {
+    var idx = -1;
+    overlayStack.forEach(function (o, i) { if (o.el === ov) idx = i; });
+    if (idx < 0) return;
+    var rec = overlayStack.splice(idx, 1)[0];
+    function done() {
+      ov.hidden = true; ov.classList.remove('closing');
+      if (!overlayStack.length) document.body.style.overflow = '';
+      if (rec.returnTo && rec.returnTo.focus && document.contains(rec.returnTo)) rec.returnTo.focus();
     }
-
-    function updateDatasetBanner(taskType, dsId) {
-        const profiles = DATASET_PROFILES[taskType] || [];
-        const activeProfile = profiles.find(p => p.id === dsId) || profiles[0];
-        if (activeProfile && dsTitle && dsBadge && dsDesc) {
-            dsTitle.textContent = activeProfile.name;
-            dsBadge.textContent = `Target Unit: ${activeProfile.unit}`;
-            dsDesc.textContent = activeProfile.desc;
-        }
+    if (reduceMotion) done(); else { ov.classList.add('closing'); setTimeout(done, 140); }
+  }
+  document.addEventListener('keydown', function (e) {
+    var top = overlayStack[overlayStack.length - 1];
+    if (!top) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeOverlay(top.el); }
+    else if (e.key === 'Tab') {
+      var f = focusables(top.el);
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!top.el.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
     }
+  });
+  $$('.overlay').forEach(function (ov) {
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeOverlay(ov); });
+  });
 
-    // Initialize dropdowns
-    populateDatasets(taskSelect.value);
+  /* ------------------------------------------------------------ API reference */
+  var API = window.API_DATA || [];
+  var apiById = {};
+  API.forEach(function (a) { apiById[a.id] = a; });
+  var apiList = $('#api-list'), apiFilter = $('#api-filter'), apiCount = $('#api-count');
+  function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function fullName(a) { return a.cls ? a.cls + '.' + a.name : a.name; }
 
-    taskSelect.addEventListener('change', () => {
-        populateDatasets(taskSelect.value);
-        runSimulation(taskSelect.value, datasetSelect.value, parseInt(samplesSelect.value, 10), true);
+  function renderApi(filter) {
+    var q = (filter || '').trim().toLowerCase();
+    var groups = [], map = {}, shown = 0;
+    API.forEach(function (a) {
+      if (q && (fullName(a) + ' ' + a.summary + ' ' + a.group).toLowerCase().indexOf(q) < 0) return;
+      if (!map[a.group]) { map[a.group] = []; groups.push(a.group); }
+      map[a.group].push(a); shown++;
     });
-
-    datasetSelect.addEventListener('change', () => {
-        updateDatasetBanner(taskSelect.value, datasetSelect.value);
-        runSimulation(taskSelect.value, datasetSelect.value, parseInt(samplesSelect.value, 10), true);
-    });
-
-    samplesSelect.addEventListener('change', () => {
-        runSimulation(taskSelect.value, datasetSelect.value, parseInt(samplesSelect.value, 10), true);
-    });
-
-    // Run default simulation on page load
-    runSimulation(taskSelect.value, datasetSelect.value, parseInt(samplesSelect.value, 10), true);
-
-    runBtn.addEventListener('click', () => {
-        runSimulation(taskSelect.value, datasetSelect.value, parseInt(samplesSelect.value, 10), false);
-    });
-
-    function runSimulation(taskType, dsId, sampleSize, isInstant) {
-        const profiles = DATASET_PROFILES[taskType] || [];
-        const activeProfile = profiles.find(p => p.id === dsId) || profiles[0];
-
-        runBtn.disabled = true;
-        runBtn.style.opacity = '0.6';
-        runBtn.style.cursor = 'not-allowed';
-
-        if (!isInstant) {
-            progressBox.classList.add('active');
-            progressBar.style.width = '0%';
-            percentText.textContent = '0%';
-            statusText.textContent = `Fitting ${taskType} estimators on ${sampleSize.toLocaleString()} rows (${activeProfile.name})...`;
-            tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 28px; color: var(--text-muted); font-weight: 500;">⚡ Executing parallel cross-evaluation (n_jobs=-1)...</td></tr>';
-        }
-
-        let progress = 0;
-        const intervalTime = isInstant ? 5 : 120;
-        const step = isInstant ? 50 : 15;
-
-        const timer = setInterval(() => {
-            progress += step;
-            if (progress > 100) progress = 100;
-
-            if (!isInstant) {
-                progressBar.style.width = `${progress}%`;
-                percentText.textContent = `${progress}%`;
-
-                if (progress === 30) statusText.textContent = 'Standardizing feature arrays & label encoding targets...';
-                if (progress === 60) statusText.textContent = 'Computing statistical metrics & ROC-AUC curves...';
-                if (progress === 90) statusText.textContent = 'Generating diagnostic leaderboard & formatting tables...';
-            }
-
-            if (progress === 100) {
-                clearInterval(timer);
-                setTimeout(() => {
-                    if (!isInstant) progressBox.classList.remove('active');
-                    runBtn.disabled = false;
-                    runBtn.style.opacity = '1';
-                    runBtn.style.cursor = 'pointer';
-                    renderResults(taskType, activeProfile, sampleSize);
-                }, isInstant ? 20 : 250);
-            }
-        }, intervalTime);
+    if (!shown) { apiList.innerHTML = '<div class="api-empty">No API entry matches "' + esc(filter) + '".</div>'; }
+    else {
+      apiList.innerHTML = groups.map(function (g) {
+        return '<div class="api-group"><h3 id="api-' + slug(g) + '">' + esc(g) + '</h3>' +
+          map[g].map(function (a) {
+            return '<button type="button" class="api-row" data-id="' + esc(a.id) + '" aria-haspopup="dialog">' +
+              '<span class="api-name">' + esc(a.name) + '</span><span class="api-sum">' + esc(a.summary) + '</span></button>';
+          }).join('') + '</div>';
+      }).join('');
     }
+    apiCount.textContent = q ? shown + ' of ' + API.length + ' entries' : API.length + ' entries';
+  }
+  renderApi('');
+  apiFilter.addEventListener('input', function () { renderApi(apiFilter.value); });
+  apiList.addEventListener('click', function (e) { var b = e.target.closest('.api-row'); if (b) openApi(b.dataset.id); });
 
-    function renderResults(taskType, profile, sampleSize) {
-        // Dynamic noise variance based on sample size (more samples -> higher stability)
-        const sampleFactor = sampleSize === 50000 ? 0.002 : (sampleSize === 10000 ? 0.005 : 0.012);
-        const noise = () => (Math.random() * sampleFactor * 2 - sampleFactor);
-
-        if (taskType === 'classification') {
-            tableHeader.innerHTML = `
-                <th>Rank</th>
-                <th>Estimator Name</th>
-                <th>Accuracy</th>
-                <th>Precision</th>
-                <th>Recall</th>
-                <th>F1 Score</th>
-                <th>ROC-AUC</th>
-            `;
-
-            const baseAcc = profile.accBase || 0.94;
-            const baseAuc = profile.aucBase || 0.97;
-
-            const clfModels = [
-                { name: 'Random Forest Classifier', acc: baseAcc + noise(), prec: baseAcc + 0.003 + noise(), rec: baseAcc + noise(), f1: baseAcc + 0.001 + noise(), auc: baseAuc + noise() },
-                { name: 'Gradient Boosting Classifier', acc: baseAcc - 0.006 + noise(), prec: baseAcc - 0.004 + noise(), rec: baseAcc - 0.006 + noise(), f1: baseAcc - 0.005 + noise(), auc: baseAuc - 0.005 + noise() },
-                { name: 'Support Vector Machine (SVC)', acc: baseAcc - 0.017 + noise(), prec: baseAcc - 0.015 + noise(), rec: baseAcc - 0.017 + noise(), f1: baseAcc - 0.016 + noise(), auc: baseAuc - 0.013 + noise() },
-                { name: 'Logistic Regression', acc: baseAcc - 0.033 + noise(), prec: baseAcc - 0.031 + noise(), rec: baseAcc - 0.033 + noise(), f1: baseAcc - 0.032 + noise(), auc: baseAuc - 0.022 + noise() },
-                { name: 'AdaBoost Classifier', acc: baseAcc - 0.050 + noise(), prec: baseAcc - 0.048 + noise(), rec: baseAcc - 0.050 + noise(), f1: baseAcc - 0.049 + noise(), auc: baseAuc - 0.039 + noise() },
-                { name: 'K-Nearest Neighbors (KNN)', acc: baseAcc - 0.063 + noise(), prec: baseAcc - 0.059 + noise(), rec: baseAcc - 0.063 + noise(), f1: baseAcc - 0.061 + noise(), auc: baseAuc - 0.046 + noise() },
-                { name: 'Decision Tree Classifier', acc: baseAcc - 0.096 + noise(), prec: baseAcc - 0.094 + noise(), rec: baseAcc - 0.096 + noise(), f1: baseAcc - 0.095 + noise(), auc: baseAuc - 0.134 + noise() },
-                { name: 'Gaussian Naive Bayes', acc: baseAcc - 0.124 + noise(), prec: baseAcc - 0.117 + noise(), rec: baseAcc - 0.124 + noise(), f1: baseAcc - 0.121 + noise(), auc: baseAuc - 0.083 + noise() },
-            ];
-
-            clfModels.sort((a, b) => b.acc - a.acc);
-
-            let rowsHtml = '';
-            clfModels.forEach((model, idx) => {
-                const rank = idx + 1;
-                const rankBadgeClass = rank <= 3 ? `rank-${rank}` : '';
-                const highlightClass = rank === 1 ? 'score-highlight' : '';
-                const badge = rank <= 3 ? `<span class="rank-badge ${rankBadgeClass}">#${rank}</span>` : `#${rank}`;
-                
-                // Clamp percentages between 0 and 100
-                const formatPct = val => Math.min(Math.max(val * 100, 0), 99.99).toFixed(2) + '%';
-                const formatAuc = val => Math.min(Math.max(val, 0), 0.999).toFixed(3);
-
-                rowsHtml += `
-                    <tr>
-                        <td>${badge}</td>
-                        <td class="model-name">${model.name} ${rank === 1 ? '(Best)' : ''}</td>
-                        <td class="${highlightClass}">${formatPct(model.acc)}</td>
-                        <td>${formatPct(model.prec)}</td>
-                        <td>${formatPct(model.rec)}</td>
-                        <td>${formatPct(model.f1)}</td>
-                        <td>${formatAuc(model.auc)}</td>
-                    </tr>
-                `;
-            });
-            tableBody.innerHTML = rowsHtml;
-
-        } else {
-            // Regression Task (With dynamic Unit formatting!)
-            tableHeader.innerHTML = `
-                <th>Rank</th>
-                <th>Estimator Name</th>
-                <th>R² Score</th>
-                <th>MAE (${profile.unit})</th>
-                <th>MSE</th>
-                <th>RMSE (${profile.unit})</th>
-                <th>Recommendation</th>
-            `;
-
-            const baseR2 = profile.r2Base || 0.90;
-            const baseMae = profile.maeBase || 100;
-            const baseMse = profile.mseBase || 10000;
-            const baseRmse = profile.rmseBase || 120;
-            const prefix = profile.prefix !== undefined ? profile.prefix : '';
-            const suffix = profile.suffix !== undefined ? profile.suffix : '';
-
-            const regModels = [
-                { name: 'Gradient Boosting Regressor', r2: baseR2 + noise(), mae: baseMae * (1 - noise()*2), mse: baseMse * (1 - noise()*4), rmse: baseRmse * (1 - noise()*2) },
-                { name: 'Random Forest Regressor', r2: baseR2 - 0.007 + noise(), mae: baseMae * 1.04, mse: baseMse * 1.08, rmse: baseRmse * 1.04 },
-                { name: 'Ridge Regression', r2: baseR2 - 0.048 + noise(), mae: baseMae * 1.27, mse: baseMse * 1.53, rmse: baseRmse * 1.23 },
-                { name: 'Linear Regression', r2: baseR2 - 0.050 + noise(), mae: baseMae * 1.28, mse: baseMse * 1.55, rmse: baseRmse * 1.24 },
-                { name: 'Lasso Regression', r2: baseR2 - 0.051 + noise(), mae: baseMae * 1.29, mse: baseMse * 1.56, rmse: baseRmse * 1.25 },
-                { name: 'Support Vector Regressor (SVR)', r2: baseR2 - 0.127 + noise(), mae: baseMae * 1.62, mse: baseMse * 2.43, rmse: baseRmse * 1.56 },
-                { name: 'Decision Tree Regressor', r2: baseR2 - 0.170 + noise(), mae: baseMae * 1.78, mse: baseMse * 2.91, rmse: baseRmse * 1.70 },
-            ];
-
-            regModels.sort((a, b) => b.r2 - a.r2);
-
-            let rowsHtml = '';
-            regModels.forEach((model, idx) => {
-                const rank = idx + 1;
-                const rankBadgeClass = rank <= 3 ? `rank-${rank}` : '';
-                const highlightClass = rank === 1 ? 'score-highlight' : '';
-                const badge = rank <= 3 ? `<span class="rank-badge ${rankBadgeClass}">#${rank}</span>` : `#${rank}`;
-                
-                const formatVal = val => prefix + val.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1}) + suffix;
-                const formatMse = val => Math.round(val).toLocaleString();
-
-                rowsHtml += `
-                    <tr>
-                        <td>${badge}</td>
-                        <td class="model-name">${model.name} ${rank === 1 ? '(Best)' : ''}</td>
-                        <td class="${highlightClass}">${model.r2.toFixed(4)}</td>
-                        <td>${formatVal(model.mae)}</td>
-                        <td>${formatMse(model.mse)}</td>
-                        <td>${formatVal(model.rmse)}</td>
-                        <td>${rank === 1 ? 'Optimal Baseline' : (rank <= 3 ? 'Strong Baseline' : 'Sub-optimal')}</td>
-                    </tr>
-                `;
-            });
-            tableBody.innerHTML = rowsHtml;
-        }
+  var apiOv = $('#api-overlay');
+  $('#api-modal-close').addEventListener('click', function () { closeOverlay(apiOv); });
+  function openApi(id) {
+    var a = apiById[id]; if (!a) return;
+    $('#api-modal-group').textContent = a.group;
+    $('#api-modal-title').textContent = fullName(a);
+    var html = '<p>' + esc(a.summary) + '</p>' +
+      '<h4>Signature</h4><div class="code sig" data-lang="python"><pre><code>' + esc(a.sig) + '</code></pre></div>';
+    if (a.params && a.params.length) {
+      html += '<h4>Parameters</h4><div class="table-wrap"><table class="doc-table"><thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>' +
+        a.params.map(function (p) {
+          return '<tr><td><code>' + esc(p[0]) + '</code></td><td>' + esc(p[1]) + '</td><td>' + (p[2] ? '<code>' + esc(p[2]) + '</code>' : '') + '</td><td>' + esc(p[3]) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
     }
-}
+    html += '<h4>Returns</h4><p>' + esc(a.returns) + '</p>';
+    if (a.example) html += '<h4>Example</h4><div class="code" data-lang="python"><pre><code>' + esc(a.example) + '</code></pre></div>';
+    var body = $('#api-modal-body'); body.innerHTML = html; body.scrollTop = 0;
+    $$('.code', body).forEach(decorateCode);
+    openOverlay(apiOv, $('#api-modal-close'));
+  }
 
-/* ==========================================================================
-   8. Interactive Metric & Formula Playground (NEW Enhancement)
-   ========================================================================== */
-function initFormulaPlayground() {
-    const tpInput = document.getElementById('calc-tp');
-    const fpInput = document.getElementById('calc-fp');
-    const fnInput = document.getElementById('calc-fn');
-    const tnInput = document.getElementById('calc-tn');
+  /* ----------------------------------------------------------- search palette */
+  var sOv = $('#search-overlay'), sInput = $('#search-input'), sList = $('#search-results');
+  var isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  $('#search-kbd').textContent = isMac ? '⌘ K' : 'Ctrl K';
 
-    const outAcc = document.getElementById('out-acc');
-    const outPrec = document.getElementById('out-prec');
-    const outRec = document.getElementById('out-rec');
-    const outF1 = document.getElementById('out-f1');
+  var searchIndex = [];
+  $$('main section[id]').forEach(function (sec) {
+    searchIndex.push({ kind: 'Section', title: sec.dataset.title || sec.id, hash: sec.id, text: '' });
+    $$('h2[id], h3[id]', sec).forEach(function (h) {
+      searchIndex.push({ kind: sec.dataset.title || 'Page', title: h.textContent.trim(), hash: h.id, text: '' });
+    });
+  });
+  API.forEach(function (a) {
+    searchIndex.push({ kind: 'API', title: fullName(a), hash: 'api', api: a.id, text: a.summary, mono: true });
+  });
+  var results = [], active = 0;
 
-    if (!tpInput || !fpInput || !fnInput || !tnInput) return;
-
-    function calculateMetrics() {
-        const tp = parseInt(tpInput.value, 10) || 0;
-        const fp = parseInt(fpInput.value, 10) || 0;
-        const fn = parseInt(fnInput.value, 10) || 0;
-        const tn = parseInt(tnInput.value, 10) || 0;
-
-        const total = tp + fp + fn + tn;
-        const acc = total > 0 ? (tp + tn) / total : 0;
-        const prec = (tp + fp) > 0 ? tp / (tp + fp) : 0;
-        const rec = (tp + fn) > 0 ? tp / (tp + fn) : 0;
-        const f1 = (prec + rec) > 0 ? (2 * prec * rec) / (prec + rec) : 0;
-
-        if (outAcc) outAcc.textContent = (acc * 100).toFixed(1) + '%';
-        if (outPrec) outPrec.textContent = (prec * 100).toFixed(1) + '%';
-        if (outRec) outRec.textContent = (rec * 100).toFixed(1) + '%';
-        if (outF1) outF1.textContent = (f1 * 100).toFixed(1) + '%';
-
-        // Update value displays next to sliders
-        document.getElementById('val-tp').textContent = tp;
-        document.getElementById('val-fp').textContent = fp;
-        document.getElementById('val-fn').textContent = fn;
-        document.getElementById('val-tn').textContent = tn;
-
-        // Dynamically update slider track fill progress with each slider's accent color
-        [tpInput, fpInput, fnInput, tnInput].forEach(el => {
-            if (!el) return;
-            const min = parseFloat(el.min) || 0;
-            const max = parseFloat(el.max) || 100;
-            const val = parseFloat(el.value) || 0;
-            const percent = ((val - min) / (max - min)) * 100;
-            el.style.background = `linear-gradient(to right, currentColor 0%, currentColor ${percent}%, var(--code-header) ${percent}%, var(--code-header) 100%)`;
-        });
+  function score(item, terms) {
+    var t = item.title.toLowerCase(), s = 0;
+    for (var i = 0; i < terms.length; i++) {
+      var w = terms[i];
+      if (t === w) s += 12;
+      else if (t.indexOf(w) === 0) s += 8;
+      else if (t.indexOf('.' + w) >= 0 || t.indexOf(' ' + w) >= 0) s += 6;
+      else if (t.indexOf(w) >= 0) s += 4;
+      else if (item.text && item.text.toLowerCase().indexOf(w) >= 0) s += 1;
+      else return 0;
     }
+    return s;
+  }
+  function renderResults() {
+    if (!results.length) { sList.innerHTML = '<li class="r-empty" role="option" aria-selected="false">No results</li>'; return; }
+    sList.innerHTML = results.map(function (r, i) {
+      return '<li role="option" id="sr-' + i + '" data-i="' + i + '" aria-selected="' + (i === active) + '">' +
+        '<span class="r-title' + (r.mono ? ' mono' : '') + '">' + esc(r.title) + '</span><span class="r-meta">' + esc(r.kind) + '</span></li>';
+    }).join('');
+    sInput.setAttribute('aria-activedescendant', 'sr-' + active);
+    var el = $('#sr-' + active); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+  }
+  function runSearch() {
+    var q = sInput.value.trim().toLowerCase();
+    if (!q) {
+      results = searchIndex.filter(function (i) { return i.kind === 'Section'; });
+    } else {
+      var terms = q.split(/\s+/);
+      results = searchIndex.map(function (i) { return { i: i, s: score(i, terms) }; })
+        .filter(function (x) { return x.s > 0; })
+        .sort(function (a, b) { return b.s - a.s; })
+        .slice(0, 14).map(function (x) { return x.i; });
+    }
+    active = 0; renderResults();
+  }
+  function choose(r) {
+    if (!r) return;
+    closeOverlay(sOv);
+    setTimeout(function () {
+      var target = document.getElementById(r.hash);
+      if (target) { history.pushState(null, '', '#' + r.hash); target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); }
+      if (r.api) setTimeout(function () { openApi(r.api); }, 200);
+    }, 150);
+  }
+  function openSearch() {
+    setMenu(false);
+    sInput.value = ''; runSearch(); openOverlay(sOv, sInput);
+  }
+  $('#search-btn').addEventListener('click', openSearch);
+  sInput.addEventListener('input', runSearch);
+  sInput.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (results.length) { active = (active + 1) % results.length; renderResults(); } }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (results.length) { active = (active - 1 + results.length) % results.length; renderResults(); } }
+    else if (e.key === 'Enter') { e.preventDefault(); choose(results[active]); }
+  });
+  sList.addEventListener('click', function (e) { var li = e.target.closest('li[data-i]'); if (li) choose(results[+li.dataset.i]); });
+  sList.addEventListener('mousemove', function (e) {
+    var li = e.target.closest('li[data-i]');
+    if (li && +li.dataset.i !== active) { active = +li.dataset.i; $$('li', sList).forEach(function (n, i) { n.setAttribute('aria-selected', i === active); }); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var typing = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
+    if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      if (overlayStack.some(function (o) { return o.el === sOv; })) closeOverlay(sOv); else if (!overlayStack.length) openSearch();
+    } else if (e.key === '/' && !typing && !overlayStack.length && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault(); openSearch();
+    }
+  });
 
-    [tpInput, fpInput, fnInput, tnInput].forEach(el => {
-        el.addEventListener('input', calculateMetrics);
+  /* ----------------------------------------------------------- image viewer */
+  var imgOv = $('#image-overlay');
+  $('#gallery').addEventListener('click', function (e) {
+    var t = e.target.closest('.thumb'); if (!t) return;
+    var img = $('#image-full');
+    img.src = t.dataset.full; img.alt = $('img', t).alt;
+    $('#image-cap').textContent = t.dataset.cap;
+    openOverlay(imgOv, $('#image-close'));
+  });
+  $('#image-close').addEventListener('click', function () { closeOverlay(imgOv); });
+
+  /* --------------------------------------------------- navigation scroll-spy */
+  var sections = $$('main section[id]');
+  var navLinks = {};
+  $$('.sidebar a').forEach(function (a) { navLinks[a.getAttribute('href').slice(1)] = a; });
+  var tocList = $('#toc-list'), tocFor = null, tocLinks = [];
+
+  function buildToc(sec) {
+    if (tocFor === sec) return;
+    tocFor = sec;
+    var heads = $$('h2[id], h3[id], .api-group h3[id]', sec);
+    var items = heads.map(function (h) { return { id: h.id, text: h.textContent.trim(), l3: h.tagName === 'H3' && !h.closest('.api-group'), el: h }; });
+    if (!items.length) { tocList.innerHTML = ''; tocLinks = []; return; }
+    tocList.innerHTML = items.map(function (it) {
+      return '<li><a href="#' + it.id + '" class="' + (it.l3 ? 'l3' : '') + '">' + esc(it.text) + '</a></li>';
+    }).join('');
+    tocLinks = $$('a', tocList).map(function (a, i) { return { a: a, el: items[i].el }; });
+  }
+  var ticking = false;
+  function spy() {
+    ticking = false;
+    var line = 120, current = sections[0];
+    sections.forEach(function (s) { if (s.getBoundingClientRect().top <= line) current = s; });
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) current = sections[sections.length - 1];
+    Object.keys(navLinks).forEach(function (k) { navLinks[k].classList.toggle('active', k === current.id); });
+    var act = navLinks[current.id];
+    if (act && sidebar.scrollHeight > sidebar.clientHeight) {
+      var r = act.getBoundingClientRect(), sr = sidebar.getBoundingClientRect();
+      if (r.top < sr.top + 20 || r.bottom > sr.bottom - 20) sidebar.scrollTop += r.top - sr.top - sr.height / 3;
+    }
+    buildToc(current);
+    var cur = null;
+    tocLinks.forEach(function (t) { if (t.el.getBoundingClientRect().top <= line + 10) cur = t; });
+    tocLinks.forEach(function (t) { t.a.classList.toggle('active', t === cur); });
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+  window.addEventListener('resize', spy);
+  window.addEventListener('hashchange', function () {
+    var el = document.getElementById(location.hash.slice(1));
+    var panel = el && el.closest('[role="tabpanel"]');
+    if (panel && panel.hidden) activateTab(document.getElementById(panel.getAttribute('aria-labelledby')));
+  });
+  spy();
+
+  /* ----------------------------------------------------------- results explorer */
+  var DATA = null, task = 'classification', dsId = null, sortKey = null, sortDir = 1;
+  var tableEl = $('#results-table'), selectEl = $('#dataset-select');
+  var LOWER_BETTER = { MAE: 1, MSE: 1, RMSE: 1 };
+
+  function fmt(v) {
+    if (v === null || v === undefined || (typeof v === 'number' && isNaN(v))) return 'n/a';
+    if (typeof v !== 'number') return esc(v);
+    return Math.abs(v) >= 100 ? v.toFixed(1) : v.toFixed(4);
+  }
+  function currentSet() { return DATA[task].filter(function (d) { return d.id === dsId; })[0]; }
+  function renderTable() {
+    var ds = currentSet(); if (!ds) return;
+    var cols = Object.keys(ds.table[0]);
+    var best = ds.table[0].Model;
+    var rows = ds.table.slice();
+    if (sortKey) {
+      rows.sort(function (a, b) {
+        var x = a[sortKey], y = b[sortKey];
+        if (typeof x === 'string' || typeof y === 'string') return String(x).localeCompare(String(y)) * sortDir;
+        x = x == null ? -Infinity : x; y = y == null ? -Infinity : y;
+        return (x - y) * sortDir;
+      });
+    }
+    tableEl.innerHTML = '<thead><tr>' + cols.map(function (c) {
+      var s = c === sortKey ? ' aria-sort="' + (sortDir > 0 ? 'ascending' : 'descending') + '"' : '';
+      return '<th scope="col" tabindex="0" data-col="' + esc(c) + '"' + s + '>' + esc(c) + (c === sortKey ? (sortDir > 0 ? ' ↑' : ' ↓') : '') + '</th>';
+    }).join('') + '</tr></thead><tbody>' + rows.map(function (r) {
+      return '<tr' + (r.Model === best ? ' class="best"' : '') + '>' + cols.map(function (c) {
+        return typeof r[c] === 'string' ? '<td>' + esc(r[c]) + '</td>' : '<td class="num">' + fmt(r[c]) + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody>';
+    var info = ds.title + ' · ' + (ds.kind ? ds.kind + ' · ' : '') + ds.rows.toLocaleString() + ' rows × ' + ds.features + ' features' +
+      (ds.classes ? ' · ' + ds.classes + ' classes' : '') + ' · train ' + ds.train.toLocaleString() + ' / test ' + ds.test.toLocaleString() +
+      ' · ' + ds.seconds + ' s for all models' + (ds.unit ? ' · target: ' + ds.unit : '');
+    $('#dataset-info').textContent = info;
+    $('#console-out').textContent = ds.console.replace(/\s+$/, '');
+  }
+  function setTask(t) {
+    task = t; sortKey = null; sortDir = 1;
+    $$('#task-switch button').forEach(function (b) {
+      var on = b.dataset.task === t; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1;
+    });
+    selectEl.innerHTML = DATA[t].map(function (d) { return '<option value="' + esc(d.id) + '">' + esc(d.title) + '</option>'; }).join('');
+    dsId = DATA[t][0].id; selectEl.value = dsId; renderTable();
+  }
+  function initResults() {
+    var m = DATA.meta;
+    $('#run-meta').innerHTML = [
+      ['package', m.package + ' ' + m.package_version], ['scikit-learn', m.scikit_learn], ['pandas', m.pandas], ['numpy', m.numpy], ['python', m.python],
+      ['test_size', m.settings.test_size], ['scaled_data', m.settings.scaled_data ? 'True' : 'False'], ['random_state', m.settings.random_state]
+    ].map(function (p) { return '<span class="chip">' + esc(p[0]) + ' <b>' + esc(p[1]) + '</b></span>'; }).join('');
+    $('#task-switch').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && b.dataset.task !== task) setTask(b.dataset.task); });
+    selectEl.addEventListener('change', function () { dsId = selectEl.value; sortKey = null; sortDir = 1; renderTable(); });
+    function sortBy(th) {
+      var c = th.dataset.col; if (!c) return;
+      if (sortKey === c) sortDir = -sortDir; else { sortKey = c; sortDir = LOWER_BETTER[c] || c === 'Model' ? 1 : -1; }
+      renderTable();
+      var again = $('th[data-col="' + c + '"]', tableEl); if (again) again.focus();
+    }
+    tableEl.addEventListener('click', function (e) { var th = e.target.closest('th'); if (th) sortBy(th); });
+    tableEl.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('th')) { e.preventDefault(); sortBy(e.target); } });
+    setTask('classification');
+  }
+  fetch('assets/data/results.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) { DATA = d; initResults(); })
+    .catch(function () {
+      $('#dataset-info').textContent = 'The measured results could not be loaded. Serve this folder over http (for example python -m http.server) instead of opening the file directly.';
     });
 
-    calculateMetrics();
-}
-
-// Global Multi-OS Installation Tab Switcher
-window.switchInstallOS = function(osType) {
-    // Update tab active state
-    const tabs = document.querySelectorAll('.install-tab');
-    tabs.forEach(tab => {
-        if (tab.getAttribute('data-os') === osType) {
-            tab.classList.add('active');
-            tab.setAttribute('aria-selected', 'true');
-        } else {
-            tab.classList.remove('active');
-            tab.setAttribute('aria-selected', 'false');
-        }
-    });
-
-    const cmdEl     = document.getElementById('install-command');
-    const copyBtn   = document.getElementById('copy-install-btn');
-    const promptEl  = document.getElementById('install-prompt');
-    const subtextEl = document.getElementById('install-subtext');
-    const labelEl   = document.getElementById('terminal-label');
-
-    if (!cmdEl || !copyBtn) return;
-
-    const osMap = {
-        windows: {
-            cmd:    'py -m pip install multimodel-analysis',
-            prompt: 'PS C:\\>',
-            label:  'Windows PowerShell',
-            hint:   'Recommended for Windows PowerShell and Command Prompt using the Python Launcher (<code>py</code>).'
-        },
-        mac: {
-            cmd:    'python3 -m pip install multimodel-analysis',
-            prompt: '$',
-            label:  'macOS Terminal',
-            hint:   'Recommended for macOS Terminal using Apple Python 3 or a Homebrew-managed installation.'
-        },
-        linux: {
-            cmd:    'pip3 install multimodel-analysis',
-            prompt: '$',
-            label:  'Linux / bash',
-            hint:   'Standard command for Ubuntu, Debian, RHEL, and Arch. Use a virtual environment on PEP 668-managed systems.'
-        },
-        conda: {
-            cmd:    'conda create -n ml-env python=3.11 -y && conda activate ml-env && pip install multimodel-analysis',
-            prompt: '(base) $',
-            label:  'Conda / Anaconda Prompt',
-            hint:   'Creates an isolated Conda environment with Python 3.11, then installs the package via pip.'
-        },
-        docker: {
-            cmd:    'docker run --rm -it python:3.11-slim pip install multimodel-analysis',
-            prompt: '$',
-            label:  'Docker CLI',
-            hint:   'Pulls a lightweight Python 3.11 container and installs multimodel-analysis in an isolated environment.'
-        }
-    };
-
-    const config = osMap[osType];
-    if (!config) return;
-
-    cmdEl.textContent = config.cmd;
-    copyBtn.setAttribute('data-clipboard', config.cmd);
-    if (promptEl)  promptEl.textContent  = config.prompt;
-    if (labelEl)   labelEl.textContent   = config.label;
-    if (subtextEl) subtextEl.innerHTML   = config.hint;
-
-    // Reset copy button
-    const copySpan = copyBtn.querySelector('span');
-    if (copySpan) copySpan.textContent = 'Copy';
-    copyBtn.style.background = '';
-    copyBtn.style.color = '';
-};
-
-/* ==========================================================================
-   Interactive API Code Example Modal Data & Logic
-   ========================================================================== */
-const API_EXAMPLES_DATA = {
-    // --- 1. STANDALONE & ALIASES ---
-    'save_report': {
-        tag: 'STANDALONE UTILITY — NONE',
-        title: 'save_report(df=None, filepath="report.csv")',
-        desc: 'Exports comparison tabular report DataFrame to disk. Automatically detects file format (.csv, .xlsx, .xls, .html, .json) from file extension.',
-        codeRaw: `import pandas as pd
-from multimodel_analysis import save_report
-
-# 1. Prepare metrics report DataFrame
-df_report = pd.DataFrame({
-    'Model': ['Random Forest', 'Logistic Regression'],
-    'Accuracy': [0.95, 0.88],
-    'F1 Score': [0.94, 0.87]
-})
-
-# 2. Export to multiple publication formats
-save_report(df_report, "metrics.csv")
-save_report(df_report, "metrics.xlsx")
-save_report(df_report, "metrics.html")
-save_report(df_report, "metrics.json")`,
-        codeHtml: `<span class="kw">import</span> pandas <span class="kw">as</span> pd
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="fn">save_report</span>
-
-<span class="cm"># 1. Prepare metrics report DataFrame</span>
-<span class="var">df_report</span> = pd.<span class="cls">DataFrame</span>({
-    <span class="str">'Model'</span>: [<span class="str">'Random Forest'</span>, <span class="str">'Logistic Regression'</span>],
-    <span class="str">'Accuracy'</span>: [<span class="num">0.95</span>, <span class="num">0.88</span>],
-    <span class="str">'F1 Score'</span>: [<span class="num">0.94</span>, <span class="num">0.87</span>]
-})
-
-<span class="cm"># 2. Export to multiple publication formats</span>
-<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.csv"</span>)
-<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.xlsx"</span>)
-<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.html"</span>)
-<span class="fn">save_report</span>(<span class="var">df_report</span>, <span class="str">"metrics.json"</span>)`
-    },
-    'reg_alias_class': {
-        tag: 'BACKWARD COMPATIBILITY — CLASS ALIAS',
-        title: 'MultiModelRegressior',
-        desc: 'Backward-compatibility class alias mapping directly to MultiModelRegressor to ensure non-breaking integration for legacy codebases.',
-        codeRaw: `import pandas as pd
-import numpy as np
-from multimodel_analysis import MultiModelRegressior
-
-# MultiModelRegressior is an exact alias for MultiModelRegressor
-X = pd.DataFrame(np.random.randn(100, 4))
-y = pd.Series(np.random.randn(100))
-
-reg = MultiModelRegressior(X=X, y=y, test_size=0.2, random_state=42)
-results = reg.run_all_models()
-
-print(f"Alias works seamlessly: {type(reg).__name__}")
-# Output: Alias works seamlessly: MultiModelRegressor`,
-        codeHtml: `<span class="kw">import</span> pandas <span class="kw">as</span> pd
-<span class="kw">import</span> numpy <span class="kw">as</span> np
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressior</span>
-
-<span class="cm"># MultiModelRegressior is an exact alias for MultiModelRegressor</span>
-<span class="var">X</span> = pd.<span class="cls">DataFrame</span>(np.random.<span class="fn">randn</span>(<span class="num">100</span>, <span class="num">4</span>))
-<span class="var">y</span> = pd.<span class="cls">Series</span>(np.random.<span class="fn">randn</span>(<span class="num">100</span>))
-
-<span class="var">reg</span> = <span class="cls">MultiModelRegressior</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-<span class="var">results</span> = <span class="var">reg</span>.<span class="fn">run_all_models</span>()
-
-<span class="fn">print</span>(<span class="str">f"Alias works seamlessly: {<span class="fn">type</span>(<span class="var">reg</span>).__name__}"</span>)
-<span class="cm"># Output: Alias works seamlessly: MultiModelRegressor</span>`
-    },
-
-    // --- 2. MULTIMODELCLASSIFIER METHODS ---
-    'clf_Logistic_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'Logistic_model(random_state=None, max_iter=1000, **kwargs)',
-        desc: 'Trains a Logistic Regression classifier and evaluates metrics. Supports random seed overrides and custom hyperparameters like C and solver.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-# Default run with instance random_state (42)
-metrics = classifier.Logistic_model()
-
-# Override parameters: max_iter and regularization C
-custom_metrics = classifier.Logistic_model(random_state=100, max_iter=2000, C=0.5)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># Default run with instance random_state (42)</span>
-<span class="var">metrics</span> = <span class="var">classifier</span>.<span class="fn">Logistic_model</span>()
-
-<span class="cm"># Override parameters: max_iter and regularization C</span>
-<span class="var">custom_metrics</span> = <span class="var">classifier</span>.<span class="fn">Logistic_model</span>(random_state=<span class="num">100</span>, max_iter=<span class="num">2000</span>, C=<span class="num">0.5</span>)`
-    },
-    'clf_Support_vector_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'Support_vector_model(random_state=None, kernel=\'linear\', probability=True, **kwargs)',
-        desc: 'Trains a Support Vector Classifier (SVC) with probability estimation enabled for ROC-AUC scoring.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-# Default linear kernel SVC
-svc_res = classifier.Support_vector_model()
-
-# Custom RBF kernel with specified random_state
-svc_custom = classifier.Support_vector_model(random_state=99, kernel='rbf', C=1.5)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># Default linear kernel SVC</span>
-<span class="var">svc_res</span> = <span class="var">classifier</span>.<span class="fn">Support_vector_model</span>()
-
-<span class="cm"># Custom RBF kernel with specified random_state</span>
-<span class="var">svc_custom</span> = <span class="var">classifier</span>.<span class="fn">Support_vector_model</span>(random_state=<span class="num">99</span>, kernel=<span class="str">'rbf'</span>, C=<span class="num">1.5</span>)`
-    },
-    'clf_DecisionTree_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'DecisionTree_model(random_state=None, **kwargs)',
-        desc: 'Trains a Decision Tree Classifier and evaluates split performance and accuracy.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-dt_res = classifier.DecisionTree_model(random_state=123, max_depth=5)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="var">dt_res</span> = <span class="var">classifier</span>.<span class="fn">DecisionTree_model</span>(random_state=<span class="num">123</span>, max_depth=<span class="num">5</span>)`
-    },
-    'clf_KNN_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'KNN_model(n_neighbors=None, **kwargs)',
-        desc: 'Trains a K-Nearest Neighbors Classifier. Automatically calculates optimal n_neighbors if omitted and strips random_state safely.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-# Auto-detects n_neighbors based on dataset size
-knn_res = classifier.KNN_model()
-
-# Custom n_neighbors
-knn_custom = classifier.KNN_model(n_neighbors=7)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># Auto-detects n_neighbors based on dataset size</span>
-<span class="var">knn_res</span> = <span class="var">classifier</span>.<span class="fn">KNN_model</span>()
-
-<span class="cm"># Custom n_neighbors</span>
-<span class="var">knn_custom</span> = <span class="var">classifier</span>.<span class="fn">KNN_model</span>(n_neighbors=<span class="num">7</span>)`
-    },
-    'clf_Naive_Bayes_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'Naive_Bayes_model(**kwargs)',
-        desc: 'Trains a Gaussian Naive Bayes Classifier. Safely handles and strips random_state if passed.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-nb_res = classifier.Naive_Bayes_model()`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="var">nb_res</span> = <span class="var">classifier</span>.<span class="fn">Naive_Bayes_model</span>()`
-    },
-    'clf_RandomForest_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'RandomForest_model(n_estimators=100, random_state=None, **kwargs)',
-        desc: 'Trains an ensemble Random Forest Classifier across parallel CPU threads.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-rf_res = classifier.RandomForest_model(n_estimators=150, random_state=42, max_depth=10)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="var">rf_res</span> = <span class="var">classifier</span>.<span class="fn">RandomForest_model</span>(n_estimators=<span class="num">150</span>, random_state=<span class="num">42</span>, max_depth=<span class="num">10</span>)`
-    },
-    'clf_GradientBoosting_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'GradientBoosting_model(n_estimators=100, random_state=None, **kwargs)',
-        desc: 'Trains a Gradient Boosting Classifier and computes stage-wise residual loss.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-gb_res = classifier.GradientBoosting_model(n_estimators=120, random_state=42, learning_rate=0.05)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="var">gb_res</span> = <span class="var">classifier</span>.<span class="fn">GradientBoosting_model</span>(n_estimators=<span class="num">120</span>, random_state=<span class="num">42</span>, learning_rate=<span class="num">0.05</span>)`
-    },
-    'clf_AdaBoost_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'AdaBoost_model(n_estimators=50, random_state=None, **kwargs)',
-        desc: 'Trains an adaptive boosting classifier using decision stumps.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-ada_res = classifier.AdaBoost_model(n_estimators=80, random_state=42)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="var">ada_res</span> = <span class="var">classifier</span>.<span class="fn">AdaBoost_model</span>(n_estimators=<span class="num">80</span>, random_state=<span class="num">42</span>)`
-    },
-    'clf_run_all_models': {
-        tag: 'MULTIMODELCLASSIFIER — LIST[TUPLE]',
-        title: 'run_all_models(custom_models=None, random_state=None)',
-        desc: 'Fits all 8 built-in classifiers plus optional custom estimators. Caches evaluated model results in classifier.models_.',
-        codeRaw: `from sklearn.datasets import make_classification
-from sklearn.ensemble import ExtraTreesClassifier
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-# 1. Run standard baselines
-models = classifier.run_all_models()
-
-# 2. Run with custom models and random seed
-custom_clf = ExtraTreesClassifier(n_estimators=50, random_state=42)
-models = classifier.run_all_models(
-    custom_models={'Extra Trees': custom_clf},
-    random_state=123
-)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> ExtraTreesClassifier
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># 1. Run standard baselines</span>
-<span class="var">models</span> = <span class="var">classifier</span>.<span class="fn">run_all_models</span>()
-
-<span class="cm"># 2. Run with custom models and random seed</span>
-<span class="var">custom_clf</span> = <span class="cls">ExtraTreesClassifier</span>(n_estimators=<span class="num">50</span>, random_state=<span class="num">42</span>)
-<span class="var">models</span> = <span class="var">classifier</span>.<span class="fn">run_all_models</span>(
-    custom_models={<span class="str">'Extra Trees'</span>: <span class="var">custom_clf</span>},
-    random_state=<span class="num">123</span>
-)`
-    },
-    'clf_evaluate_model': {
-        tag: 'MULTIMODELCLASSIFIER — TUPLE',
-        title: 'evaluate_model(model, X_test=None, y_true=None)',
-        desc: 'Evaluates a single fitted classifier model on test set data. Computes Accuracy, Precision, Recall, F1 Score, and ROC-AUC metrics.',
-        codeRaw: `from sklearn.datasets import make_classification
-from sklearn.ensemble import RandomForestClassifier
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-rf = RandomForestClassifier(random_state=42)
-rf.fit(classifier.X_train_scaled, classifier.y_train)
-
-# Evaluate using default instance test set
-eval_res = classifier.evaluate_model(rf)
-report, matrix, accuracy, precision, recall, f1, fpr_dict, tpr_dict, roc_auc = eval_res
-print(f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}")`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="var">rf</span> = <span class="cls">RandomForestClassifier</span>(random_state=<span class="num">42</span>)
-<span class="var">rf</span>.<span class="fn">fit</span>(<span class="var">classifier</span>.X_train_scaled, <span class="var">classifier</span>.y_train)
-
-<span class="cm"># Evaluate using default instance test set</span>
-<span class="var">eval_res</span> = <span class="var">classifier</span>.<span class="fn">evaluate_model</span>(<span class="var">rf</span>)
-<span class="var">report</span>, <span class="var">matrix</span>, <span class="var">accuracy</span>, <span class="var">precision</span>, <span class="var">recall</span>, <span class="var">f1</span>, <span class="var">fpr_dict</span>, <span class="var">tpr_dict</span>, <span class="var">roc_auc</span> = <span class="var">eval_res</span>
-<span class="fn">print</span>(<span class="str">f"Accuracy: {<span class="var">accuracy</span>:.4f}, F1: {<span class="var">f1</span>:.4f}"</span>)`
-    },
-    'clf_show_tabular_report': {
-        tag: 'MULTIMODELCLASSIFIER — PD.DATAFRAME | NONE',
-        title: 'show_tabular_report(models=None, return_df=False)',
-        desc: 'Prints a formatted comparison table of all model evaluation metrics sorted by accuracy and identifies the best performing model.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-# Automatically runs all models if models argument is omitted
-df_report = classifier.show_tabular_report(return_df=True)
-print(df_report.head())`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># Automatically runs all models if models argument is omitted</span>
-<span class="var">df_report</span> = <span class="var">classifier</span>.<span class="fn">show_tabular_report</span>(return_df=<span class="num">True</span>)
-<span class="fn">print</span>(<span class="var">df_report</span>.<span class="fn">head</span>())`
-    },
-    'clf_plot_confusion_matrices': {
-        tag: 'MULTIMODELCLASSIFIER — NONE',
-        title: 'plot_confusion_matrices(models=None, save_path=None, show_plot=True)',
-        desc: 'Generates a grid heatmap of confusion matrices for all evaluated models with decoded class labels.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-classifier.run_all_models()
-
-# Display plot on screen
-classifier.plot_confusion_matrices()
-
-# Save plot to PNG without displaying
-classifier.plot_confusion_matrices(save_path="confusion_matrices.png", show_plot=False)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
-
-<span class="cm"># Display plot on screen</span>
-<span class="var">classifier</span>.<span class="fn">plot_confusion_matrices</span>()
-
-<span class="cm"># Save plot to PNG without displaying</span>
-<span class="var">classifier</span>.<span class="fn">plot_confusion_matrices</span>(save_path=<span class="str">"confusion_matrices.png"</span>, show_plot=<span class="kw">False</span>)`
-    },
-    'clf_plot_roc_curves': {
-        tag: 'MULTIMODELCLASSIFIER — NONE',
-        title: 'plot_roc_curves(models=None, save_path=None, show_plot=True)',
-        desc: 'Plots Receiver Operating Characteristic (ROC) curves for all models in a single comparative chart. Supports binary and multiclass tasks.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-classifier.run_all_models()
-
-classifier.plot_roc_curves(save_path="roc_curves.png", show_plot=True)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
-
-<span class="var">classifier</span>.<span class="fn">plot_roc_curves</span>(save_path=<span class="str">"roc_curves.png"</span>, show_plot=<span class="kw">True</span>)`
-    },
-    'clf_plot_comparison': {
-        tag: 'MULTIMODELCLASSIFIER — NONE',
-        title: 'plot_comparison(models=None, save_path=None, show_plot=True)',
-        desc: 'Renders a grouped bar chart comparing Accuracy, Precision, Recall, and F1 Score across all models.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-classifier.run_all_models()
-
-classifier.plot_comparison(save_path="classifier_comparison.png")`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
-
-<span class="var">classifier</span>.<span class="fn">plot_comparison</span>(save_path=<span class="str">"classifier_comparison.png"</span>)`
-    },
-    'clf_get_summary': {
-        tag: 'MULTIMODELCLASSIFIER — NONE',
-        title: 'get_summary(models=None, save_prefix=None, show_plot=True)',
-        desc: 'Runs the full evaluation and visualization pipeline: prints tabular report and generates confusion matrices, ROC curves, and comparison bar charts.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-
-# Display all reports and plots
-classifier.get_summary()
-
-# Export all reports and plots to files with a prefix
-classifier.get_summary(save_prefix="iris_experiment", show_plot=False)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># Display all reports and plots</span>
-<span class="var">classifier</span>.<span class="fn">get_summary</span>()
-
-<span class="cm"># Export all reports and plots to files with a prefix</span>
-<span class="var">classifier</span>.<span class="fn">get_summary</span>(save_prefix=<span class="str">"iris_experiment"</span>, show_plot=<span class="kw">False</span>)`
-    },
-    'clf_save_report': {
-        tag: 'MULTIMODELCLASSIFIER — NONE',
-        title: 'save_report(df_or_filepath=None, filepath=None)',
-        desc: 'Saves the classifier\'s latest tabular performance report to disk.',
-        codeRaw: `from sklearn.datasets import make_classification
-from multimodel_analysis import MultiModelClassifier
-
-X, y = make_classification(n_samples=200, n_features=6, random_state=42)
-classifier = MultiModelClassifier(X=X, y=y, test_size=0.25, random_state=42)
-classifier.run_all_models()
-classifier.show_tabular_report()
-
-# Save report using default path 'report.csv'
-classifier.save_report()
-
-# Save report to specific filename
-classifier.save_report("classifier_results.xlsx")`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelClassifier</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_classification</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">6</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span> = <span class="cls">MultiModelClassifier</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>)
-<span class="var">classifier</span>.<span class="fn">run_all_models</span>()
-<span class="var">classifier</span>.<span class="fn">show_tabular_report</span>()
-
-<span class="cm"># Save report using default path 'report.csv'</span>
-<span class="var">classifier</span>.<span class="fn">save_report</span>()
-
-<span class="cm"># Save report to specific filename</span>
-<span class="var">classifier</span>.<span class="fn">save_report</span>(<span class="str">"classifier_results.xlsx"</span>)`
-    },
-
-    // --- 3. MULTIMODELREGRESSOR METHODS ---
-    'reg_LinearRegression_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'LinearRegression_model(**kwargs)',
-        desc: 'Trains an Ordinary Least Squares Linear Regression model. Safely handles random_state parameter.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-lin_res = regressor.LinearRegression_model()`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">lin_res</span> = <span class="var">regressor</span>.<span class="fn">LinearRegression_model</span>()`
-    },
-    'reg_Lasso_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'Lasso_model(alpha=0.1, random_state=None, **kwargs)',
-        desc: 'Trains a Lasso (L1 Regularized) Regression model for feature selection.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-lasso_res = regressor.Lasso_model(alpha=0.05, random_state=42)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">lasso_res</span> = <span class="var">regressor</span>.<span class="fn">Lasso_model</span>(alpha=<span class="num">0.05</span>, random_state=<span class="num">42</span>)`
-    },
-    'reg_Ridge_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'Ridge_model(alpha=1.0, random_state=None, **kwargs)',
-        desc: 'Trains a Ridge (L2 Regularized) Regression model to mitigate multicollinearity.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-ridge_res = regressor.Ridge_model(alpha=0.5, random_state=42)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">ridge_res</span> = <span class="var">regressor</span>.<span class="fn">Ridge_model</span>(alpha=<span class="num">0.5</span>, random_state=<span class="num">42</span>)`
-    },
-    'reg_SVR_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'SVR_model(kernel=\'rbf\', **kwargs)',
-        desc: 'Trains a Support Vector Regressor (SVR). Safely strips random_state parameter.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-svr_res = regressor.SVR_model(kernel='rbf', C=2.0)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">svr_res</span> = <span class="var">regressor</span>.<span class="fn">SVR_model</span>(kernel=<span class="str">'rbf'</span>, C=<span class="num">2.0</span>)`
-    },
-    'reg_DecisionTree_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'DecisionTree_model(random_state=None, **kwargs)',
-        desc: 'Trains a Decision Tree Regressor for non-linear regression tasks.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-dt_reg = regressor.DecisionTree_model(random_state=42, max_depth=6)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">dt_reg</span> = <span class="var">regressor</span>.<span class="fn">DecisionTree_model</span>(random_state=<span class="num">42</span>, max_depth=<span class="num">6</span>)`
-    },
-    'reg_RandomForest_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'RandomForest_model(n_estimators=100, random_state=None, **kwargs)',
-        desc: 'Trains an ensemble Random Forest Regressor across parallel cores.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-rf_reg = regressor.RandomForest_model(n_estimators=120, random_state=42)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">rf_reg</span> = <span class="var">regressor</span>.<span class="fn">RandomForest_model</span>(n_estimators=<span class="num">120</span>, random_state=<span class="num">42</span>)`
-    },
-    'reg_GradientBoosting_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'GradientBoosting_model(n_estimators=100, random_state=None, **kwargs)',
-        desc: 'Trains a Gradient Boosting Regressor and evaluates error metrics.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-gb_reg = regressor.GradientBoosting_model(n_estimators=100, random_state=42, learning_rate=0.08)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">gb_reg</span> = <span class="var">regressor</span>.<span class="fn">GradientBoosting_model</span>(n_estimators=<span class="num">100</span>, random_state=<span class="num">42</span>, learning_rate=<span class="num">0.08</span>)`
-    },
-    'reg_AdaBoost_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'AdaBoost_model(n_estimators=50, random_state=None, **kwargs)',
-        desc: 'Trains an AdaBoost Regressor using decision tree base estimators.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-ada_reg = regressor.AdaBoost_model(n_estimators=60, random_state=42)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">ada_reg</span> = <span class="var">regressor</span>.<span class="fn">AdaBoost_model</span>(n_estimators=<span class="num">60</span>, random_state=<span class="num">42</span>)`
-    },
-    'reg_run_all_models': {
-        tag: 'MULTIMODELREGRESSOR — LIST[TUPLE]',
-        title: 'run_all_models(custom_models=None, random_state=None)',
-        desc: 'Fits all 7 built-in regression baseline models plus optional custom regressor estimators. Caches results in regressor.models_.',
-        codeRaw: `from sklearn.datasets import make_regression
-from sklearn.ensemble import ExtraTreesRegressor
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-models = regressor.run_all_models(
-    custom_models={'Extra Trees Regressor': ExtraTreesRegressor(random_state=42)},
-    random_state=99
-)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> ExtraTreesRegressor
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">models</span> = <span class="var">regressor</span>.<span class="fn">run_all_models</span>(
-    custom_models={<span class="str">'Extra Trees Regressor'</span>: <span class="cls">ExtraTreesRegressor</span>(random_state=<span class="num">42</span>)},
-    random_state=<span class="num">99</span>
-)`
-    },
-    'reg_evaluate_model': {
-        tag: 'MULTIMODELREGRESSOR — TUPLE',
-        title: 'evaluate_model(model, X_test=None, y_true=None)',
-        desc: 'Evaluates a single fitted regressor model on test set data. Computes MAE, MSE, RMSE, and R2 Score metrics.',
-        codeRaw: `from sklearn.datasets import make_regression
-from sklearn.ensemble import RandomForestRegressor
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-rf = RandomForestRegressor(random_state=42)
-rf.fit(regressor.X_train_scaled, regressor.y_train)
-
-mae, mse, rmse, r2, y_pred = regressor.evaluate_model(rf)
-print(f"MAE: {mae:.4f}, R2 Score: {r2:.4f}")`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestRegressor
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="var">rf</span> = <span class="cls">RandomForestRegressor</span>(random_state=<span class="num">42</span>)
-<span class="var">rf</span>.<span class="fn">fit</span>(<span class="var">regressor</span>.X_train_scaled, <span class="var">regressor</span>.y_train)
-
-<span class="var">mae</span>, <span class="var">mse</span>, <span class="var">rmse</span>, <span class="var">r2</span>, <span class="var">y_pred</span> = <span class="var">regressor</span>.<span class="fn">evaluate_model</span>(<span class="var">rf</span>)
-<span class="fn">print</span>(<span class="str">f"MAE: {<span class="var">mae</span>:.4f}, R2 Score: {<span class="var">r2</span>:.4f}"</span>)`
-    },
-    'reg_show_tabular_report': {
-        tag: 'MULTIMODELREGRESSOR — PD.DATAFRAME | NONE',
-        title: 'show_tabular_report(models=None, return_df=False)',
-        desc: 'Prints a formatted comparison table of all regression model evaluation metrics sorted by R2 Score and identifies the best model.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-regressor.run_all_models()
-
-df_reg_report = regressor.show_tabular_report(return_df=True)
-print(df_reg_report.head())`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
-
-<span class="var">df_reg_report</span> = <span class="var">regressor</span>.<span class="fn">show_tabular_report</span>(return_df=<span class="num">True</span>)
-<span class="fn">print</span>(<span class="var">df_reg_report</span>.<span class="fn">head</span>())`
-    },
-    'reg_plot_true_vs_predicted': {
-        tag: 'MULTIMODELREGRESSOR — NONE',
-        title: 'plot_true_vs_predicted(models=None, save_path=None, show_plot=True)',
-        desc: 'Generates a grid scatter plot of True vs. Predicted target values with identity (y = x) reference lines for all models.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-regressor.run_all_models()
-
-regressor.plot_true_vs_predicted(save_path="true_vs_pred.png", show_plot=True)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
-
-<span class="var">regressor</span>.<span class="fn">plot_true_vs_predicted</span>(save_path=<span class="str">"true_vs_pred.png"</span>, show_plot=<span class="kw">True</span>)`
-    },
-    'reg_plot_comparison': {
-        tag: 'MULTIMODELREGRESSOR — NONE',
-        title: 'plot_comparison(models=None, save_path=None, show_plot=True)',
-        desc: 'Renders a bar chart comparing R2 Scores across all regression models.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-regressor.run_all_models()
-
-regressor.plot_comparison(save_path="r2_comparison.png")`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
-
-<span class="var">regressor</span>.<span class="fn">plot_comparison</span>(save_path=<span class="str">"r2_comparison.png"</span>)`
-    },
-    'reg_get_summary': {
-        tag: 'MULTIMODELREGRESSOR — NONE',
-        title: 'get_summary(models=None, save_prefix=None, show_plot=True)',
-        desc: 'Runs the full evaluation and visualization pipeline: prints tabular report and generates True vs. Predicted scatter plots and R2 Score comparison bar charts.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-
-# Export summary files
-regressor.get_summary(save_prefix="housing_exp", show_plot=False)`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-
-<span class="cm"># Export summary files</span>
-<span class="var">regressor</span>.<span class="fn">get_summary</span>(save_prefix=<span class="str">"housing_exp"</span>, show_plot=<span class="kw">False</span>)`
-    },
-    'reg_save_report': {
-        tag: 'MULTIMODELREGRESSOR — NONE',
-        title: 'save_report(df_or_filepath=None, filepath=None)',
-        desc: 'Saves the regressor\'s latest tabular performance report to disk.',
-        codeRaw: `from sklearn.datasets import make_regression
-from multimodel_analysis import MultiModelRegressor
-
-X, y = make_regression(n_samples=200, n_features=8, noise=0.1, random_state=42)
-regressor = MultiModelRegressor(X=X, y=y, test_size=0.2, random_state=42)
-regressor.run_all_models()
-regressor.show_tabular_report()
-
-# Save report using default path 'report.csv'
-regressor.save_report()
-
-# Save report to specific filename
-regressor.save_report("regression_metrics.xlsx")`,
-        codeHtml: `<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_regression
-<span class="kw">from</span> multimodel_analysis <span class="kw">import</span> <span class="cls">MultiModelRegressor</span>
-
-<span class="var">X</span>, <span class="var">y</span> = <span class="fn">make_regression</span>(n_samples=<span class="num">200</span>, n_features=<span class="num">8</span>, noise=<span class="num">0.1</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span> = <span class="cls">MultiModelRegressor</span>(<span class="var">X</span>=<span class="var">X</span>, <span class="var">y</span>=<span class="var">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
-<span class="var">regressor</span>.<span class="fn">run_all_models</span>()
-<span class="var">regressor</span>.<span class="fn">show_tabular_report</span>()
-
-<span class="cm"># Save report using default path 'report.csv'</span>
-<span class="var">regressor</span>.<span class="fn">save_report</span>()
-
-<span class="cm"># Save report to specific filename</span>
-<span class="var">regressor</span>.<span class="fn">save_report</span>(<span class="str">"regression_metrics.xlsx"</span>)`
-    }
-};
-
-function initApiModal() {
-    const overlay = document.getElementById('api-modal-overlay');
-    const tagEl = document.getElementById('api-modal-tag');
-    const titleEl = document.getElementById('api-modal-title');
-    const descEl = document.getElementById('api-modal-desc');
-    const codeContentEl = document.getElementById('api-modal-code-content');
-    const closeBtn = document.getElementById('api-modal-close');
-    const copyBtn = document.getElementById('api-modal-copy-btn');
-
-    if (!overlay || !closeBtn) return;
-
-    let activeRawCode = '';
-
-    // Delegate clicks on API table rows and method links
-    const tableBody = document.querySelector('#api-table tbody');
-    if (tableBody) {
-        // Add native tooltip hints to all API rows
-        tableBody.querySelectorAll('.api-row').forEach(row => {
-            row.setAttribute('title', 'Click to view example code');
-        });
-
-        tableBody.addEventListener('click', (e) => {
-            const linkEl = e.target.closest('[data-api-key]');
-            if (!linkEl) return;
-
-            const apiKey = linkEl.getAttribute('data-api-key');
-            if (apiKey && API_EXAMPLES_DATA[apiKey]) {
-                openModal(API_EXAMPLES_DATA[apiKey]);
-            }
-        });
-    }
-
-    function openModal(data) {
-        if (tagEl) tagEl.textContent = data.tag;
-        if (titleEl) titleEl.textContent = data.title;
-        if (descEl) descEl.textContent = data.desc;
-        if (codeContentEl) codeContentEl.innerHTML = data.codeHtml;
-        activeRawCode = data.codeRaw;
-
-        overlay.classList.add('active');
-        overlay.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        overlay.classList.remove('active');
-        overlay.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-    }
-
-    closeBtn.addEventListener('click', closeModal);
-
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            closeModal();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.classList.contains('active')) {
-            closeModal();
-        }
-    });
-
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            if (!activeRawCode) return;
-            navigator.clipboard.writeText(activeRawCode).then(() => {
-                const span = copyBtn.querySelector('span');
-                if (span) span.textContent = 'Copied! ✓';
-                copyBtn.style.background = 'var(--accent-emerald, #10b981)';
-                copyBtn.style.color = '#ffffff';
-
-                setTimeout(() => {
-                    if (span) span.textContent = 'Copy';
-                    copyBtn.style.background = '';
-                    copyBtn.style.color = '';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy code: ', err);
-            });
-        });
-    }
-}
-
+  /* ---------------------------------------------------------------- calculator */
+  var ids = ['tp', 'fp', 'fn', 'tn'];
+  function num(id) { var v = parseFloat($('#c-' + id).value); return isFinite(v) && v > 0 ? v : 0; }
+  function pct(n, d) { return d > 0 ? (n / d).toFixed(4) : 'n/a'; }
+  function setOut(id, v) {
+    var el = $('#o-' + id), box = el.parentElement;
+    if (el.textContent !== v) { el.textContent = v; if (!reduceMotion) { box.classList.remove('pulse'); void box.offsetWidth; box.classList.add('pulse'); } }
+  }
+  function calc() {
+    var tp = num('tp'), fp = num('fp'), fn = num('fn'), tn = num('tn'), total = tp + fp + fn + tn;
+    var p = tp + fp > 0 ? tp / (tp + fp) : NaN, r = tp + fn > 0 ? tp / (tp + fn) : NaN;
+    var f1 = isNaN(p) || isNaN(r) || p + r === 0 ? 'n/a' : (2 * p * r / (p + r)).toFixed(4);
+    var den = Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+    setOut('acc', pct(tp + tn, total)); setOut('pre', pct(tp, tp + fp)); setOut('rec', pct(tp, tp + fn));
+    setOut('spe', pct(tn, tn + fp)); setOut('f1', f1); setOut('mcc', den > 0 ? ((tp * tn - fp * fn) / den).toFixed(4) : 'n/a');
+    $('#calc-note').textContent = total ? 'Total samples: ' + total.toLocaleString() + '. "n/a" means the denominator is zero.' : 'Enter at least one count.';
+  }
+  ids.forEach(function (i) { $('#c-' + i).addEventListener('input', calc); });
+  calc();
+
+  /* initial hash: open the right tab if the target sits in a hidden panel */
+  if (location.hash) window.dispatchEvent(new Event('hashchange'));
+})();

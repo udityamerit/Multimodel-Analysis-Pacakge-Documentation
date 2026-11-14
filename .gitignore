@@ -11,3 +11,6 @@ DOCUMENTATION_REQUIREMENTS_AND_THEME.md
 scratch/
 
 test.ipynb
+# Local tooling and secrets (never commit)
+.agents/
+.claude/
