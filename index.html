@@ -10,7 +10,7 @@
   <meta property="og:title" content="multimodel-analysis documentation">
   <meta property="og:description" content="Benchmark many scikit-learn models on the same split and get one leaderboard, plots and exportable reports.">
   <meta property="og:type" content="website">
-  <link rel="icon" type="image/png" href="assets/img/logo.png">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -33,7 +33,7 @@
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
     <a class="brand" href="#introduction">
-      <img src="assets/img/logo.png" alt="" width="28" height="28">
+      <img src="assets/img/logo.svg" alt="" width="28" height="28">
       <span>multimodel-analysis</span>
       <span class="pill">v0.1.3</span>
     </a>
@@ -94,9 +94,15 @@
 
       <!-- ============ INTRODUCTION ============ -->
       <section id="introduction" data-title="Introduction">
-        <p class="eyebrow">Python package · Apache-2.0</p>
+        <p class="eyebrow">Python package · Apache-2.0 · v0.1.3</p>
         <h1>multimodel-analysis</h1>
-        <p class="lead">Train a set of scikit-learn models on the same train/test split, then get one sorted leaderboard, comparison plots and exportable reports. It covers classification and regression and needs no more than a feature matrix and a target.</p>
+        <p class="lead">Compare many scikit-learn models on your data with one call. Every model gets the same split and the same preprocessing, and you get a sorted leaderboard, plots and exportable reports for classification and regression.</p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#quickstart">Quickstart</a>
+          <a class="btn" href="#installation">Install</a>
+          <a class="btn" href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge" target="_blank" rel="noopener">GitHub</a>
+        </div>
 
         <div class="cmd" data-copy="pip install multimodel-analysis">
           <code><span class="prompt">$</span> pip install multimodel-analysis</code>
@@ -110,27 +116,109 @@
           <div><span class="k">Exports</span><span class="v">CSV, Excel, HTML, JSON</span></div>
         </div>
 
-        <h2 id="what-you-get">What it does</h2>
+        <h2 id="about-project">About the project</h2>
+        <p><code>multimodel-analysis</code> is an open-source Python package for the first step of almost every supervised-learning project: finding out which kind of model suits your data. You give it a feature matrix and a target. It trains a set of scikit-learn models, evaluates them on a held-out test set and ranks them, so you can pick a sensible baseline in minutes instead of writing the same comparison code again.</p>
+        <p>It builds directly on scikit-learn, pandas, NumPy, Matplotlib and Seaborn, and it does not try to replace them. The models it runs are ordinary scikit-learn estimators, and you can add your own.</p>
+
+        <h2 id="the-problem">The problem it addresses</h2>
+        <p>Comparing models by hand looks easy, but the same code is rewritten for every project, and small mistakes slip in unnoticed:</p>
         <ul class="plain">
-          <li><strong>One split, many models.</strong> Every model sees the same training and test rows, so the numbers are comparable.</li>
-          <li><strong>Sensible preprocessing.</strong> Optional standard scaling that is fitted on the training rows only, automatic label encoding for string targets, stratified splits for classification.</li>
-          <li><strong>Fault tolerant.</strong> If one model raises an error it is reported and skipped; the others still run.</li>
-          <li><strong>Reports.</strong> A sorted table, confusion matrices, ROC curves, a metric comparison chart (classification) or true-vs-predicted and R&sup2; charts (regression), saved as PNG and CSV.</li>
-          <li><strong>Extensible.</strong> Pass any scikit-learn-compatible estimator, for example XGBoost or LightGBM, and it is benchmarked next to the built-ins.</li>
+          <li>Each model needs its own fit, predict and metric code, so a comparison of eight models means a lot of near-identical lines.</li>
+          <li>Models end up compared on different splits or different preprocessing, so the numbers are not comparable.</li>
+          <li>Scaling the whole dataset before splitting leaks information from the test rows into training.</li>
+          <li>One model that fails to converge raises an error and stops the whole loop.</li>
+          <li>String labels, multi-class averaging and ROC curves for more than two classes each need extra care.</li>
+          <li>Turning the results into a sorted table, charts and a file you can share is more code again.</li>
         </ul>
 
-        <h2 id="at-a-glance">At a glance</h2>
-        <div class="code" data-lang="python" data-file="minimal.py">
-<pre><code>from sklearn.datasets import load_breast_cancer
-from multimodel_analysis import MultiModelClassifier
+        <h2 id="how-it-helps">How it solves it</h2>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Problem</th><th>What the package does</th></tr></thead>
+            <tbody>
+              <tr><td>Repeated boilerplate</td><td>One call, <code>run_all_models()</code>, fits and evaluates every built-in model.</td></tr>
+              <tr><td>Unfair comparison</td><td>One train/test split and one preprocessing step are shared by all models.</td></tr>
+              <tr><td>Data leakage</td><td>When <code>scaled_data=True</code>, the scaler is fitted on the training rows only and then applied to the test rows.</td></tr>
+              <tr><td>A failing model</td><td>The error is printed as a <code>[WARNING]</code> and that model is skipped; the rest still run.</td></tr>
+              <tr><td>Labels and metrics</td><td>String targets are label-encoded; Precision, Recall and F1 are weighted averages; ROC AUC is one-vs-rest for multi-class targets.</td></tr>
+              <tr><td>Reporting</td><td>A sorted table, plots, and <code>save_report</code> to CSV, Excel, HTML or JSON.</td></tr>
+              <tr><td>Your own model</td><td>Pass any scikit-learn-compatible estimator in <code>custom_models</code> and it is ranked next to the built-ins.</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-X, y = load_breast_cancer(return_X_y=True, as_frame=True)
+        <h3 id="before-after">Before and after</h3>
+        <p>A plain scikit-learn comparison, shortened to two models and four metrics:</p>
+        <div class="code" data-lang="python" data-file="plain scikit-learn">
+<pre><code>from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42)
+scaler = StandardScaler().fit(X_train)
+X_train, X_test = scaler.transform(X_train), scaler.transform(X_test)
+
+rows = []
+models = {"Logistic Regression": LogisticRegression(max_iter=1000),
+          "Random Forest": RandomForestClassifier()}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+    rows.append((name,
+                 accuracy_score(y_test, pred),
+                 precision_score(y_test, pred, average="weighted"),
+                 recall_score(y_test, pred, average="weighted"),
+                 f1_score(y_test, pred, average="weighted")))
+# ...then sorting, ROC curves, confusion matrices and exporting.</code></pre>
+        </div>
+        <p>The same job with the package, for all eight built-in classifiers:</p>
+        <div class="code" data-lang="python" data-file="multimodel-analysis">
+<pre><code>from multimodel_analysis import MultiModelClassifier
 
 clf = MultiModelClassifier(X=X, y=y, test_size=0.2, scaled_data=True, random_state=42)
 results = clf.run_all_models()
 clf.show_tabular_report(results)</code></pre>
         </div>
-        <p>That prints a table with Accuracy, Precision, Recall, F1 Score and ROC AUC for each model, best first. The <a href="#results">measured results</a> section shows the real output of exactly this kind of run.</p>
+        <p>The <a href="#results">measured results</a> section shows the real output of exactly this kind of run.</p>
+
+        <h2 id="who-for">Who it is for</h2>
+        <div class="two-col fit">
+          <div class="callout">
+            <p class="callout-title">A good fit</p>
+            <p>Students and practitioners who want a quick, fair baseline comparison on tabular data, and anyone who wants the plots and a shareable report without writing them from scratch.</p>
+          </div>
+          <div class="callout">
+            <p class="callout-title">Not what it is for</p>
+            <p>Hyper-parameter tuning, cross-validation, deep learning or production serving. It compares baseline models on a single split. See <a href="#limitations">Limitations</a>.</p>
+          </div>
+        </div>
+
+        <h2 id="about-author">About the author</h2>
+        <div class="author-card">
+          <div class="avatar" aria-hidden="true">UT</div>
+          <div class="author-body">
+            <h3>Uditya Narayan Tiwari</h3>
+            <p class="author-role">Computer Science Engineering student · AI, machine learning, generative AI, RAG and LLMs</p>
+            <p>Uditya created and maintains <code>multimodel-analysis</code> and this documentation. The package grew out of the everyday need to compare baseline models quickly and fairly, and it is developed in the open, so issues and suggestions are welcome.</p>
+            <ul class="plain inline-links">
+              <li><a href="https://udityanarayantiwari.netlify.app/" target="_blank" rel="noopener">Portfolio</a></li>
+              <li><a href="https://www.linkedin.com/in/uditya-narayan-tiwari-562332289/" target="_blank" rel="noopener">LinkedIn</a></li>
+              <li><a href="https://github.com/udityamerit" target="_blank" rel="noopener">GitHub</a></li>
+              <li><a href="https://pypi.org/project/multimodel-analysis/" target="_blank" rel="noopener">PyPI</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <h2 id="next-steps">Where to go next</h2>
+        <div class="cards">
+          <a class="card" href="#installation"><span class="card-title">Installation</span><span class="card-text">Requirements and install commands.</span></a>
+          <a class="card" href="#quickstart"><span class="card-title">Quickstart</span><span class="card-text">Classification and regression in a few lines.</span></a>
+          <a class="card" href="#results"><span class="card-title">Measured results</span><span class="card-text">Real runs on real datasets.</span></a>
+          <a class="card" href="#api"><span class="card-title">API reference</span><span class="card-text">Every class, method and parameter.</span></a>
+        </div>
       </section>
 
       <!-- ============ INSTALLATION ============ -->
@@ -580,7 +668,7 @@ clf.save_report()                        # defaults to report.csv</code></pre></
   </div>
 
   <!-- Search palette -->
-  <div class="overlay" id="search-overlay" hidden>
+  <div class="overlay overlay-top" id="search-overlay" hidden>
     <div class="palette" role="dialog" aria-modal="true" aria-label="Search documentation">
       <div class="palette-input">
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -615,7 +703,7 @@ clf.save_report()                        # defaults to report.csv</code></pre></
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
       <img id="image-full" alt="">
-      <figcaption id="image-cap"></figcaption>
+      <figcaption><span id="image-cap"></span><a id="image-orig" href="#" target="_blank" rel="noopener">Open original</a></figcaption>
     </figure>
   </div>
 

@@ -322,6 +322,7 @@
     var img = $('#image-full');
     img.src = t.dataset.full; img.alt = $('img', t).alt;
     $('#image-cap').textContent = t.dataset.cap;
+    $('#image-orig').href = t.dataset.full;
     openOverlay(imgOv, $('#image-close'));
   });
   $('#image-close').addEventListener('click', function () { closeOverlay(imgOv); });

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="multimodel-analysis logo">
+  <defs>
+    <linearGradient id="g" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4f83ff"/>
+      <stop offset="1" stop-color="#1b3fa8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#g)"/>
+  <rect x="12" y="32" width="10" height="16" rx="3" fill="#fff" fill-opacity=".5"/>
+  <rect x="27" y="24" width="10" height="24" rx="3" fill="#fff" fill-opacity=".78"/>
+  <rect x="42" y="15" width="10" height="33" rx="3" fill="#fff"/>
+  <circle cx="47" cy="9.5" r="3" fill="#ffd166"/>
+  <rect x="10" y="52" width="44" height="3" rx="1.5" fill="#fff" fill-opacity=".35"/>
+</svg>
