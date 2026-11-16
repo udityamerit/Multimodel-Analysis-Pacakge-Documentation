@@ -1,10 +1,10 @@
 {
  "meta": {
   "package": "multimodel-analysis",
-  "package_version": "0.1.3",
+  "package_version": "0.6.1",
   "scikit_learn": "1.9.1",
   "pandas": "3.1.1",
-  "numpy": "2.5.4",
+  "numpy": "2.5.5",
   "python": "3.14.7",
   "settings": {
    "test_size": 0.2,
@@ -23,7 +23,7 @@
    "classes": 2,
    "train": 455,
    "test": 114,
-   "seconds": 1.87,
+   "seconds": 0.52,
    "table": [
     {
      "Model": "Logistic Regression",
@@ -31,15 +31,17 @@
      "Precision": 0.9824561403508771,
      "Recall": 0.9824561403508771,
      "F1 Score": 0.9824561403508771,
-     "ROC AUC": 0.9953703703703703
+     "ROC AUC": 0.9953703703703703,
+     "Fit Time (s)": 0.0038203999865800142
     },
     {
      "Model": "SVM",
-     "Accuracy": 0.9736842105263158,
-     "Precision": 0.9739686589549538,
-     "Recall": 0.9736842105263158,
-     "F1 Score": 0.9737469960380177,
-     "ROC AUC": 0.9963624338624338
+     "Accuracy": 0.9824561403508771,
+     "Precision": 0.9824561403508771,
+     "Recall": 0.9824561403508771,
+     "F1 Score": 0.9824561403508771,
+     "ROC AUC": 0.9950396825396826,
+     "Fit Time (s)": 0.007992999977432191
     },
     {
      "Model": "KNN",
@@ -47,7 +49,8 @@
      "Precision": 0.9651849217638692,
      "Recall": 0.9649122807017544,
      "F1 Score": 0.9647247085304307,
-     "ROC AUC": 0.9930555555555556
+     "ROC AUC": 0.9930555555555556,
+     "Fit Time (s)": 0.0008892000187188387
     },
     {
      "Model": "Random Forest",
@@ -55,7 +58,8 @@
      "Precision": 0.9560729421281235,
      "Recall": 0.956140350877193,
      "F1 Score": 0.9560273762928302,
-     "ROC AUC": 0.9938822751322751
+     "ROC AUC": 0.9938822751322751,
+     "Fit Time (s)": 0.08252310001989827
     },
     {
      "Model": "AdaBoost",
@@ -63,7 +67,8 @@
      "Precision": 0.9568690958164642,
      "Recall": 0.956140350877193,
      "F1 Score": 0.9557756825927252,
-     "ROC AUC": 0.982473544973545
+     "ROC AUC": 0.982473544973545,
+     "Fit Time (s)": 0.06910429999697953
     },
     {
      "Model": "Gradient Boosting",
@@ -71,7 +76,8 @@
      "Precision": 0.9568690958164642,
      "Recall": 0.956140350877193,
      "F1 Score": 0.9557756825927252,
-     "ROC AUC": 0.9907407407407408
+     "ROC AUC": 0.9907407407407408,
+     "Fit Time (s)": 0.1955318000400439
     },
     {
      "Model": "Naive Bayes",
@@ -79,7 +85,8 @@
      "Precision": 0.9298245614035088,
      "Recall": 0.9298245614035088,
      "F1 Score": 0.9298245614035088,
-     "ROC AUC": 0.9867724867724867
+     "ROC AUC": 0.9867724867724867,
+     "Fit Time (s)": 0.0010371999815106392
     },
     {
      "Model": "Decision Tree",
@@ -87,10 +94,11 @@
      "Precision": 0.9160721496836722,
      "Recall": 0.9122807017543859,
      "F1 Score": 0.9130211893369787,
-     "ROC AUC": 0.9156746031746031
+     "ROC AUC": 0.9156746031746031,
+     "Fit Time (s)": 0.0036140999873168766
     }
    ],
-   "console": "\n============================================================\n MODEL COMPARISON TABLE \n============================================================\n              Model  Accuracy  Precision   Recall  F1 Score  ROC AUC\nLogistic Regression  0.982456   0.982456 0.982456  0.982456 0.995370\n                SVM  0.973684   0.973969 0.973684  0.973747 0.996362\n                KNN  0.964912   0.965185 0.964912  0.964725 0.993056\n      Random Forest  0.956140   0.956073 0.956140  0.956027 0.993882\n           AdaBoost  0.956140   0.956869 0.956140  0.955776 0.982474\n  Gradient Boosting  0.956140   0.956869 0.956140  0.955776 0.990741\n        Naive Bayes  0.929825   0.929825 0.929825  0.929825 0.986772\n      Decision Tree  0.912281   0.916072 0.912281  0.913021 0.915675\n============================================================\n\n* BEST MODEL RECOMMENDATION: Logistic Regression\n   Accuracy: 0.9825 | F1 Score: 0.9825\n============================================================\n\n"
+   "console": "\n============================================================\n MODEL COMPARISON TABLE \n============================================================\n              Model  Accuracy  Precision   Recall  F1 Score  ROC AUC  Fit Time (s)\nLogistic Regression  0.982456   0.982456 0.982456  0.982456 0.995370      0.003820\n                SVM  0.982456   0.982456 0.982456  0.982456 0.995040      0.007993\n                KNN  0.964912   0.965185 0.964912  0.964725 0.993056      0.000889\n      Random Forest  0.956140   0.956073 0.956140  0.956027 0.993882      0.082523\n           AdaBoost  0.956140   0.956869 0.956140  0.955776 0.982474      0.069104\n  Gradient Boosting  0.956140   0.956869 0.956140  0.955776 0.990741      0.195532\n        Naive Bayes  0.929825   0.929825 0.929825  0.929825 0.986772      0.001037\n      Decision Tree  0.912281   0.916072 0.912281  0.913021 0.915675      0.003614\n============================================================\n\n* BEST MODEL RECOMMENDATION (by Accuracy): Logistic Regression\n   Accuracy: 0.9825 | F1 Score: 0.9825\n============================================================\n\n"
   },
   {
    "id": "wine",
@@ -101,7 +109,7 @@
    "classes": 3,
    "train": 142,
    "test": 36,
-   "seconds": 1.23,
+   "seconds": 0.43,
    "table": [
     {
      "Model": "KNN",
@@ -109,7 +117,8 @@
      "Precision": 1.0,
      "Recall": 1.0,
      "F1 Score": 1.0,
-     "ROC AUC": 1.0
+     "ROC AUC": 1.0,
+     "Fit Time (s)": 0.0007857999880798161
     },
     {
      "Model": "Random Forest",
@@ -117,15 +126,17 @@
      "Precision": 1.0,
      "Recall": 1.0,
      "F1 Score": 1.0,
-     "ROC AUC": 1.0
+     "ROC AUC": 1.0,
+     "Fit Time (s)": 0.07830100000137463
     },
     {
-     "Model": "Naive Bayes",
+     "Model": "SVM",
      "Accuracy": 0.9722222222222222,
-     "Precision": 0.9743589743589745,
+     "Precision": 0.974074074074074,
      "Recall": 0.9722222222222222,
-     "F1 Score": 0.9722633744855966,
-     "ROC AUC": 1.0
+     "F1 Score": 0.9719701552732407,
+     "ROC AUC": 1.0,
+     "Fit Time (s)": 0.002751499996520579
     },
     {
      "Model": "Logistic Regression",
@@ -133,7 +144,17 @@
      "Precision": 0.974074074074074,
      "Recall": 0.9722222222222222,
      "F1 Score": 0.9719701552732407,
-     "ROC AUC": 1.0
+     "ROC AUC": 1.0,
+     "Fit Time (s)": 0.004297000006772578
+    },
+    {
+     "Model": "Naive Bayes",
+     "Accuracy": 0.9722222222222222,
+     "Precision": 0.9743589743589745,
+     "Recall": 0.9722222222222222,
+     "F1 Score": 0.9722633744855966,
+     "ROC AUC": 1.0,
+     "Fit Time (s)": 0.0010378000442869961
     },
     {
      "Model": "Decision Tree",
@@ -141,15 +162,8 @@
      "Precision": 0.9513888888888888,
      "Recall": 0.9444444444444444,
      "F1 Score": 0.9449614374099499,
-     "ROC AUC": 0.9545454545454545
-    },
-    {
-     "Model": "SVM",
-     "Accuracy": 0.9444444444444444,
-     "Precision": 0.9465811965811967,
-     "Recall": 0.9444444444444444,
-     "F1 Score": 0.944269005847953,
-     "ROC AUC": 0.9987373737373737
+     "ROC AUC": 0.9545454545454545,
+     "Fit Time (s)": 0.0012233000015839934
     },
     {
      "Model": "Gradient Boosting",
@@ -157,7 +171,8 @@
      "Precision": 0.9465811965811967,
      "Recall": 0.9444444444444444,
      "F1 Score": 0.944269005847953,
-     "ROC AUC": 0.9974747474747474
+     "ROC AUC": 0.9974747474747474,
+     "Fit Time (s)": 0.15012529998784885
     },
     {
      "Model": "AdaBoost",
@@ -165,10 +180,11 @@
      "Precision": 0.9224664224664225,
      "Recall": 0.9166666666666666,
      "F1 Score": 0.9165292147748288,
-     "ROC AUC": 0.9974747474747474
+     "ROC AUC": 0.9974747474747474,
+     "Fit Time (s)": 0.03824480000184849
     }
    ],
-   "console": "\n============================================================\n MODEL COMPARISON TABLE \n============================================================\n              Model  Accuracy  Precision   Recall  F1 Score  ROC AUC\n                KNN  1.000000   1.000000 1.000000  1.000000 1.000000\n      Random Forest  1.000000   1.000000 1.000000  1.000000 1.000000\n        Naive Bayes  0.972222   0.974359 0.972222  0.972263 1.000000\nLogistic Regression  0.972222   0.974074 0.972222  0.971970 1.000000\n      Decision Tree  0.944444   0.951389 0.944444  0.944961 0.954545\n                SVM  0.944444   0.946581 0.944444  0.944269 0.998737\n  Gradient Boosting  0.944444   0.946581 0.944444  0.944269 0.997475\n           AdaBoost  0.916667   0.922466 0.916667  0.916529 0.997475\n============================================================\n\n* BEST MODEL RECOMMENDATION: KNN\n   Accuracy: 1.0000 | F1 Score: 1.0000\n============================================================\n\n"
+   "console": "\n============================================================\n MODEL COMPARISON TABLE \n============================================================\n              Model  Accuracy  Precision   Recall  F1 Score  ROC AUC  Fit Time (s)\n                KNN  1.000000   1.000000 1.000000  1.000000 1.000000      0.000786\n      Random Forest  1.000000   1.000000 1.000000  1.000000 1.000000      0.078301\n                SVM  0.972222   0.974074 0.972222  0.971970 1.000000      0.002751\nLogistic Regression  0.972222   0.974074 0.972222  0.971970 1.000000      0.004297\n        Naive Bayes  0.972222   0.974359 0.972222  0.972263 1.000000      0.001038\n      Decision Tree  0.944444   0.951389 0.944444  0.944961 0.954545      0.001223\n  Gradient Boosting  0.944444   0.946581 0.944444  0.944269 0.997475      0.150125\n           AdaBoost  0.916667   0.922466 0.916667  0.916529 0.997475      0.038245\n============================================================\n\n* BEST MODEL RECOMMENDATION (by Accuracy): KNN\n   Accuracy: 1.0000 | F1 Score: 1.0000\n============================================================\n\n"
   },
   {
    "id": "digits",
@@ -179,15 +195,16 @@
    "classes": 10,
    "train": 1437,
    "test": 360,
-   "seconds": 11.95,
+   "seconds": 4.81,
    "table": [
     {
      "Model": "SVM",
      "Accuracy": 0.975,
-     "Precision": 0.9754073563695275,
+     "Precision": 0.9758870712818082,
      "Recall": 0.975,
-     "F1 Score": 0.974897310927775,
-     "ROC AUC": 0.9996233774878139
+     "F1 Score": 0.9749341232105315,
+     "ROC AUC": 0.999460588793922,
+     "Fit Time (s)": 0.16470640001352876
     },
     {
      "Model": "Logistic Regression",
@@ -195,7 +212,8 @@
      "Precision": 0.972370396712502,
      "Recall": 0.9722222222222222,
      "F1 Score": 0.972220642985258,
-     "ROC AUC": 0.9990921968977523
+     "ROC AUC": 0.9990921968977523,
+     "Fit Time (s)": 0.016802099999040365
     },
     {
      "Model": "Random Forest",
@@ -203,7 +221,8 @@
      "Precision": 0.9644324534852787,
      "Recall": 0.9638888888888889,
      "F1 Score": 0.9636095059177866,
-     "ROC AUC": 0.999215943537409
+     "ROC AUC": 0.999215943537409,
+     "Fit Time (s)": 0.1290397999691777
     },
     {
      "Model": "KNN",
@@ -211,7 +230,8 @@
      "Precision": 0.9623599323025069,
      "Recall": 0.9611111111111111,
      "F1 Score": 0.9608893274309268,
-     "ROC AUC": 0.9963398225653702
+     "ROC AUC": 0.9963441224492996,
+     "Fit Time (s)": 0.0009356000227853656
     },
     {
      "Model": "Gradient Boosting",
@@ -219,7 +239,8 @@
      "Precision": 0.9530912546921319,
      "Recall": 0.9527777777777777,
      "F1 Score": 0.9523458407051374,
-     "ROC AUC": 0.9988612693890471
+     "ROC AUC": 0.9988612693890471,
+     "Fit Time (s)": 4.154556000023149
     },
     {
      "Model": "Decision Tree",
@@ -227,7 +248,8 @@
      "Precision": 0.8161877919995492,
      "Recall": 0.8166666666666667,
      "F1 Score": 0.815495877233271,
-     "ROC AUC": 0.8981762559574736
+     "ROC AUC": 0.8981762559574736,
+     "Fit Time (s)": 0.011588100052904338
     },
     {
      "Model": "Naive Bayes",
@@ -235,7 +257,8 @@
      "Precision": 0.8115651949207483,
      "Recall": 0.7416666666666667,
      "F1 Score": 0.7418508070783839,
-     "ROC AUC": 0.9667296047282146
+     "ROC AUC": 0.9666953506632155,
+     "Fit Time (s)": 0.0019750999636016786
     },
     {
      "Model": "AdaBoost",
@@ -243,10 +266,11 @@
      "Precision": 0.7343531453066625,
      "Recall": 0.7277777777777777,
      "F1 Score": 0.720899015377105,
-     "ROC AUC": 0.9571771833698075
+     "ROC AUC": 0.9571771833698075,
+     "Fit Time (s)": 0.1118692000163719
     }
    ],
-   "console": "\n============================================================\n MODEL COMPARISON TABLE \n============================================================\n              Model  Accuracy  Precision   Recall  F1 Score  ROC AUC\n                SVM  0.975000   0.975407 0.975000  0.974897 0.999623\nLogistic Regression  0.972222   0.972370 0.972222  0.972221 0.999092\n      Random Forest  0.963889   0.964432 0.963889  0.963610 0.999216\n                KNN  0.961111   0.962360 0.961111  0.960889 0.996340\n  Gradient Boosting  0.952778   0.953091 0.952778  0.952346 0.998861\n      Decision Tree  0.816667   0.816188 0.816667  0.815496 0.898176\n        Naive Bayes  0.741667   0.811565 0.741667  0.741851 0.966730\n           AdaBoost  0.727778   0.734353 0.727778  0.720899 0.957177\n============================================================\n\n* BEST MODEL RECOMMENDATION: SVM\n   Accuracy: 0.9750 | F1 Score: 0.9749\n============================================================\n\n"
+   "console": "\n============================================================\n MODEL COMPARISON TABLE \n============================================================\n              Model  Accuracy  Precision   Recall  F1 Score  ROC AUC  Fit Time (s)\n                SVM  0.975000   0.975887 0.975000  0.974934 0.999461      0.164706\nLogistic Regression  0.972222   0.972370 0.972222  0.972221 0.999092      0.016802\n      Random Forest  0.963889   0.964432 0.963889  0.963610 0.999216      0.129040\n                KNN  0.961111   0.962360 0.961111  0.960889 0.996344      0.000936\n  Gradient Boosting  0.952778   0.953091 0.952778  0.952346 0.998861      4.154556\n      Decision Tree  0.816667   0.816188 0.816667  0.815496 0.898176      0.011588\n        Naive Bayes  0.741667   0.811565 0.741667  0.741851 0.966695      0.001975\n           AdaBoost  0.727778   0.734353 0.727778  0.720899 0.957177      0.111869\n============================================================\n\n* BEST MODEL RECOMMENDATION (by Accuracy): SVM\n   Accuracy: 0.9750 | F1 Score: 0.9749\n============================================================\n\n"
   }
  ],
  "regression": [
@@ -258,66 +282,82 @@
    "features": 10,
    "train": 353,
    "test": 89,
-   "seconds": 0.6,
+   "seconds": 0.22,
    "table": [
+    {
+     "Model": "SVR",
+     "MAE": 38.924270432698314,
+     "MSE": 2526.6175822287805,
+     "RMSE": 50.26547107337979,
+     "R2 Score": 0.5231133983778036,
+     "Fit Time (s)": 0.0040006000199355185
+    },
     {
      "Model": "Lasso Regression",
      "MAE": 42.805234446768836,
-     "MSE": 2884.624288735213,
-     "RMSE": 53.708698445737944,
-     "R2 Score": 0.455541399027904
+     "MSE": 2884.6242887352128,
+     "RMSE": 53.70869844573794,
+     "R2 Score": 0.455541399027904,
+     "Fit Time (s)": 0.000902600004337728
     },
     {
      "Model": "Gradient Boosting Regressor",
      "MAE": 44.51935924291035,
      "MSE": 2886.9916281814453,
      "RMSE": 53.730732622787166,
-     "R2 Score": 0.45509457538852915
+     "R2 Score": 0.45509457538852915,
+     "Fit Time (s)": 0.055631999974139035
     },
     {
      "Model": "Ridge Regression",
      "MAE": 42.81199941834889,
-     "MSE": 2892.014565750172,
-     "RMSE": 53.77745406534389,
-     "R2 Score": 0.45414652070698236
+     "MSE": 2892.0145657501726,
+     "RMSE": 53.777454065343896,
+     "R2 Score": 0.45414652070698225,
+     "Fit Time (s)": 0.0006563999922946095
     },
     {
      "Model": "Linear Regression",
-     "MAE": 42.79409467959996,
-     "MSE": 2900.193628493484,
-     "RMSE": 53.85344583676595,
-     "R2 Score": 0.45260276297191904
+     "MAE": 42.79409467959993,
+     "MSE": 2900.193628493481,
+     "RMSE": 53.85344583676592,
+     "R2 Score": 0.4526027629719196,
+     "Fit Time (s)": 0.0008527999743819237
     },
     {
      "Model": "AdaBoost Regressor",
      "MAE": 45.07623164874507,
      "MSE": 2956.8963775887487,
      "RMSE": 54.37735169708753,
-     "R2 Score": 0.4419003988670893
+     "R2 Score": 0.4419003988670893,
+     "Fit Time (s)": 0.04545269999653101
     },
     {
      "Model": "Random Forest Regressor",
      "MAE": 44.171235955056176,
      "MSE": 2959.180561797753,
      "RMSE": 54.398350726816645,
-     "R2 Score": 0.44146927036843053
+     "R2 Score": 0.44146927036843053,
+     "Fit Time (s)": 0.06679120002081618
     },
     {
-     "Model": "SVR",
-     "MAE": 56.02947330400618,
-     "MSE": 4332.738479345716,
-     "RMSE": 65.82354046498651,
-     "R2 Score": 0.1822169909423953
+     "Model": "KNN Regressor",
+     "MAE": 42.777528089887646,
+     "MSE": 3047.449887640449,
+     "RMSE": 55.203712625515045,
+     "R2 Score": 0.42480887066066253,
+     "Fit Time (s)": 0.0006464999751187861
     },
     {
      "Model": "Decision Tree Regressor",
      "MAE": 53.92134831460674,
      "MSE": 4887.0,
      "RMSE": 69.90708118638626,
-     "R2 Score": 0.077602863797119
+     "R2 Score": 0.077602863797119,
+     "Fit Time (s)": 0.0023994999937713146
     }
    ],
-   "console": "\n============================================================\n REGRESSION MODEL COMPARISON TABLE \n============================================================\n                      Model       MAE         MSE      RMSE  R2 Score\n           Lasso Regression 42.805234 2884.624289 53.708698  0.455541\nGradient Boosting Regressor 44.519359 2886.991628 53.730733  0.455095\n           Ridge Regression 42.811999 2892.014566 53.777454  0.454147\n          Linear Regression 42.794095 2900.193628 53.853446  0.452603\n         AdaBoost Regressor 45.076232 2956.896378 54.377352  0.441900\n    Random Forest Regressor 44.171236 2959.180562 54.398351  0.441469\n                        SVR 56.029473 4332.738479 65.823540  0.182217\n    Decision Tree Regressor 53.921348 4887.000000 69.907081  0.077603\n============================================================\n\n* BEST MODEL RECOMMENDATION: Lasso Regression\n   R2 Score: 0.4555 | RMSE: 53.7087\n============================================================\n\n"
+   "console": "\n============================================================\n REGRESSION MODEL COMPARISON TABLE \n============================================================\n                      Model       MAE         MSE      RMSE  R2 Score  Fit Time (s)\n                        SVR 38.924270 2526.617582 50.265471  0.523113      0.004001\n           Lasso Regression 42.805234 2884.624289 53.708698  0.455541      0.000903\nGradient Boosting Regressor 44.519359 2886.991628 53.730733  0.455095      0.055632\n           Ridge Regression 42.811999 2892.014566 53.777454  0.454147      0.000656\n          Linear Regression 42.794095 2900.193628 53.853446  0.452603      0.000853\n         AdaBoost Regressor 45.076232 2956.896378 54.377352  0.441900      0.045453\n    Random Forest Regressor 44.171236 2959.180562 54.398351  0.441469      0.066791\n              KNN Regressor 42.777528 3047.449888 55.203713  0.424809      0.000646\n    Decision Tree Regressor 53.921348 4887.000000 69.907081  0.077603      0.002399\n============================================================\n\n* BEST MODEL RECOMMENDATION (by R2 Score): SVR\n   R2 Score: 0.5231 | RMSE: 50.2655\n============================================================\n\n"
   },
   {
    "id": "california",
@@ -327,81 +367,724 @@
    "features": 8,
    "train": 4000,
    "test": 1000,
-   "seconds": 3.63,
+   "seconds": 1.42,
    "table": [
     {
      "Model": "Random Forest Regressor",
      "MAE": 0.2658129689,
      "MSE": 0.1805412990638115,
      "RMSE": 0.42490151689987116,
-     "R2 Score": 0.8474909818074731
+     "R2 Score": 0.8474909818074731,
+     "Fit Time (s)": 0.2582811000174843
     },
     {
      "Model": "Gradient Boosting Regressor",
      "MAE": 0.2929359702711728,
      "MSE": 0.19948321777396208,
      "RMSE": 0.4466354416903814,
-     "R2 Score": 0.8314901363491346
+     "R2 Score": 0.8314901363491346,
+     "Fit Time (s)": 0.5111814999836497
     },
     {
      "Model": "SVR",
-     "MAE": 0.34319235604414894,
-     "MSE": 0.3155454739686685,
-     "RMSE": 0.5617343446582811,
-     "R2 Score": 0.7334486309802826
+     "MAE": 0.342537197129157,
+     "MSE": 0.3146113890710804,
+     "RMSE": 0.5609022990424272,
+     "R2 Score": 0.7342376824127156,
+     "Fit Time (s)": 0.27090689999749884
+    },
+    {
+     "Model": "KNN Regressor",
+     "MAE": 0.37185340799999994,
+     "MSE": 0.33922601114521594,
+     "RMSE": 0.5824311213742067,
+     "R2 Score": 0.7134449227218722,
+     "Fit Time (s)": 0.0033257000031881034
     },
     {
      "Model": "Decision Tree Regressor",
      "MAE": 0.37003932999999994,
      "MSE": 0.3943123565633,
      "RMSE": 0.6279429564564762,
-     "R2 Score": 0.6669117222902244
+     "R2 Score": 0.6669117222902244,
+     "Fit Time (s)": 0.02110690000699833
     },
     {
      "Model": "Linear Regression",
      "MAE": 0.4951414467611884,
      "MSE": 0.4835646740484119,
      "RMSE": 0.6953881463243473,
-     "R2 Score": 0.5915174308918276
+     "R2 Score": 0.5915174308918276,
+     "Fit Time (s)": 0.001160199986770749
     },
     {
      "Model": "Ridge Regression",
      "MAE": 0.4952062622985235,
      "MSE": 0.48369133659189406,
      "RMSE": 0.6954792136303529,
-     "R2 Score": 0.5914104349842518
+     "R2 Score": 0.5914104349842518,
+     "Fit Time (s)": 0.0009221999789588153
     },
     {
      "Model": "AdaBoost Regressor",
      "MAE": 0.6126615988168203,
      "MSE": 0.5127991810673145,
      "RMSE": 0.7160999797984319,
-     "R2 Score": 0.5668221064097569
+     "R2 Score": 0.5668221064097569,
+     "Fit Time (s)": 0.14018770004622638
     },
     {
      "Model": "Lasso Regression",
      "MAE": 0.5689827505633733,
      "MSE": 0.6058628096932728,
      "RMSE": 0.7783718967776733,
-     "R2 Score": 0.4882082784115306
+     "R2 Score": 0.4882082784115306,
+     "Fit Time (s)": 0.0008300999761559069
     }
    ],
-   "console": "\n============================================================\n REGRESSION MODEL COMPARISON TABLE \n============================================================\n                      Model      MAE      MSE     RMSE  R2 Score\n    Random Forest Regressor 0.265813 0.180541 0.424902  0.847491\nGradient Boosting Regressor 0.292936 0.199483 0.446635  0.831490\n                        SVR 0.343192 0.315545 0.561734  0.733449\n    Decision Tree Regressor 0.370039 0.394312 0.627943  0.666912\n          Linear Regression 0.495141 0.483565 0.695388  0.591517\n           Ridge Regression 0.495206 0.483691 0.695479  0.591410\n         AdaBoost Regressor 0.612662 0.512799 0.716100  0.566822\n           Lasso Regression 0.568983 0.605863 0.778372  0.488208\n============================================================\n\n* BEST MODEL RECOMMENDATION: Random Forest Regressor\n   R2 Score: 0.8475 | RMSE: 0.4249\n============================================================\n\n"
+   "console": "\n============================================================\n REGRESSION MODEL COMPARISON TABLE \n============================================================\n                      Model      MAE      MSE     RMSE  R2 Score  Fit Time (s)\n    Random Forest Regressor 0.265813 0.180541 0.424902  0.847491      0.258281\nGradient Boosting Regressor 0.292936 0.199483 0.446635  0.831490      0.511181\n                        SVR 0.342537 0.314611 0.560902  0.734238      0.270907\n              KNN Regressor 0.371853 0.339226 0.582431  0.713445      0.003326\n    Decision Tree Regressor 0.370039 0.394312 0.627943  0.666912      0.021107\n          Linear Regression 0.495141 0.483565 0.695388  0.591517      0.001160\n           Ridge Regression 0.495206 0.483691 0.695479  0.591410      0.000922\n         AdaBoost Regressor 0.612662 0.512799 0.716100  0.566822      0.140188\n           Lasso Regression 0.568983 0.605863 0.778372  0.488208      0.000830\n============================================================\n\n* BEST MODEL RECOMMENDATION (by R2 Score): Random Forest Regressor\n   R2 Score: 0.8475 | RMSE: 0.4249\n============================================================\n\n"
   }
  ],
- "custom_check": {
-  "n_models": 9,
-  "names": [
-   "Logistic Regression",
-   "SVM",
-   "Decision Tree",
-   "KNN",
-   "Naive Bayes",
-   "Random Forest",
-   "Gradient Boosting",
-   "AdaBoost",
-   "Extra Trees"
-  ]
- },
- "regression_model_count": 8
+ "clustering": [
+  {
+   "id": "iris",
+   "title": "Iris",
+   "rows": 150,
+   "features": 4,
+   "seconds": 0.15,
+   "table": [
+    {
+     "Model": "DBSCAN",
+     "Clusters": 2,
+     "Noise Points": 5,
+     "Silhouette": 0.600152434408338,
+     "Calinski-Harabasz": 280.36792482752907,
+     "Davies-Bouldin": 0.5658654054032226,
+     "Fit Time (s)": 0.019722199998795986
+    },
+    {
+     "Model": "KMeans",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.45994823920518635,
+     "Calinski-Harabasz": 241.90440170183157,
+     "Davies-Bouldin": 0.8335949464754338,
+     "Fit Time (s)": 0.013806300004944205
+    },
+    {
+     "Model": "Spectral Clustering",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.4593010216876192,
+     "Calinski-Harabasz": 229.67993152210758,
+     "Davies-Bouldin": 0.8223619792445142,
+     "Fit Time (s)": 0.03685680002672598
+    },
+    {
+     "Model": "MiniBatch KMeans",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.4565352255831263,
+     "Calinski-Harabasz": 239.48453205486408,
+     "Davies-Bouldin": 0.8275118026450464,
+     "Fit Time (s)": 0.021806799981277436
+    },
+    {
+     "Model": "Birch",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.4535501305989079,
+     "Calinski-Harabasz": 219.8187692728255,
+     "Davies-Bouldin": 0.8218303312861611,
+     "Fit Time (s)": 0.0019687999738380313
+    },
+    {
+     "Model": "Agglomerative (Ward)",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.4466890410285909,
+     "Calinski-Harabasz": 222.71916382215363,
+     "Davies-Bouldin": 0.8034665302876753,
+     "Fit Time (s)": 0.0021095999982208014
+    },
+    {
+     "Model": "Gaussian Mixture",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.37416491866541235,
+     "Calinski-Harabasz": 187.77445116683708,
+     "Davies-Bouldin": 1.0809331199064374,
+     "Fit Time (s)": 0.028737800021190196
+    }
+   ],
+   "console": "\n======================================================================\n CLUSTERING MODEL COMPARISON \n======================================================================\n               Model  Clusters  Noise Points  Silhouette  Calinski-Harabasz  Davies-Bouldin  Fit Time (s)\n              DBSCAN         2             5      0.6002           280.3679          0.5659        0.0197\n              KMeans         3             0      0.4599           241.9044          0.8336        0.0138\n Spectral Clustering         3             0      0.4593           229.6799          0.8224        0.0369\n    MiniBatch KMeans         3             0      0.4565           239.4845          0.8275        0.0218\n               Birch         3             0      0.4536           219.8188          0.8218        0.0020\nAgglomerative (Ward)         3             0      0.4467           222.7192          0.8035        0.0021\n    Gaussian Mixture         3             0      0.3742           187.7745          1.0809        0.0287\n======================================================================\n\n* BEST MODEL (by Silhouette): DBSCAN  - 2 clusters, Silhouette 0.6002\n  Silhouette: above 0.5 = clear groups, 0.25-0.5 = reasonable, below 0.25 = weak structure.\n  Davies-Bouldin: lower is better. Noise points (label -1) are left out of the scores.\n  Note: DBSCAN set 5 rows (3.3%) aside as noise, which helps its score. Compare it with the models that label every row.\n======================================================================\n\n"
+  },
+  {
+   "id": "wine",
+   "title": "Wine Recognition",
+   "rows": 178,
+   "features": 13,
+   "seconds": 0.13,
+   "table": [
+    {
+     "Model": "KMeans",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2848589191898987,
+     "Calinski-Harabasz": 70.9400080031512,
+     "Davies-Bouldin": 1.3891879777181646,
+     "Fit Time (s)": 0.016421200009062886
+    },
+    {
+     "Model": "Gaussian Mixture",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2844212860533542,
+     "Calinski-Harabasz": 70.68777673224997,
+     "Davies-Bouldin": 1.3938008647586722,
+     "Fit Time (s)": 0.012033899954985827
+    },
+    {
+     "Model": "MiniBatch KMeans",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2840032086408505,
+     "Calinski-Harabasz": 70.79360761598548,
+     "Davies-Bouldin": 1.391340656834198,
+     "Fit Time (s)": 0.030951399996411055
+    },
+    {
+     "Model": "Spectral Clustering",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2828499553125854,
+     "Calinski-Harabasz": 70.04106747515404,
+     "Davies-Bouldin": 1.3907413947652447,
+     "Fit Time (s)": 0.03292249998776242
+    },
+    {
+     "Model": "Agglomerative (Ward)",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2774439826952266,
+     "Calinski-Harabasz": 67.6474675044098,
+     "Davies-Bouldin": 1.4185919431857326,
+     "Fit Time (s)": 0.0011749000404961407
+    },
+    {
+     "Model": "Birch",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2774439826952266,
+     "Calinski-Harabasz": 67.6474675044098,
+     "Davies-Bouldin": 1.4185919431857326,
+     "Fit Time (s)": 0.004407599975820631
+    },
+    {
+     "Model": "DBSCAN",
+     "Clusters": 1,
+     "Noise Points": 9,
+     "Silhouette": null,
+     "Calinski-Harabasz": null,
+     "Davies-Bouldin": null,
+     "Fit Time (s)": 0.016719400009606034
+    }
+   ],
+   "console": "\n======================================================================\n CLUSTERING MODEL COMPARISON \n======================================================================\n               Model  Clusters  Noise Points  Silhouette  Calinski-Harabasz  Davies-Bouldin  Fit Time (s)\n              KMeans         3             0      0.2849            70.9400          1.3892        0.0164\n    Gaussian Mixture         3             0      0.2844            70.6878          1.3938        0.0120\n    MiniBatch KMeans         3             0      0.2840            70.7936          1.3913        0.0310\n Spectral Clustering         3             0      0.2828            70.0411          1.3907        0.0329\nAgglomerative (Ward)         3             0      0.2774            67.6475          1.4186        0.0012\n               Birch         3             0      0.2774            67.6475          1.4186        0.0044\n              DBSCAN         1             9         N/A                N/A             N/A        0.0167\n======================================================================\n\n* BEST MODEL (by Silhouette): KMeans  - 3 clusters, Silhouette 0.2849\n  Silhouette: above 0.5 = clear groups, 0.25-0.5 = reasonable, below 0.25 = weak structure.\n  Davies-Bouldin: lower is better. Noise points (label -1) are left out of the scores.\n======================================================================\n\n"
+  },
+  {
+   "id": "breast_cancer",
+   "title": "Breast Cancer Wisconsin",
+   "rows": 569,
+   "features": 30,
+   "seconds": 0.26,
+   "table": [
+    {
+     "Model": "Agglomerative (Ward)",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.33009721062922587,
+     "Calinski-Harabasz": 182.17394580771122,
+     "Davies-Bouldin": 1.556389937521331,
+     "Fit Time (s)": 0.008382300031371415
+    },
+    {
+     "Model": "Birch",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.33009721062922587,
+     "Calinski-Harabasz": 182.17394580771122,
+     "Davies-Bouldin": 1.556389937521331,
+     "Fit Time (s)": 0.025829899997916073
+    },
+    {
+     "Model": "KMeans",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.3143840098608098,
+     "Calinski-Harabasz": 197.1140002277671,
+     "Davies-Bouldin": 1.5293883767807952,
+     "Fit Time (s)": 0.025607399991713464
+    },
+    {
+     "Model": "Spectral Clustering",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.286205485136543,
+     "Calinski-Harabasz": 192.0368295085451,
+     "Davies-Bouldin": 1.5720928629858648,
+     "Fit Time (s)": 0.038521000009495765
+    },
+    {
+     "Model": "Gaussian Mixture",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.2743259551119301,
+     "Calinski-Harabasz": 172.23114128584754,
+     "Davies-Bouldin": 1.7056771339574819,
+     "Fit Time (s)": 0.0803343000006862
+    },
+    {
+     "Model": "MiniBatch KMeans",
+     "Clusters": 3,
+     "Noise Points": 0,
+     "Silhouette": 0.15474897154573536,
+     "Calinski-Harabasz": 168.62891780634885,
+     "Davies-Bouldin": 1.83598848264446,
+     "Fit Time (s)": 0.026029100001323968
+    },
+    {
+     "Model": "DBSCAN",
+     "Clusters": 1,
+     "Noise Points": 38,
+     "Silhouette": null,
+     "Calinski-Harabasz": null,
+     "Davies-Bouldin": null,
+     "Fit Time (s)": 0.005740599997807294
+    }
+   ],
+   "console": "\n======================================================================\n CLUSTERING MODEL COMPARISON \n======================================================================\n               Model  Clusters  Noise Points  Silhouette  Calinski-Harabasz  Davies-Bouldin  Fit Time (s)\nAgglomerative (Ward)         3             0      0.3301           182.1739          1.5564        0.0084\n               Birch         3             0      0.3301           182.1739          1.5564        0.0258\n              KMeans         3             0      0.3144           197.1140          1.5294        0.0256\n Spectral Clustering         3             0      0.2862           192.0368          1.5721        0.0385\n    Gaussian Mixture         3             0      0.2743           172.2311          1.7057        0.0803\n    MiniBatch KMeans         3             0      0.1547           168.6289          1.8360        0.0260\n              DBSCAN         1            38         N/A                N/A             N/A        0.0057\n======================================================================\n\n* BEST MODEL (by Silhouette): Agglomerative (Ward)  - 3 clusters, Silhouette 0.3301\n  Silhouette: above 0.5 = clear groups, 0.25-0.5 = reasonable, below 0.25 = weak structure.\n  Davies-Bouldin: lower is better. Noise points (label -1) are left out of the scores.\n======================================================================\n\n"
+  }
+ ],
+ "anomaly": [
+  {
+   "id": "iris",
+   "title": "Iris",
+   "rows": 150,
+   "features": 4,
+   "seconds": 0.26,
+   "table": [
+    {
+     "Model": "Isolation Forest",
+     "Anomalies": 8,
+     "Anomaly Rate (%)": 5.333333333333334,
+     "Agreement": 0.8648631192257549,
+     "Fit Time (s)": 0.214860400010366
+    },
+    {
+     "Model": "Local Outlier Factor",
+     "Anomalies": 8,
+     "Anomaly Rate (%)": 5.333333333333334,
+     "Agreement": 0.820445383458281,
+     "Fit Time (s)": 0.015509799995925277
+    },
+    {
+     "Model": "KNN Distance",
+     "Anomalies": 8,
+     "Anomaly Rate (%)": 5.333333333333334,
+     "Agreement": 0.6447588184054363,
+     "Fit Time (s)": 0.0007774000405333936
+    },
+    {
+     "Model": "Elliptic Envelope",
+     "Anomalies": 8,
+     "Anomaly Rate (%)": 5.333333333333334,
+     "Agreement": 0.5627120862430779,
+     "Fit Time (s)": 0.019679500022903085
+    },
+    {
+     "Model": "Robust Z-Score",
+     "Anomalies": 8,
+     "Anomaly Rate (%)": 5.333333333333334,
+     "Agreement": 0.5190109103814027,
+     "Fit Time (s)": 0.00016589998267591
+    },
+    {
+     "Model": "One-Class SVM",
+     "Anomalies": 8,
+     "Anomaly Rate (%)": 5.333333333333334,
+     "Agreement": 0.379130439285142,
+     "Fit Time (s)": 0.0009136000298894942
+    }
+   ],
+   "console": "\n======================================================================\n ANOMALY DETECTOR COMPARISON \n======================================================================\n               Model  Anomalies  Anomaly Rate (%)  Agreement  Fit Time (s)\n    Isolation Forest          8            5.3333     0.8649        0.2149\nLocal Outlier Factor          8            5.3333     0.8204        0.0155\n        KNN Distance          8            5.3333     0.6448        0.0008\n   Elliptic Envelope          8            5.3333     0.5627        0.0197\n      Robust Z-Score          8            5.3333     0.5190        0.0002\n       One-Class SVM          8            5.3333     0.3791        0.0009\n======================================================================\n\n* BEST MODEL (by Agreement): Isolation Forest\n  Every model flags the top 5.0% of rows by anomaly score, so the counts are about equal.\n  No true labels were given: 'Agreement' only shows which model sees the data like the others.\n  Look at top_anomalies() and the plots, and check a few flagged rows yourself.\n======================================================================\n\n"
+  },
+  {
+   "id": "wine",
+   "title": "Wine Recognition",
+   "rows": 178,
+   "features": 13,
+   "seconds": 0.21,
+   "table": [
+    {
+     "Model": "Isolation Forest",
+     "Anomalies": 9,
+     "Anomaly Rate (%)": 5.056179775280898,
+     "Agreement": 0.8828657922166245,
+     "Fit Time (s)": 0.15610359999118373
+    },
+    {
+     "Model": "KNN Distance",
+     "Anomalies": 9,
+     "Anomaly Rate (%)": 5.056179775280898,
+     "Agreement": 0.8340806874011965,
+     "Fit Time (s)": 0.0011089000036008656
+    },
+    {
+     "Model": "One-Class SVM",
+     "Anomalies": 9,
+     "Anomaly Rate (%)": 5.056179775280898,
+     "Agreement": 0.8062951164275256,
+     "Fit Time (s)": 0.0021841999841853976
+    },
+    {
+     "Model": "Elliptic Envelope",
+     "Anomalies": 9,
+     "Anomaly Rate (%)": 5.056179775280898,
+     "Agreement": 0.7664726230627603,
+     "Fit Time (s)": 0.02477690001251176
+    },
+    {
+     "Model": "Local Outlier Factor",
+     "Anomalies": 9,
+     "Anomaly Rate (%)": 5.056179775280898,
+     "Agreement": 0.7527397490974453,
+     "Fit Time (s)": 0.017583400011062622
+    },
+    {
+     "Model": "Robust Z-Score",
+     "Anomalies": 9,
+     "Anomaly Rate (%)": 5.056179775280898,
+     "Agreement": 0.5951312842848074,
+     "Fit Time (s)": 0.00022839999292045832
+    }
+   ],
+   "console": "\n======================================================================\n ANOMALY DETECTOR COMPARISON \n======================================================================\n               Model  Anomalies  Anomaly Rate (%)  Agreement  Fit Time (s)\n    Isolation Forest          9            5.0562     0.8829        0.1561\n        KNN Distance          9            5.0562     0.8341        0.0011\n       One-Class SVM          9            5.0562     0.8063        0.0022\n   Elliptic Envelope          9            5.0562     0.7665        0.0248\nLocal Outlier Factor          9            5.0562     0.7527        0.0176\n      Robust Z-Score          9            5.0562     0.5951        0.0002\n======================================================================\n\n* BEST MODEL (by Agreement): Isolation Forest\n  Every model flags the top 5.0% of rows by anomaly score, so the counts are about equal.\n  No true labels were given: 'Agreement' only shows which model sees the data like the others.\n  Look at top_anomalies() and the plots, and check a few flagged rows yourself.\n======================================================================\n\n"
+  },
+  {
+   "id": "breast_cancer",
+   "title": "Breast Cancer Wisconsin",
+   "rows": 569,
+   "features": 30,
+   "seconds": 0.66,
+   "table": [
+    {
+     "Model": "Isolation Forest",
+     "Anomalies": 29,
+     "Anomaly Rate (%)": 5.0966608084358525,
+     "Agreement": 0.9331621086366655,
+     "Fit Time (s)": 0.17873460002010688
+    },
+    {
+     "Model": "KNN Distance",
+     "Anomalies": 29,
+     "Anomaly Rate (%)": 5.0966608084358525,
+     "Agreement": 0.929278945343353,
+     "Fit Time (s)": 0.0066290999529883265
+    },
+    {
+     "Model": "Robust Z-Score",
+     "Anomalies": 29,
+     "Anomaly Rate (%)": 5.0966608084358525,
+     "Agreement": 0.8745784793856042,
+     "Fit Time (s)": 0.0007840999751351774
+    },
+    {
+     "Model": "Elliptic Envelope",
+     "Anomalies": 29,
+     "Anomaly Rate (%)": 5.0966608084358525,
+     "Agreement": 0.7987073362727896,
+     "Fit Time (s)": 0.4336184000130743
+    },
+    {
+     "Model": "Local Outlier Factor",
+     "Anomalies": 29,
+     "Anomaly Rate (%)": 5.0966608084358525,
+     "Agreement": 0.7301379479517417,
+     "Fit Time (s)": 0.015073999995365739
+    },
+    {
+     "Model": "One-Class SVM",
+     "Anomalies": 29,
+     "Anomaly Rate (%)": 5.0966608084358525,
+     "Agreement": 0.539474276508978,
+     "Fit Time (s)": 0.003055899986065924
+    }
+   ],
+   "console": "\n======================================================================\n ANOMALY DETECTOR COMPARISON \n======================================================================\n               Model  Anomalies  Anomaly Rate (%)  Agreement  Fit Time (s)\n    Isolation Forest         29            5.0967     0.9332        0.1787\n        KNN Distance         29            5.0967     0.9293        0.0066\n      Robust Z-Score         29            5.0967     0.8746        0.0008\n   Elliptic Envelope         29            5.0967     0.7987        0.4336\nLocal Outlier Factor         29            5.0967     0.7301        0.0151\n       One-Class SVM         29            5.0967     0.5395        0.0031\n======================================================================\n\n* BEST MODEL (by Agreement): Isolation Forest\n  Every model flags the top 5.0% of rows by anomaly score, so the counts are about equal.\n  No true labels were given: 'Agreement' only shows which model sees the data like the others.\n  Look at top_anomalies() and the plots, and check a few flagged rows yourself.\n======================================================================\n\n"
+  }
+ ],
+ "reduction": [
+  {
+   "id": "wine",
+   "title": "Wine Recognition",
+   "rows": 178,
+   "features": 13,
+   "seconds": 0.45,
+   "table": [
+    {
+     "Model": "t-SNE",
+     "Components": 2,
+     "Trustworthiness": 0.9562039757994815,
+     "Continuity": 0.9532307692307692,
+     "Global Structure": 0.7800115706427307,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9606349206349206,
+     "Can Transform New Data": "no",
+     "Fit Time (s)": 0.23657200002344325
+    },
+    {
+     "Model": "PCA",
+     "Components": 2,
+     "Trustworthiness": 0.8877199654278306,
+     "Continuity": 0.9408988764044943,
+     "Global Structure": 0.8235172134081484,
+     "Variance Kept (%)": 55.40633835693527,
+     "Class Separation": 0.9663492063492063,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.0010081999935209751
+    },
+    {
+     "Model": "FastICA",
+     "Components": 2,
+     "Trustworthiness": 0.8852618841832325,
+     "Continuity": 0.9371961970613656,
+     "Global Structure": 0.7965615521271967,
+     "Variance Kept (%)": 55.40633835693528,
+     "Class Separation": 0.9607936507936508,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.001846599974669516
+    },
+    {
+     "Model": "Isomap",
+     "Components": 2,
+     "Trustworthiness": 0.879609334485739,
+     "Continuity": 0.941552290406223,
+     "Global Structure": 0.7796604135137865,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.954920634920635,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.020428799965884537
+    },
+    {
+     "Model": "Factor Analysis",
+     "Components": 2,
+     "Trustworthiness": 0.8714019014693172,
+     "Continuity": 0.9210579083837511,
+     "Global Structure": 0.7776790985055799,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9552380952380952,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.004808600002434105
+    },
+    {
+     "Model": "Kernel PCA",
+     "Components": 2,
+     "Trustworthiness": 0.8636819360414866,
+     "Continuity": 0.9158063958513396,
+     "Global Structure": 0.6387025203560959,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9776190476190477,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.028304899984505028
+    },
+    {
+     "Model": "Locally Linear Embedding",
+     "Components": 2,
+     "Trustworthiness": 0.8175834053586862,
+     "Continuity": 0.8557891097666379,
+     "Global Structure": 0.5052455134856112,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.8146031746031748,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.02127170003950596
+    }
+   ],
+   "console": "\n==============================================================================\n DIMENSIONALITY REDUCTION COMPARISON \n==============================================================================\n                   Model  Components  Trustworthiness  Continuity  Global Structure  Variance Kept (%)  Class Separation Can Transform New Data  Fit Time (s)\n                   t-SNE           2           0.9562      0.9532            0.7800                  -            0.9606                     no        0.2366\n                     PCA           2           0.8877      0.9409            0.8235            55.4063            0.9663                    yes        0.0010\n                 FastICA           2           0.8853      0.9372            0.7966            55.4063            0.9608                    yes        0.0018\n                  Isomap           2           0.8796      0.9416            0.7797                  -            0.9549                    yes        0.0204\n         Factor Analysis           2           0.8714      0.9211            0.7777                  -            0.9552                    yes        0.0048\n              Kernel PCA           2           0.8637      0.9158            0.6387                  -            0.9776                    yes        0.0283\nLocally Linear Embedding           2           0.8176      0.8558            0.5052                  -            0.8146                    yes        0.0213\n==============================================================================\n\n* BEST MODEL (by Trustworthiness): t-SNE\n  Trustworthiness / Continuity: 1.0 = neighbourhoods are perfectly kept. Global Structure: how well\n  far-apart rows stay far apart. Variance Kept: only for methods that can be reversed (PCA, ...).\n  Local scores favour t-SNE / Isomap; PCA keeps the global shape and is the easiest to explain.\n==============================================================================\n\n"
+  },
+  {
+   "id": "breast_cancer",
+   "title": "Breast Cancer Wisconsin",
+   "rows": 569,
+   "features": 30,
+   "seconds": 1.35,
+   "table": [
+    {
+     "Model": "t-SNE",
+     "Components": 2,
+     "Trustworthiness": 0.9496392187120465,
+     "Continuity": 0.9394185904366367,
+     "Global Structure": 0.6924556336052019,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9578015836050303,
+     "Can Transform New Data": "no",
+     "Fit Time (s)": 0.5701914000092074
+    },
+    {
+     "Model": "Isomap",
+     "Components": 2,
+     "Trustworthiness": 0.877989721900734,
+     "Continuity": 0.9513677937013699,
+     "Global Structure": 0.8910968248967248,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9526005278683435,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.055433599976822734
+    },
+    {
+     "Model": "PCA",
+     "Components": 2,
+     "Trustworthiness": 0.871347535970966,
+     "Continuity": 0.9522235081753277,
+     "Global Structure": 0.9065916246270949,
+     "Variance Kept (%)": 63.243207651559445,
+     "Class Separation": 0.9402577239559076,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.0012188000255264342
+    },
+    {
+     "Model": "FastICA",
+     "Components": 2,
+     "Trustworthiness": 0.8690820358701536,
+     "Continuity": 0.9469996808931183,
+     "Global Structure": 0.8907325200359784,
+     "Variance Kept (%)": 63.243207651559445,
+     "Class Separation": 0.9349635149821456,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.004078300029505044
+    },
+    {
+     "Model": "Factor Analysis",
+     "Components": 2,
+     "Trustworthiness": 0.8606236396283119,
+     "Continuity": 0.9281266520925314,
+     "Global Structure": 0.8479495612118498,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9086321999689488,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.03585649997694418
+    },
+    {
+     "Model": "Kernel PCA",
+     "Components": 2,
+     "Trustworthiness": 0.8206562171069866,
+     "Continuity": 0.9192805648033048,
+     "Global Structure": 0.6163028158597939,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9473063188945815,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.022681600006762892
+    },
+    {
+     "Model": "Locally Linear Embedding",
+     "Components": 2,
+     "Trustworthiness": 0.779261862917399,
+     "Continuity": 0.8509685132000705,
+     "Global Structure": 0.7361481305452383,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9086011488899238,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.04172949999338016
+    }
+   ],
+   "console": "\n==============================================================================\n DIMENSIONALITY REDUCTION COMPARISON \n==============================================================================\n                   Model  Components  Trustworthiness  Continuity  Global Structure  Variance Kept (%)  Class Separation Can Transform New Data  Fit Time (s)\n                   t-SNE           2           0.9496      0.9394            0.6925                  -            0.9578                     no        0.5702\n                  Isomap           2           0.8780      0.9514            0.8911                  -            0.9526                    yes        0.0554\n                     PCA           2           0.8713      0.9522            0.9066            63.2432            0.9403                    yes        0.0012\n                 FastICA           2           0.8691      0.9470            0.8907            63.2432            0.9350                    yes        0.0041\n         Factor Analysis           2           0.8606      0.9281            0.8479                  -            0.9086                    yes        0.0359\n              Kernel PCA           2           0.8207      0.9193            0.6163                  -            0.9473                    yes        0.0227\nLocally Linear Embedding           2           0.7793      0.8510            0.7361                  -            0.9086                    yes        0.0417\n==============================================================================\n\n* BEST MODEL (by Trustworthiness): t-SNE\n  Trustworthiness / Continuity: 1.0 = neighbourhoods are perfectly kept. Global Structure: how well\n  far-apart rows stay far apart. Variance Kept: only for methods that can be reversed (PCA, ...).\n  Local scores favour t-SNE / Isomap; PCA keeps the global shape and is the easiest to explain.\n==============================================================================\n\n"
+  },
+  {
+   "id": "digits",
+   "title": "Handwritten Digits",
+   "rows": 1797,
+   "features": 64,
+   "seconds": 4.72,
+   "table": [
+    {
+     "Model": "t-SNE",
+     "Components": 2,
+     "Trustworthiness": 0.9862791245770737,
+     "Continuity": 0.982546393238739,
+     "Global Structure": 0.3815198221314229,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.9538285360569484,
+     "Can Transform New Data": "no",
+     "Fit Time (s)": 2.0460153999738395
+    },
+    {
+     "Model": "Isomap",
+     "Components": 2,
+     "Trustworthiness": 0.8785647204754361,
+     "Continuity": 0.9718597325414188,
+     "Global Structure": 0.5611701152083322,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.7785546270504489,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.4492838000296615
+    },
+    {
+     "Model": "Locally Linear Embedding",
+     "Components": 2,
+     "Trustworthiness": 0.8521757736683726,
+     "Continuity": 0.9525332628631841,
+     "Global Structure": 0.35322861895479934,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.7201021355617456,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.17642640002304688
+    },
+    {
+     "Model": "FastICA",
+     "Components": 2,
+     "Trustworthiness": 0.8178232939140936,
+     "Continuity": 0.9446996123985606,
+     "Global Structure": 0.6294749949656924,
+     "Variance Kept (%)": 21.5949705008328,
+     "Class Separation": 0.5202878365831012,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.013114499975927174
+    },
+    {
+     "Model": "PCA",
+     "Components": 2,
+     "Trustworthiness": 0.8162836336045778,
+     "Continuity": 0.9445255923623602,
+     "Global Structure": 0.6346168633990765,
+     "Variance Kept (%)": 21.5949705008328,
+     "Class Separation": 0.5141674404209223,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.0024058999842964113
+    },
+    {
+     "Model": "Factor Analysis",
+     "Components": 2,
+     "Trustworthiness": 0.8014073413589962,
+     "Continuity": 0.9193237676977768,
+     "Global Structure": 0.5818438685602564,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.4412859795728877,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.07523880002554506
+    },
+    {
+     "Model": "Kernel PCA",
+     "Components": 2,
+     "Trustworthiness": 0.794223571858858,
+     "Continuity": 0.9370756231227678,
+     "Global Structure": 0.20915935787786372,
+     "Variance Kept (%)": null,
+     "Class Separation": 0.604348498916744,
+     "Can Transform New Data": "yes",
+     "Fit Time (s)": 0.060728800017386675
+    }
+   ],
+   "console": "\n==============================================================================\n DIMENSIONALITY REDUCTION COMPARISON \n==============================================================================\n                   Model  Components  Trustworthiness  Continuity  Global Structure  Variance Kept (%)  Class Separation Can Transform New Data  Fit Time (s)\n                   t-SNE           2           0.9863      0.9825            0.3815                  -            0.9538                     no        2.0460\n                  Isomap           2           0.8786      0.9719            0.5612                  -            0.7786                    yes        0.4493\nLocally Linear Embedding           2           0.8522      0.9525            0.3532                  -            0.7201                    yes        0.1764\n                 FastICA           2           0.8178      0.9447            0.6295            21.5950            0.5203                    yes        0.0131\n                     PCA           2           0.8163      0.9445            0.6346            21.5950            0.5142                    yes        0.0024\n         Factor Analysis           2           0.8014      0.9193            0.5818                  -            0.4413                    yes        0.0752\n              Kernel PCA           2           0.7942      0.9371            0.2092                  -            0.6043                    yes        0.0607\n==============================================================================\n\n* BEST MODEL (by Trustworthiness): t-SNE\n  Trustworthiness / Continuity: 1.0 = neighbourhoods are perfectly kept. Global Structure: how well\n  far-apart rows stay far apart. Variance Kept: only for methods that can be reversed (PCA, ...).\n  Local scores favour t-SNE / Isomap; PCA keeps the global shape and is the easiest to explain.\n==============================================================================\n\n"
+  }
+ ]
 }

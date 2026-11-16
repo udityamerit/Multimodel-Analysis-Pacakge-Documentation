@@ -1,25 +1,44 @@
 # multimodel-analysis: documentation site
 
-Source of the documentation website for [`multimodel-analysis`](https://pypi.org/project/multimodel-analysis/), a Python package that trains and compares several scikit-learn models on the same train/test split, for classification and regression.
+Source of the documentation website for [`multimodel-analysis`](https://pypi.org/project/multimodel-analysis/), a Python package that trains and compares many scikit-learn models on the same data, for classification, regression, clustering, anomaly detection and dimensionality reduction.
 
 **Live site:** https://udityamerit.github.io/Multimodel-Analysis-Pacakge-Documentation/
 
-Documented version: **0.1.3** (Python 3.8+, Apache-2.0).
+Documented version: **0.6.1** (Python 3.10+, Apache-2.0).
+
+## Package links
+
+| Resource | Link |
+| :--- | :--- |
+| PyPI | https://pypi.org/project/multimodel-analysis/ |
+| Source code | https://github.com/udityamerit/Multimodel-Analysis-Pacakge |
+| Issues | https://github.com/udityamerit/Multimodel-Analysis-Pacakge/issues |
+| Changelog | https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/CHANGELOG.md |
+| Guides (`docs/`) | https://github.com/udityamerit/Multimodel-Analysis-Pacakge/tree/main/docs |
+| Example notebooks | https://github.com/udityamerit/Multimodel-Analysis-Pacakge/tree/main/examples |
+| Download statistics | https://pepy.tech/projects/multimodel-analysis |
 
 ## What the package does
 
-- `MultiModelClassifier` fits 8 built-in classifiers; `MultiModelRegressor` fits 8 built-in regressors. Both run sequentially on one split, and a model that fails is skipped with a `[WARNING]` instead of stopping the run.
-- Classification reports Accuracy, Precision, Recall, F1 (weighted averages) and ROC AUC (one-vs-rest, weighted; `NaN` when it cannot be computed). Regression reports MAE, MSE, RMSE and R².
-- Plots: confusion matrices, ROC curves and a comparison chart (classification); true vs predicted and an R² comparison (regression).
-- `save_report(df, path)` writes a report as CSV, Excel, HTML or JSON, chosen by file extension.
-- Your own scikit-learn compatible estimators (for example XGBoost or LightGBM, installed separately) can be passed with `custom_models=`.
+| Class | Task | Models (default / total) |
+| :--- | :--- | :--- |
+| `MultiModelClassifier` | Predict a category | 8 / 17 |
+| `MultiModelRegressor` | Predict a number | 9 / 19 |
+| `MultiModelClusterer` | Find groups, no labels needed | 7 / 14 |
+| `MultiModelAnomalyDetector` | Find unusual rows, no labels needed | 6 / 7 |
+| `MultiModelReducer` | Compress many columns into a few | 7 / 12 |
+
+- All five share one workflow: build the object, `run_all_models()`, `show_tabular_report()`, then plot, save or explain.
+- Supervised classes also offer `cross_validate_models()`, `tune_models()`, `preprocess=True`, feature importance and partial dependence.
+- Reports can be saved as CSV, Excel, HTML or JSON, or as one self-contained HTML file with `save_html_report()`. Trained models are saved and reloaded with `save_model()` and `load_model()`.
+- Optional extras: `excel`, `boost` (XGBoost, LightGBM, CatBoost) and `umap`.
 
 ```python
 from sklearn.datasets import load_breast_cancer
 from multimodel_analysis import MultiModelClassifier
 
 X, y = load_breast_cancer(return_X_y=True, as_frame=True)
-clf = MultiModelClassifier(X, y, test_size=0.2, scaled_data=True, random_state=42)
+clf = MultiModelClassifier(X, y, test_size=0.2, random_state=42)
 results = clf.run_all_models()
 clf.show_tabular_report(results)
 ```
@@ -28,11 +47,11 @@ clf.show_tabular_report(results)
 pip install multimodel-analysis
 ```
 
-The full API reference, a results explorer and a metrics calculator are on the live site.
+The site also has guides for every analyser, a model reference, the full API reference, a results explorer, a metrics calculator, troubleshooting and the changelog.
 
 ## Where the numbers come from
 
-The results explorer reads `assets/data/results.json`, and the charts in `assets/img/` are the package's own output. Both were produced by running version 0.1.3 on scikit-learn's bundled datasets (and the first 5,000 rows of California Housing) with `test_size=0.2`, `scaled_data=True`, `random_state=42`. Timings depend on the machine, so treat them as indicative.
+The results explorer reads `assets/data/results.json`, and the charts in `assets/img/` are the package's own output. Both were produced by running version 0.6.1 on scikit-learn's bundled datasets with `test_size=0.2`, `scaled_data=True`, `random_state=42` (clustering used `n_clusters=3`, reduction 2 components). Timings depend on the machine, so treat them as indicative.
 
 ## Repository layout
 
@@ -42,9 +61,8 @@ The results explorer reads `assets/data/results.json`, and the charts in `assets
 | `index.css` | Styles, light and dark themes |
 | `app.js` | Navigation, search palette, tabs, results explorer, calculator, API dialogs |
 | `assets/js/api-data.js` | API reference data (single source for the list, dialogs and search) |
-| `assets/data/results.json` | Measured benchmark results |
+| `assets/data/results.json` | Measured results for all five analysers |
 | `assets/img/` | Logo and generated charts |
-| `func_code.md` | Plain-text API guide |
 
 There is no build step and no runtime dependency.
 
@@ -62,9 +80,15 @@ Then open http://localhost:8000.
 
 `.github/workflows/deploy.yml` publishes the site to GitHub Pages on every push to `main`. It copies only the files the site needs (`index.html`, `index.css`, `app.js`, `assets/`, `.nojekyll`) into the published artifact. In the repository settings, set **Pages → Source** to **GitHub Actions**.
 
+## Updating for a new package release
+
+1. Install the new version of `multimodel-analysis` and re-run the benchmark to regenerate `assets/data/results.json` and the charts in `assets/img/`.
+2. Compare the package's `docs/api.md` and `docs/models.md` with `assets/js/api-data.js` and the **Model reference** section of `index.html`.
+3. Add the release notes to the **Changelog** section and bump the version in `index.html` (version pill, install check, footer).
+
 ## Contributing
 
-Issues and pull requests are welcome. If you change an API signature in the package, update `assets/js/api-data.js` and `func_code.md` together.
+Issues and pull requests are welcome. If you change an API signature in the package, update `assets/js/api-data.js` (and `docs/api.md` in the package) together.
 
 ## Author
 

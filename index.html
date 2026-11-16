@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>multimodel-analysis documentation</title>
-  <meta name="description" content="Documentation for multimodel-analysis, a Python package that trains and compares many scikit-learn classifiers or regressors on one train/test split and reports the results.">
+  <meta name="description" content="Documentation for multimodel-analysis 0.6.1: one Python package that compares many scikit-learn models for classification, regression, clustering, anomaly detection and dimensionality reduction, with tuning, explainability and reports.">
   <meta name="author" content="Uditya Narayan Tiwari">
   <meta name="color-scheme" content="light dark">
   <meta property="og:title" content="multimodel-analysis documentation">
-  <meta property="og:description" content="Benchmark many scikit-learn models on the same split and get one leaderboard, plots and exportable reports.">
+  <meta property="og:description" content="Compare many scikit-learn models on your data and get one ranked table, plots, tuning, explanations and a shareable HTML report.">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@
     <a class="brand" href="#introduction">
       <img src="assets/img/logo.svg" alt="" width="28" height="28">
       <span>multimodel-analysis</span>
-      <span class="pill">v0.1.3</span>
+      <span class="pill">v0.6.1</span>
     </a>
     <div class="topbar-spacer"></div>
     <button class="search-btn" id="search-btn" aria-label="Search documentation" aria-haspopup="dialog">
@@ -63,13 +63,20 @@
           <a href="#introduction">Introduction</a>
           <a href="#installation">Installation</a>
           <a href="#quickstart">Quickstart</a>
+          <a href="#choose-class">Choosing a class</a>
         </div>
         <div class="nav-group">
           <p class="nav-title">Guides</p>
           <a href="#how-it-works">How it works</a>
+          <a href="#choosing-models">Choosing models</a>
+          <a href="#supervised">Classification &amp; regression</a>
+          <a href="#tuning">Tuning &amp; cross-validation</a>
+          <a href="#clustering">Clustering</a>
+          <a href="#anomaly">Anomaly detection</a>
+          <a href="#reduction">Dimensionality reduction</a>
+          <a href="#explainability">Explainability</a>
+          <a href="#reports">Reports &amp; saving models</a>
           <a href="#reading-results">Reading the results</a>
-          <a href="#custom-estimators">Custom estimators</a>
-          <a href="#exporting">Exporting reports</a>
         </div>
         <div class="nav-group">
           <p class="nav-title">Evidence</p>
@@ -78,6 +85,7 @@
         </div>
         <div class="nav-group">
           <p class="nav-title">Reference</p>
+          <a href="#model-reference">Model reference</a>
           <a href="#api">API reference</a>
         </div>
         <div class="nav-group">
@@ -85,6 +93,7 @@
           <a href="#limitations">Limitations</a>
           <a href="#troubleshooting">Troubleshooting</a>
           <a href="#changelog">Changelog</a>
+          <a href="#resources">Links &amp; resources</a>
           <a href="#license">Licence &amp; author</a>
         </div>
       </nav>
@@ -94,14 +103,15 @@
 
       <!-- ============ INTRODUCTION ============ -->
       <section id="introduction" data-title="Introduction">
-        <p class="eyebrow">Python package · Apache-2.0 · v0.1.3</p>
+        <p class="eyebrow">Python package · Apache-2.0 · v0.6.1</p>
         <h1>multimodel-analysis</h1>
-        <p class="lead">Compare many scikit-learn models on your data with one call. Every model gets the same split and the same preprocessing, and you get a sorted leaderboard, plots and exportable reports for classification and regression.</p>
+        <p class="lead">Compare many scikit-learn models on your data with one call. Five analysers cover classification, regression, clustering, anomaly detection and dimensionality reduction. Each gives you a ranked table, plots, and (where it makes sense) tuning, explanations, saved models and a one-file HTML report.</p>
 
         <div class="hero-actions">
           <a class="btn btn-primary" href="#quickstart">Quickstart</a>
           <a class="btn" href="#installation">Install</a>
           <a class="btn" href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn" href="https://pypi.org/project/multimodel-analysis/" target="_blank" rel="noopener">PyPI</a>
         </div>
 
         <div class="cmd" data-copy="pip install multimodel-analysis">
@@ -110,25 +120,39 @@
         </div>
 
         <div class="facts">
-          <div><span class="k">Classification</span><span class="v">8 built-in models</span></div>
-          <div><span class="k">Regression</span><span class="v">8 built-in models</span></div>
-          <div><span class="k">Python</span><span class="v">3.8 or newer</span></div>
-          <div><span class="k">Exports</span><span class="v">CSV, Excel, HTML, JSON</span></div>
+          <div><span class="k">Analysers</span><span class="v">5 classes, one workflow</span></div>
+          <div><span class="k">Models</span><span class="v">69 registered, 37 run by default</span></div>
+          <div><span class="k">Python</span><span class="v">3.10, 3.11, 3.12 (tested)</span></div>
+          <div><span class="k">Exports</span><span class="v">CSV, Excel, HTML, JSON, joblib</span></div>
         </div>
 
         <h2 id="about-project">About the project</h2>
-        <p><code>multimodel-analysis</code> is an open-source Python package for the first step of almost every supervised-learning project: finding out which kind of model suits your data. You give it a feature matrix and a target. It trains a set of scikit-learn models, evaluates them on a held-out test set and ranks them, so you can pick a sensible baseline in minutes instead of writing the same comparison code again.</p>
-        <p>It builds directly on scikit-learn, pandas, NumPy, Matplotlib and Seaborn, and it does not try to replace them. The models it runs are ordinary scikit-learn estimators, and you can add your own.</p>
+        <p><code>multimodel-analysis</code> is an open-source Python package for the first step of most data projects: finding out which kind of model suits your data. You hand it a table. It trains a set of scikit-learn models on the same split, scores them with the same metrics and ranks them, so you can choose a sensible baseline in minutes instead of rewriting the same comparison code.</p>
+        <p>It builds on scikit-learn, pandas, NumPy, Matplotlib and Seaborn and does not try to replace them. The models it runs are ordinary scikit-learn estimators, optional boosters (XGBoost, LightGBM, CatBoost) and UMAP join when installed, and you can add your own.</p>
+
+        <h3 id="five-classes">The five analysers</h3>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Class</th><th>Use it to</th><th>Models (default / total)</th><th>Ranked by</th></tr></thead>
+            <tbody>
+              <tr><td><code>MultiModelClassifier</code></td><td>Predict a category</td><td>8 / 17</td><td>Accuracy</td></tr>
+              <tr><td><code>MultiModelRegressor</code></td><td>Predict a number</td><td>9 / 19</td><td>R2 Score</td></tr>
+              <tr><td><code>MultiModelClusterer</code></td><td>Find groups (no target column)</td><td>7 / 14</td><td>Silhouette</td></tr>
+              <tr><td><code>MultiModelAnomalyDetector</code></td><td>Find unusual rows (no labels needed)</td><td>6 / 7</td><td>Agreement (F1 Score if you pass labels)</td></tr>
+              <tr><td><code>MultiModelReducer</code></td><td>Reduce columns, draw 2-D maps</td><td>7 / 12</td><td>Trustworthiness</td></tr>
+            </tbody>
+          </table>
+        </div>
 
         <h2 id="the-problem">The problem it addresses</h2>
         <p>Comparing models by hand looks easy, but the same code is rewritten for every project, and small mistakes slip in unnoticed:</p>
         <ul class="plain">
-          <li>Each model needs its own fit, predict and metric code, so a comparison of eight models means a lot of near-identical lines.</li>
+          <li>Each model needs its own fit, predict and metric code, so comparing eight models means many near-identical lines.</li>
           <li>Models end up compared on different splits or different preprocessing, so the numbers are not comparable.</li>
-          <li>Scaling the whole dataset before splitting leaks information from the test rows into training.</li>
+          <li>Scaling or imputing the whole dataset before splitting leaks information from the test rows into training.</li>
           <li>One model that fails to converge raises an error and stops the whole loop.</li>
           <li>String labels, multi-class averaging and ROC curves for more than two classes each need extra care.</li>
-          <li>Turning the results into a sorted table, charts and a file you can share is more code again.</li>
+          <li>Tuning, cross-validation, feature importance, saving the winner and sharing a report are more code again.</li>
         </ul>
 
         <h2 id="how-it-helps">How it solves it</h2>
@@ -136,13 +160,15 @@
           <table class="doc-table">
             <thead><tr><th>Problem</th><th>What the package does</th></tr></thead>
             <tbody>
-              <tr><td>Repeated boilerplate</td><td>One call, <code>run_all_models()</code>, fits and evaluates every built-in model.</td></tr>
+              <tr><td>Repeated boilerplate</td><td>One call, <code>run_all_models()</code>, fits and evaluates every default model.</td></tr>
               <tr><td>Unfair comparison</td><td>One train/test split and one preprocessing step are shared by all models.</td></tr>
-              <tr><td>Data leakage</td><td>When <code>scaled_data=True</code>, the scaler is fitted on the training rows only and then applied to the test rows.</td></tr>
-              <tr><td>A failing model</td><td>The error is printed as a <code>[WARNING]</code> and that model is skipped; the rest still run.</td></tr>
-              <tr><td>Labels and metrics</td><td>String targets are label-encoded; Precision, Recall and F1 are weighted averages; ROC AUC is one-vs-rest for multi-class targets.</td></tr>
-              <tr><td>Reporting</td><td>A sorted table, plots, and <code>save_report</code> to CSV, Excel, HTML or JSON.</td></tr>
-              <tr><td>Your own model</td><td>Pass any scikit-learn-compatible estimator in <code>custom_models</code> and it is ranked next to the built-ins.</td></tr>
+              <tr><td>Data leakage</td><td>Scaling (and, with <code>preprocess=True</code>, imputing and encoding) is fitted on training rows only. Cross-validation and tuning refit preprocessing inside every fold.</td></tr>
+              <tr><td>A failing model</td><td>It is skipped and the reason is stored in <code>failed_models_</code>; the rest still run.</td></tr>
+              <tr><td>Messy data</td><td><code>preprocess=True</code> fills missing values, scales numbers and one-hot encodes text columns.</td></tr>
+              <tr><td>Weak default settings</td><td><code>tune_models()</code> searches a built-in space per model; <code>cross_validate_models()</code> gives fairer scores.</td></tr>
+              <tr><td>Black boxes</td><td>Permutation <code>feature_importance()</code> and <code>partial_dependence()</code> work for every model, including SVM and neural networks.</td></tr>
+              <tr><td>Reporting and reuse</td><td>CSV, Excel, HTML and JSON tables, <code>save_html_report()</code>, and <code>save_model()</code> / <code>load_model()</code> that carry the preprocessing along.</td></tr>
+              <tr><td>Your own model</td><td>Pass any scikit-learn-style estimator in <code>custom_models</code> and it is ranked next to the built-ins.</td></tr>
             </tbody>
           </table>
         </div>
@@ -172,27 +198,27 @@ for name, model in models.items():
                  precision_score(y_test, pred, average="weighted"),
                  recall_score(y_test, pred, average="weighted"),
                  f1_score(y_test, pred, average="weighted")))
-# ...then sorting, ROC curves, confusion matrices and exporting.</code></pre>
+# ...then sorting, ROC curves, confusion matrices, tuning and exporting.</code></pre>
         </div>
-        <p>The same job with the package, for all eight built-in classifiers:</p>
+        <p>The same job with the package, for all eight default classifiers:</p>
         <div class="code" data-lang="python" data-file="multimodel-analysis">
 <pre><code>from multimodel_analysis import MultiModelClassifier
 
-clf = MultiModelClassifier(X=X, y=y, test_size=0.2, scaled_data=True, random_state=42)
-results = clf.run_all_models()
-clf.show_tabular_report(results)</code></pre>
+clf = MultiModelClassifier(X, y, test_size=0.2, random_state=42)
+models = clf.run_all_models()
+clf.show_tabular_report(models)</code></pre>
         </div>
-        <p>The <a href="#results">measured results</a> section shows the real output of exactly this kind of run.</p>
+        <p>The <a href="#results">measured results</a> section shows the real output of runs like this on public datasets.</p>
 
         <h2 id="who-for">Who it is for</h2>
         <div class="two-col fit">
           <div class="callout">
             <p class="callout-title">A good fit</p>
-            <p>Students and practitioners who want a quick, fair baseline comparison on tabular data, and anyone who wants the plots and a shareable report without writing them from scratch.</p>
+            <p>Students and practitioners who want a quick, fair comparison of model families on tabular data, a first look at structure (groups, outliers, a 2-D map), and a report they can share without writing plotting code.</p>
           </div>
           <div class="callout">
             <p class="callout-title">Not what it is for</p>
-            <p>Hyper-parameter tuning, cross-validation, deep learning or production serving. It compares baseline models on a single split. See <a href="#limitations">Limitations</a>.</p>
+            <p>Deep learning, time-series or text pipelines, distributed training, or production serving. It compares classical models on tabular data, on a single split unless you ask for cross-validation. See <a href="#limitations">Limitations</a>.</p>
           </div>
         </div>
 
@@ -214,9 +240,11 @@ clf.show_tabular_report(results)</code></pre>
 
         <h2 id="next-steps">Where to go next</h2>
         <div class="cards">
-          <a class="card" href="#installation"><span class="card-title">Installation</span><span class="card-text">Requirements and install commands.</span></a>
-          <a class="card" href="#quickstart"><span class="card-title">Quickstart</span><span class="card-text">Classification and regression in a few lines.</span></a>
-          <a class="card" href="#results"><span class="card-title">Measured results</span><span class="card-text">Real runs on real datasets.</span></a>
+          <a class="card" href="#installation"><span class="card-title">Installation</span><span class="card-text">Requirements, extras and install commands.</span></a>
+          <a class="card" href="#quickstart"><span class="card-title">Quickstart</span><span class="card-text">All five analysers in a few lines each.</span></a>
+          <a class="card" href="#tuning"><span class="card-title">Tuning</span><span class="card-text">Cross-validation and hyper-parameter search.</span></a>
+          <a class="card" href="#explainability"><span class="card-title">Explainability</span><span class="card-text">See which features matter and how.</span></a>
+          <a class="card" href="#results"><span class="card-title">Measured results</span><span class="card-text">Real runs on real datasets, all five tasks.</span></a>
           <a class="card" href="#api"><span class="card-title">API reference</span><span class="card-text">Every class, method and parameter.</span></a>
         </div>
       </section>
@@ -224,7 +252,7 @@ clf.show_tabular_report(results)</code></pre>
       <!-- ============ INSTALLATION ============ -->
       <section id="installation" data-title="Installation">
         <h2>Installation</h2>
-        <p>The package is published on PyPI. It requires <strong>Python 3.8+</strong> and installs numpy, pandas, matplotlib, seaborn and scikit-learn as dependencies.</p>
+        <p>The package is published on <a href="https://pypi.org/project/multimodel-analysis/" target="_blank" rel="noopener">PyPI</a>. It requires <strong>Python 3.10 or newer</strong> (tested on 3.10, 3.11 and 3.12) and installs numpy (&ge;1.22), pandas (&ge;1.4), matplotlib (&ge;3.5), seaborn (&ge;0.12) and scikit-learn (&ge;1.3) as dependencies.</p>
 
         <div class="tabs" data-tabs>
           <div class="tablist" role="tablist" aria-label="Operating system">
@@ -257,28 +285,41 @@ pip install multimodel-analysis</code></pre></div>
 
         <h3 id="verify">Verify the install</h3>
         <div class="code" data-lang="bash"><pre><code>python -c "import multimodel_analysis as m; print(m.__version__)"</code></pre></div>
-        <p>This should print <code>0.1.3</code> or the version you installed.</p>
+        <p>This should print <code>0.6.1</code> or the version you installed.</p>
 
-        <h3 id="optional">Optional packages</h3>
-        <table class="doc-table">
-          <thead><tr><th>Package</th><th>Needed for</th></tr></thead>
-          <tbody>
-            <tr><td><code>openpyxl</code></td><td>Saving reports as <code>.xlsx</code></td></tr>
-            <tr><td><code>xgboost</code>, <code>lightgbm</code></td><td>Passing XGBoost or LightGBM models as custom estimators</td></tr>
-          </tbody>
-        </table>
-        <div class="code" data-lang="bash"><pre><code>pip install openpyxl xgboost lightgbm</code></pre></div>
+        <h3 id="optional">Optional extras</h3>
+        <p>Install only what you need. Without an extra the matching models are simply left out of <code>include="all"</code>; asking for one by name is reported in <code>failed_models_</code> with an install hint, never as a crash.</p>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Extra</th><th>Command</th><th>Adds</th></tr></thead>
+            <tbody>
+              <tr><td><code>excel</code></td><td><code>pip install "multimodel-analysis[excel]"</code></td><td><code>openpyxl</code>, for saving reports as <code>.xlsx</code></td></tr>
+              <tr><td><code>boost</code></td><td><code>pip install "multimodel-analysis[boost]"</code></td><td>XGBoost, LightGBM and CatBoost models (classification and regression)</td></tr>
+              <tr><td><code>umap</code></td><td><code>pip install "multimodel-analysis[umap]"</code></td><td>UMAP in <code>MultiModelReducer</code> (<code>umap-learn</code>)</td></tr>
+              <tr><td><code>dev</code></td><td><code>pip install "multimodel-analysis[dev]"</code></td><td>Test and lint tools, for contributors</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code" data-lang="bash"><pre><code>pip install "multimodel-analysis[excel,boost,umap]"</code></pre></div>
+
+        <h3 id="from-source">From source</h3>
+        <div class="code" data-lang="bash"><pre><code>git clone https://github.com/udityamerit/Multimodel-Analysis-Pacakge.git
+cd Multimodel-Analysis-Pacakge
+pip install -e ".[dev]"</code></pre></div>
       </section>
 
       <!-- ============ QUICKSTART ============ -->
       <section id="quickstart" data-title="Quickstart">
         <h2>Quickstart</h2>
-        <p>Both workflows follow the same four steps: build the object, run the models, look at the table, export what you need. The code below is complete and runs as written with scikit-learn's bundled datasets.</p>
+        <p>All five analysers follow the same steps: build the object, run the models, read the table, then plot or save what you need. The code below runs as written with scikit-learn's bundled datasets.</p>
 
         <div class="tabs" data-tabs>
           <div class="tablist" role="tablist" aria-label="Workflow">
             <button role="tab" id="q-clf-t" aria-controls="q-clf" aria-selected="true">Classification</button>
             <button role="tab" id="q-reg-t" aria-controls="q-reg" aria-selected="false" tabindex="-1">Regression</button>
+            <button role="tab" id="q-clu-t" aria-controls="q-clu" aria-selected="false" tabindex="-1">Clustering</button>
+            <button role="tab" id="q-ano-t" aria-controls="q-ano" aria-selected="false" tabindex="-1">Anomalies</button>
+            <button role="tab" id="q-red-t" aria-controls="q-red" aria-selected="false" tabindex="-1">Reduction</button>
           </div>
           <div role="tabpanel" id="q-clf" aria-labelledby="q-clf-t">
             <div class="code" data-lang="python" data-file="classify.py">
@@ -287,15 +328,17 @@ from multimodel_analysis import MultiModelClassifier
 
 X, y = load_breast_cancer(return_X_y=True, as_frame=True)
 
-clf = MultiModelClassifier(X=X, y=y, test_size=0.2, scaled_data=True, random_state=42)
+clf = MultiModelClassifier(X, y, test_size=0.2, random_state=42)
 
-results = clf.run_all_models()                          # 8 models, one split
-df = clf.show_tabular_report(results, return_df=True)   # sorted by Accuracy
+models = clf.run_all_models()                              # 8 default models, one split
+df = clf.show_tabular_report(models, return_df=True)       # ranked by Accuracy
 
+clf.plot_comparison(models, metric="F1 Score")
+clf.plot_confusion_matrices(models)
+clf.plot_roc_curves(models)
 clf.save_report(df, "classification_report.csv")
-clf.get_summary(results, save_prefix="clf", show_plot=False)
-# writes clf_report.csv, clf_confusion_matrices.png,
-#        clf_roc_curves.png and clf_comparison.png</code></pre>
+clf.save_html_report("report.html", title="Breast cancer")  # one-file report
+clf.predict(X.head())                                       # best model, original labels</code></pre>
             </div>
           </div>
           <div role="tabpanel" id="q-reg" aria-labelledby="q-reg-t" hidden>
@@ -305,164 +348,507 @@ from multimodel_analysis import MultiModelRegressor
 
 X, y = load_diabetes(return_X_y=True, as_frame=True)
 
-reg = MultiModelRegressor(X=X, y=y, test_size=0.2, scaled_data=True, random_state=42)
+reg = MultiModelRegressor(X, y, test_size=0.2, random_state=42)
 
-results = reg.run_all_models()                          # 8 models, one split
-df = reg.show_tabular_report(results, return_df=True)   # sorted by R2 Score
+models = reg.run_all_models()                              # 9 default models, one split
+df = reg.show_tabular_report(models, return_df=True)       # ranked by R2 Score
 
+reg.plot_comparison(models, metric="R2 Score")
+reg.plot_true_vs_predicted(models)
 reg.save_report(df, "regression_report.csv")
-reg.get_summary(results, save_prefix="reg", show_plot=False)
-# writes reg_report.csv, reg_true_vs_pred.png and reg_comparison.png</code></pre>
+reg.predict(X.head())</code></pre>
+            </div>
+          </div>
+          <div role="tabpanel" id="q-clu" aria-labelledby="q-clu-t" hidden>
+            <div class="code" data-lang="python" data-file="cluster.py">
+<pre><code>from sklearn.datasets import load_iris
+from multimodel_analysis import MultiModelClusterer
+
+X = load_iris(as_frame=True).data            # no target column needed
+
+cl = MultiModelClusterer(X, n_clusters=3, random_state=0)   # or n_clusters="auto"
+models = cl.run_all_models()                  # 7 default methods
+cl.show_tabular_report(models)                # ranked by Silhouette
+
+cl.plot_clusters(models)                      # 2-D scatter of the best methods
+cl.cluster_profile("KMeans")                  # size and feature means per cluster
+labelled = cl.assign_clusters("KMeans")       # your data + a `cluster` column</code></pre>
+            </div>
+          </div>
+          <div role="tabpanel" id="q-ano" aria-labelledby="q-ano-t" hidden>
+            <div class="code" data-lang="python" data-file="anomalies.py">
+<pre><code>from sklearn.datasets import load_wine
+from multimodel_analysis import MultiModelAnomalyDetector
+
+X = load_wine(as_frame=True).data
+
+det = MultiModelAnomalyDetector(X, contamination=0.05, random_state=0)
+models = det.run_all_models()                 # 6 default detectors
+det.show_tabular_report(models)               # ranked by Agreement
+
+det.top_anomalies(10)                         # the 10 strangest rows
+votes = det.consensus()                       # rows many detectors agree on
+det.plot_anomalies(models)</code></pre>
+            </div>
+          </div>
+          <div role="tabpanel" id="q-red" aria-labelledby="q-red-t" hidden>
+            <div class="code" data-lang="python" data-file="reduce.py">
+<pre><code>from sklearn.datasets import load_wine
+from multimodel_analysis import MultiModelReducer
+
+data = load_wine(as_frame=True)
+
+red = MultiModelReducer(data.data, y=data.target, n_components=2, random_state=0)
+models = red.run_all_models()                 # 7 default methods
+red.show_tabular_report(models)               # ranked by Trustworthiness
+
+red.plot_embeddings(models, top=4)            # 2-D maps coloured by y
+red.find_n_components(0.95)                   # PCA components for 95% variance
+red.transform(data.data.head(), model="PCA")  # map new rows</code></pre>
             </div>
           </div>
         </div>
 
         <div class="callout note">
           <p class="callout-title">Headless environments</p>
-          <p>Pass <code>show_plot=False</code> whenever you run on a server, in CI or in a notebook where you only want the files. Otherwise each plot opens through <code>plt.show()</code>.</p>
+          <p>Every plot method takes <code>show_plot=False</code> and <code>save_path="plot.png"</code>. Use them on a server, in CI, or whenever you only want the files; otherwise each plot opens through <code>plt.show()</code>. <code>get_summary(save_prefix="out/run1", show_plot=False)</code> writes the CSV table and every plot at once (the folder must already exist).</p>
         </div>
+        <p>Runnable notebooks with executed output are in the package repository: see <a href="#resources">Links &amp; resources</a>.</p>
+      </section>
+
+      <!-- ============ CHOOSE CLASS ============ -->
+      <section id="choose-class" data-title="Choosing a class">
+        <h2>Choosing a class</h2>
+        <p>Start from the question you are asking:</p>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Do you have a column to predict?</th><th>What kind of answer do you want?</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="2">Yes</td><td>A category (yes/no, species, spam)</td><td><code>MultiModelClassifier</code></td></tr>
+              <tr><td>A number (price, temperature, sales)</td><td><code>MultiModelRegressor</code></td></tr>
+              <tr><td rowspan="3">No</td><td>Groups of similar rows</td><td><code>MultiModelClusterer</code></td></tr>
+              <tr><td>Unusual rows</td><td><code>MultiModelAnomalyDetector</code></td></tr>
+              <tr><td>Fewer columns, or a 2-D picture</td><td><code>MultiModelReducer</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The unsupervised classes accept <code>y</code> as an optional argument. It is never used for fitting, only to add scores (clustering), precision/recall (anomalies) or colours and <code>Class Separation</code> (reduction).</p>
       </section>
 
       <!-- ============ HOW IT WORKS ============ -->
       <section id="how-it-works" data-title="How it works">
         <h2>How it works</h2>
-        <p>The whole pipeline lives in one module. Understanding these steps tells you exactly what the numbers mean.</p>
+        <p>All five analysers share one workflow and one report style, so what you learn on one carries over to the others.</p>
+
+        <div class="code" data-lang="python"><pre><code>import multimodel_analysis as mm
+
+tool = mm.MultiModelClassifier(X, y, random_state=0)       # 1. give it your data
+models = tool.run_all_models()                              # 2. train the default models
+table = tool.show_tabular_report(models, return_df=True)    # 3. ranked results (a DataFrame)
+tool.plot_comparison(models)                                # 4. ranked bar chart
+best = tool.predict(X_new)                                  # 5. use the best model</code></pre></div>
 
         <ol class="steps">
           <li>
-            <h3>Prepare the target</h3>
-            <p>The classifier flattens <code>y</code> and runs it through <code>LabelEncoder</code>, so string labels work. The original names are kept in <code>classes_</code> and used in reports and plots.</p>
+            <h3>Validate and prepare</h3>
+            <p>By default the data must be numeric and complete, and the package tells you in plain words what is wrong (missing values, text columns, length mismatch, continuous target for classification, invalid <code>test_size</code>). With <code>preprocess=True</code> it cleans the data for you instead; see <a href="#preprocessing">Messy data</a>. A classification target of any type is label-encoded, and predictions come back in your original labels.</p>
           </li>
           <li>
             <h3>Split</h3>
-            <p><code>train_test_split</code> with your <code>test_size</code> and <code>random_state</code>. Classification is stratified when <code>stratify=True</code> and every class has at least two samples; otherwise it falls back to an unstratified split without raising.</p>
+            <p>Classifier and regressor use <code>train_test_split</code> with your <code>test_size</code> (default 0.3) and <code>random_state</code> (default 42). Classification is stratified when <code>stratify=True</code> and every class has at least two samples; otherwise it falls back to an unstratified split without raising. The unsupervised classes fit on all rows and score on them.</p>
           </li>
           <li>
-            <h3>Scale (optional)</h3>
-            <p>With <code>scaled_data=True</code> a <code>StandardScaler</code> is fitted on the training rows only and applied to both splits, so no test information leaks into training. With <code>False</code> the raw values are used as they are.</p>
+            <h3>Scale (and optionally clean)</h3>
+            <p>With <code>scaled_data=True</code> (the default) a <code>StandardScaler</code> is fitted on the training rows only and applied to both splits, so no test information leaks into training. With <code>preprocess=True</code> imputing and encoding are fitted on the training rows in the same way.</p>
           </li>
           <li>
             <h3>Train and evaluate, one model at a time</h3>
-            <p><code>run_all_models()</code> calls each built-in builder in turn, then any custom estimators. Each call is wrapped in <code>try/except</code>; a failure prints a <code>[WARNING]</code> and the loop moves on. Models run sequentially. <code>n_jobs</code> is forwarded only to estimators that accept it.</p>
+            <p><code>run_all_models()</code> fits each selected model in turn, then any custom estimators. A model that fails is skipped; the reason goes to <code>failed_models_</code> and non-fatal notes go to <code>warnings_</code>. <code>n_jobs</code> is forwarded only to estimators that accept it.</p>
           </li>
           <li>
-            <h3>Collect and report</h3>
-            <p>Results are kept in <code>models_</code>. <code>show_tabular_report()</code> turns them into a DataFrame sorted best-first, and the plotting methods draw from the same list.</p>
+            <h3>Collect, rank and report</h3>
+            <p>Results are kept in <code>models_</code> and the fitted estimators in <code>estimators_</code> (with <code>fit_times_</code>). <code>show_tabular_report()</code> turns the results into a DataFrame sorted best-first (error metrics ascending); plots, <code>predict</code>, explanations and <code>save_model</code> all use the same results.</p>
           </li>
         </ol>
 
-        <h3 id="builtin-models">Built-in models and defaults</h3>
-        <div class="two-col">
+        <h3 id="options">Constructor options</h3>
+        <div class="table-wrap">
           <table class="doc-table">
-            <caption>Classification</caption>
-            <thead><tr><th>Name in report</th><th>Estimator and defaults</th></tr></thead>
+            <thead><tr><th>Option</th><th>Default</th><th>Applies to</th><th>Meaning</th></tr></thead>
             <tbody>
-              <tr><td>Logistic Regression</td><td><code>LogisticRegression(max_iter=1000)</code></td></tr>
-              <tr><td>SVM</td><td><code>SVC(kernel='linear', probability=True)</code></td></tr>
-              <tr><td>Decision Tree</td><td><code>DecisionTreeClassifier()</code></td></tr>
-              <tr><td>KNN</td><td><code>KNeighborsClassifier(n_neighbors=min(10, n_train-1))</code></td></tr>
-              <tr><td>Naive Bayes</td><td><code>GaussianNB()</code></td></tr>
-              <tr><td>Random Forest</td><td><code>RandomForestClassifier(n_estimators=100)</code></td></tr>
-              <tr><td>Gradient Boosting</td><td><code>GradientBoostingClassifier(n_estimators=100)</code></td></tr>
-              <tr><td>AdaBoost</td><td><code>AdaBoostClassifier(n_estimators=50)</code></td></tr>
-            </tbody>
-          </table>
-          <table class="doc-table">
-            <caption>Regression</caption>
-            <thead><tr><th>Name in report</th><th>Estimator and defaults</th></tr></thead>
-            <tbody>
-              <tr><td>Linear Regression</td><td><code>LinearRegression()</code></td></tr>
-              <tr><td>Lasso Regression</td><td><code>Lasso(alpha=0.1)</code></td></tr>
-              <tr><td>Ridge Regression</td><td><code>Ridge(alpha=1.0)</code></td></tr>
-              <tr><td>SVR</td><td><code>SVR(kernel='rbf')</code></td></tr>
-              <tr><td>Decision Tree Regressor</td><td><code>DecisionTreeRegressor()</code></td></tr>
-              <tr><td>Random Forest Regressor</td><td><code>RandomForestRegressor(n_estimators=100)</code></td></tr>
-              <tr><td>Gradient Boosting Regressor</td><td><code>GradientBoostingRegressor(n_estimators=100)</code></td></tr>
-              <tr><td>AdaBoost Regressor</td><td><code>AdaBoostRegressor(n_estimators=50)</code></td></tr>
+              <tr><td><code>X</code>, <code>y</code></td><td>required</td><td>all</td><td>Features (DataFrame or array) and target. <code>y</code> is optional for the unsupervised classes and only used to add scores or colours.</td></tr>
+              <tr><td><code>test_size</code></td><td><code>0.3</code></td><td>classifier, regressor</td><td>Share of rows kept for testing.</td></tr>
+              <tr><td><code>stratify</code></td><td><code>True</code></td><td>classifier</td><td>Keep class shares equal in both splits when possible.</td></tr>
+              <tr><td><code>scaled_data</code></td><td><code>True</code></td><td>all</td><td>Standardise features (needed by SVM, KNN and linear models). Fitted on training rows only.</td></tr>
+              <tr><td><code>preprocess</code></td><td><code>False</code></td><td>all</td><td>Impute missing values and encode text columns. Saved with the model.</td></tr>
+              <tr><td><code>class_weight</code></td><td><code>None</code></td><td>classifier</td><td><code>'balanced'</code> for imbalanced classes (reaches Logistic Regression, SVM, Decision Tree, Random Forest, Extra Trees, Ridge Classifier, Linear SVM and LightGBM).</td></tr>
+              <tr><td><code>n_clusters</code></td><td><code>3</code></td><td>clusterer</td><td>A number, or <code>"auto"</code> to pick it by Silhouette.</td></tr>
+              <tr><td><code>contamination</code></td><td><code>None</code></td><td>anomaly detector</td><td>Share of rows expected to be unusual, from 0 to 0.5. See <a href="#anomaly">Anomaly detection</a>.</td></tr>
+              <tr><td><code>n_components</code></td><td><code>2</code></td><td>reducer</td><td>Number of output dimensions.</td></tr>
+              <tr><td><code>random_state</code></td><td><code>42</code></td><td>all</td><td>Makes runs repeatable.</td></tr>
+              <tr><td><code>n_jobs</code></td><td><code>-1</code></td><td>all</td><td>CPU cores for estimators that support it.</td></tr>
+              <tr><td><code>verbose</code></td><td><code>True</code></td><td>all</td><td>Print tables while running. Set <code>False</code> to get only the returned DataFrame.</td></tr>
             </tbody>
           </table>
         </div>
-        <p>These are default settings, not tuned ones. Treat the leaderboard as a quick screening of model families; tune the winners separately. To change a model's settings, call its builder directly, for example <code>clf.RandomForest_model(n_estimators=300)</code>.</p>
+
+        <h3 id="preprocessing">Messy data: <code>preprocess=True</code></h3>
+        <div class="code" data-lang="python"><pre><code>tool = mm.MultiModelClassifier(df, y, preprocess=True)</code></pre></div>
+        <p>The package builds one pipeline, fitted on training rows only:</p>
+        <ul class="plain">
+          <li><strong>Numeric columns:</strong> missing values are filled with the median, then standardised if <code>scaled_data=True</code>.</li>
+          <li><strong>Text and category columns:</strong> missing values are filled with the most common value, then one-hot encoded (unseen categories at prediction time are ignored rather than raising).</li>
+        </ul>
+        <p>The same steps are saved with the model, so <code>predict(new_df)</code> accepts raw, un-cleaned rows. With preprocessing on, a one-hot column shows up in feature importance as one row per category (<code>colour_red</code>, <code>colour_green</code>, ...).</p>
       </section>
 
-      <!-- ============ READING RESULTS ============ -->
-      <section id="reading-results" data-title="Reading the results">
-        <h2>Reading the results</h2>
+      <!-- ============ CHOOSING MODELS ============ -->
+      <section id="choosing-models" data-title="Choosing models">
+        <h2>Choosing models</h2>
+        <p>Every model is registered under a short <strong>key</strong>. <em>Default</em> models run with <code>run_all_models()</code>; <em>extra</em> models run when you ask for them. The full list of keys is in the <a href="#model-reference">model reference</a>.</p>
 
-        <h3 id="result-tuples">What run_all_models returns</h3>
-        <p>A list with one tuple per successful model. The first item is the display name; the rest is exactly what <code>evaluate_model</code> returned.</p>
+        <div class="code" data-lang="python"><pre><code>tool.run_all_models()                                        # the default set
+tool.run_all_models(include=["random_forest", "svm"])         # only these
+tool.run_all_models(exclude=["svm"])                          # default set minus these
+tool.run_all_models(include="all")                            # default + extra (installed packages only)
+tool.run_model("random_forest", n_estimators=300)             # one model, your own settings
+
+tool.default_models()      # keys of the default set
+tool.available_models()    # every key, with whether its package is installed
+tool.get_model("Random Forest")   # the fitted estimator, by display name</code></pre></div>
+        <p><code>default_models()</code> and <code>available_models(installed_only=False)</code> are also available on the class itself, for example <code>MultiModelClassifier.default_models()</code>.</p>
+
         <table class="doc-table">
-          <thead><tr><th>Class</th><th>Tuple layout</th></tr></thead>
+          <thead><tr><th>Call</th><th>Runs</th></tr></thead>
           <tbody>
-            <tr><td>Classifier</td><td><code>(name, report, matrix, accuracy, precision, recall, f1, fpr_dict, tpr_dict, roc_auc)</code></td></tr>
-            <tr><td>Regressor</td><td><code>(name, mae, mse, rmse, r2, y_pred)</code></td></tr>
-          </tbody>
-        </table>
-        <div class="code" data-lang="python"><pre><code>for name, report, matrix, acc, prec, rec, f1, fpr, tpr, auc in results:
-    print(f"{name:20s} acc={acc:.3f} f1={f1:.3f} auc={auc:.3f}")
-
-print(results[0][1])   # full classification_report text for the first model</code></pre></div>
-        <p>The estimators themselves are not part of the tuple. If you need a fitted model afterwards, build and fit it yourself with <code>clf.X_train_scaled</code> and <code>clf.y_train</code>, or keep the instance you pass in as a custom estimator (it is fitted in place).</p>
-
-        <h3 id="metric-definitions">How each metric is computed</h3>
-        <table class="doc-table">
-          <thead><tr><th>Metric</th><th>Definition in this package</th></tr></thead>
-          <tbody>
-            <tr><td>Accuracy</td><td>Correct predictions divided by all predictions.</td></tr>
-            <tr><td>Precision, Recall, F1 Score</td><td>Support-weighted average over classes (<code>average='weighted'</code>, <code>zero_division=0</code>). For binary data this is not the same as the positive-class-only score.</td></tr>
-            <tr><td>ROC AUC</td><td>Binary: area under the ROC curve of the positive class. Multiclass: one-vs-rest, support-weighted. <code>NaN</code> if the model has neither probabilities nor decision scores.</td></tr>
-            <tr><td>MAE, MSE, RMSE</td><td>Mean absolute error, mean squared error and its square root, in the units of the target (squared units for MSE).</td></tr>
-            <tr><td>R2 Score</td><td>Coefficient of determination on the test split. 1.0 is perfect, 0.0 matches predicting the mean, and it can be negative.</td></tr>
+            <tr><td><code>run_all_models()</code></td><td>The default set (8 / 9 / 7 / 6 / 7 models for the five classes).</td></tr>
+            <tr><td><code>include=[keys]</code></td><td>Exactly those models, default or extra. A missing optional package is reported in <code>failed_models_</code> with an install hint.</td></tr>
+            <tr><td><code>exclude=[keys]</code></td><td>The default set without these.</td></tr>
+            <tr><td><code>include="all"</code></td><td>Default and extra models whose package is installed; the others are skipped silently.</td></tr>
+            <tr><td><code>custom_models={name: estimator}</code></td><td>Your own models, appended after the built-in ones.</td></tr>
           </tbody>
         </table>
 
-        <h3 id="sorting">Sorting</h3>
-        <p>The classification table is sorted by <strong>Accuracy</strong> and the regression table by <strong>R2 Score</strong>, both descending. With a single small test split, differences in the third decimal are noise; see <a href="#limitations">Limitations</a>.</p>
-
-        <h3 id="attributes">Useful attributes</h3>
-        <table class="doc-table">
-          <thead><tr><th>Attribute</th><th>Meaning</th></tr></thead>
-          <tbody>
-            <tr><td><code>X_train_scaled</code>, <code>X_test_scaled</code></td><td>Feature splits used by every model (scaled only if <code>scaled_data=True</code>).</td></tr>
-            <tr><td><code>y_train</code>, <code>y_test</code></td><td>Target splits. For the classifier these are the encoded integer labels.</td></tr>
-            <tr><td><code>classes_</code>, <code>n_classes_</code>, <code>label_encoder</code></td><td>Classifier only. Original class labels and the fitted encoder.</td></tr>
-            <tr><td><code>models_</code></td><td>The latest result list from <code>run_all_models()</code>.</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- ============ CUSTOM ESTIMATORS ============ -->
-      <section id="custom-estimators" data-title="Custom estimators">
-        <h2>Custom estimators</h2>
-        <p>Pass a dictionary of <code>{name: unfitted_estimator}</code> to <code>run_all_models</code>. Anything with scikit-learn's <code>fit</code> and <code>predict</code> works; <code>predict_proba</code> or <code>decision_function</code> additionally gives you ROC AUC. Custom models are appended after the built-in ones and are fitted on the same scaled split.</p>
+        <h3 id="custom-estimators">Bring your own model</h3>
+        <p>Pass a dictionary of <code>{name: unfitted_estimator}</code>. Anything with scikit-learn's <code>fit</code> and <code>predict</code> works; <code>predict_proba</code> or <code>decision_function</code> additionally gives a classifier ROC AUC. Custom models are fitted on the same split and ranked with the built-ins; a custom model that raises is skipped and listed in <code>failed_models_</code>.</p>
         <div class="code" data-lang="python" data-file="custom.py">
-<pre><code>from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
+<pre><code>from sklearn.linear_model import SGDClassifier
 from multimodel_analysis import MultiModelClassifier
 
-clf = MultiModelClassifier(X=X, y=y, test_size=0.2, scaled_data=True)
+clf = MultiModelClassifier(X, y, test_size=0.2)
 
-results = clf.run_all_models(custom_models={
-    "XGBoost":  XGBClassifier(n_estimators=200, learning_rate=0.05, random_state=42),
-    "LightGBM": LGBMClassifier(n_estimators=200, learning_rate=0.05, random_state=42),
+models = clf.run_all_models(custom_models={
+    "My SGD": SGDClassifier(random_state=0),
 })
-clf.show_tabular_report(results)   # 8 built-ins + 2 custom rows</code></pre>
+clf.show_tabular_report(models)   # 8 default models + 1 custom row</code></pre>
         </div>
-        <div class="callout note">
-          <p class="callout-title">Labels are encoded for you</p>
-          <p>The classifier encodes <code>y</code> to integers before training, so XGBoost does not need its own label encoding. A custom model that raises is reported as <code>[WARNING] Custom model '&hellip;' failed</code> and skipped.</p>
-        </div>
+        <p>XGBoost, LightGBM and CatBoost no longer need to be passed this way: install the <code>boost</code> extra and use <code>include=["xgboost", "lightgbm", "catboost"]</code> or <code>include="all"</code>, which also gives them tuning spaces.</p>
+
+        <h3 id="legacy">Older per-model methods</h3>
+        <p>The original one-model builders (for example <code>Logistic_model()</code>, <code>KNN_model()</code>, <code>Support_vector_model()</code> and <code>evaluate_model()</code>) and the old spelling <code>MultiModelRegressior</code> still work. They are listed under each class in the <a href="#api">API reference</a>. New code should prefer <code>run_all_models(include=...)</code> and <code>run_model()</code>.</p>
       </section>
 
-      <!-- ============ EXPORTING ============ -->
-      <section id="exporting" data-title="Exporting reports">
-        <h2>Exporting reports</h2>
-        <p><code>save_report</code> picks the format from the file extension. It exists both as a module function and as a method on the classifier and regressor.</p>
+      <!-- ============ SUPERVISED ============ -->
+      <section id="supervised" data-title="Classification and regression">
+        <h2>Classification and regression</h2>
+        <p><code>MultiModelClassifier</code> predicts a <strong>category</strong>; <code>MultiModelRegressor</code> predicts a <strong>number</strong>. They share almost everything, including tuning, cross-validation, explanations and saving.</p>
+
+        <h3 id="classification">Classification</h3>
+        <div class="code" data-lang="python"><pre><code>from sklearn.datasets import load_breast_cancer
+from multimodel_analysis import MultiModelClassifier
+
+data = load_breast_cancer(as_frame=True)
+clf = MultiModelClassifier(data.data, data.target, test_size=0.3, random_state=0)
+
+models = clf.run_all_models()
+table = clf.show_tabular_report(models, return_df=True, sort_by="F1 Score")
+clf.plot_comparison(models, metric="F1 Score")
+clf.plot_confusion_matrices(models)
+clf.plot_roc_curves(models)</code></pre></div>
+        <p>Targets can be numbers, strings or categories, binary or multi-class. <code>clf.predict(new_rows)</code> returns your original labels. The report columns are <code>Accuracy</code>, <code>Precision</code>, <code>Recall</code>, <code>F1 Score</code>, <code>ROC AUC</code> and <code>Fit Time (s)</code>; see <a href="#metric-definitions">how each metric is computed</a>.</p>
+
+        <h3 id="regression">Regression</h3>
+        <div class="code" data-lang="python"><pre><code>from sklearn.datasets import load_diabetes
+from multimodel_analysis import MultiModelRegressor
+
+data = load_diabetes(as_frame=True)
+reg = MultiModelRegressor(data.data, data.target, random_state=0)
+
+models = reg.run_all_models()
+reg.show_tabular_report(models, sort_by="RMSE")
+reg.plot_comparison(models, metric="R2 Score")
+reg.plot_true_vs_predicted(models)</code></pre></div>
+        <p>Columns: <code>MAE</code>, <code>MSE</code>, <code>RMSE</code>, <code>R2 Score</code> and <code>Fit Time (s)</code>. For error metrics lower is better, and the report sorts accordingly. SVR, Linear SVR and the MLP regressor standardise the target internally, so unscaled targets do not hurt them.</p>
+
+        <h3 id="predict-new">Predict on new data</h3>
+        <div class="code" data-lang="python"><pre><code>clf.predict(new_rows)                          # best model of the last report
+clf.predict(new_rows, model="Random Forest")   # a specific model, by display name
+clf.export_model("Random Forest").predict_proba(new_rows)   # class probabilities</code></pre></div>
+        <p><code>new_rows</code> must have the same columns as the training data. Scaling (and, with <code>preprocess=True</code>, the whole cleaning pipeline) is applied for you. Without <code>model=</code>, the best model of the last report is used, so call <code>show_tabular_report()</code> first. Each <code>run_all_models</code> or <code>tune_models</code> call replaces the fitted models; save the ones you want to keep first (see <a href="#reports">saving models</a>).</p>
+      </section>
+
+      <!-- ============ TUNING ============ -->
+      <section id="tuning" data-title="Tuning and cross-validation">
+        <h2>Tuning and cross-validation</h2>
+        <p>Both work for the classifier and the regressor, run on the <strong>training split only</strong> (the test split stays untouched) and refit preprocessing inside every fold, so there is no leakage.</p>
+
+        <h3 id="cross-validation">Cross-validation</h3>
+        <p>One train/test split can be lucky. <code>cross_validate_models</code> scores every model on several folds of the training data:</p>
+        <div class="code" data-lang="python"><pre><code>cv = clf.cross_validate_models(cv=5)                    # default scoring
+cv = clf.cross_validate_models(cv=5, scoring="f1_macro",
+                               include=["logistic_regression", "random_forest"])
+clf.cv_results_      # the same table, kept on the object
+clf.cv_failed_       # {model: reason} for models that could not be cross-validated</code></pre></div>
+        <p>The table has a <code>&lt;scorer&gt; mean</code> and <code>&lt;scorer&gt; std</code> column per scorer plus <code>Fit Time (s)</code>. A small <code>std</code> relative to the gaps between models means the ranking is trustworthy.</p>
+
+        <h3 id="hyperparameter-tuning">Hyper-parameter tuning</h3>
+        <p>Every built-in model has a sensible search space (the tuned parameters are listed in the <a href="#model-reference">model reference</a>).</p>
+        <div class="code" data-lang="python"><pre><code>tuned = clf.tune_models(include=["logistic_regression", "random_forest"],
+                        search="random", n_iter=20, cv=5)
+
+clf.tuning_results_      # DataFrame: best CV score, best params, candidates tried, search time
+clf.best_params_         # {model name: best parameters}
+clf.show_tabular_report(tuned)</code></pre></div>
+        <table class="doc-table">
+          <thead><tr><th>Argument</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>search="random"</code></td><td>Default. Tries <code>n_iter</code> random combinations (capped at the size of the grid).</td></tr>
+            <tr><td><code>search="grid"</code></td><td>Tries every combination.</td></tr>
+            <tr><td><code>search="halving"</code></td><td>Successive halving: quickly drops weak candidates. Fast on big data.</td></tr>
+            <tr><td><code>cv</code>, <code>n_iter</code></td><td>Number of folds (default 5) and random candidates (default 20).</td></tr>
+            <tr><td><code>scoring</code></td><td>Any scikit-learn scorer name, for example <code>"f1"</code> or <code>"neg_root_mean_squared_error"</code>. For clustering, a score column such as <code>"Calinski-Harabasz"</code>.</td></tr>
+            <tr><td><code>param_grids</code></td><td>Replace a model's built-in space: <code>{"knn": {"n_neighbors": [3, 5, 7]}}</code>.</td></tr>
+            <tr><td><code>include</code>, <code>exclude</code></td><td>Which models to tune, by key.</td></tr>
+          </tbody>
+        </table>
+        <p><code>tune_models</code> picks the best parameters by cross-validation on the training split, refits them on the whole training split and evaluates on the test split, returning the same result list as <code>run_all_models</code>. Plots, <code>predict</code> and <code>save_model</code> therefore work on tuned models too. A model whose tuning fails is listed in <code>failed_models_</code>; the others carry on. <code>tune_models</code> also exists on <code>MultiModelClusterer</code>; see <a href="#clustering">Clustering</a>.</p>
+      </section>
+
+      <!-- ============ CLUSTERING ============ -->
+      <section id="clustering" data-title="Clustering">
+        <h2>Clustering</h2>
+        <p><code>MultiModelClusterer</code> finds groups in data that has <strong>no target column</strong>. It runs 7 default methods (14 in total), scores each one and shows the groups on a 2-D map.</p>
+        <div class="code" data-lang="python"><pre><code>from sklearn.datasets import make_blobs
+import pandas as pd
+from multimodel_analysis import MultiModelClusterer
+
+X, y = make_blobs(n_samples=450, centers=3, random_state=11)
+X = pd.DataFrame(X, columns=["feature 1", "feature 2"])
+
+cl = MultiModelClusterer(X, n_clusters=3, random_state=0)
+models = cl.run_all_models()
+cl.show_tabular_report(models)
+cl.plot_comparison(models)     # ranked bars
+cl.plot_clusters(models)       # scatter plots of the best methods</code></pre></div>
+
+        <h3 id="how-many-clusters">How many clusters?</h3>
+        <ul class="plain">
+          <li>Pass a number: <code>n_clusters=3</code>.</li>
+          <li>Or let the tool search: <code>n_clusters="auto"</code> picks <em>k</em> by Silhouette.</li>
+          <li>Or look first with <code>cl.find_optimal_k()</code> (a table of <em>k</em> against Inertia and Silhouette) and <code>cl.plot_k_search()</code> (elbow and silhouette curves with the best <em>k</em> marked).</li>
+        </ul>
+        <p>Methods that decide the number themselves (DBSCAN, HDBSCAN, OPTICS, Mean Shift, Affinity Propagation) ignore <code>n_clusters</code>. Their settings are chosen from the data and shown in <code>cl.auto_params_</code>, for example <code>{'DBSCAN': {'eps': ...}}</code>. Rows they leave unassigned are <strong>noise</strong> and get label <code>-1</code>.</p>
+
+        <h3 id="cluster-scores">Reading the scores</h3>
+        <table class="doc-table">
+          <thead><tr><th>Column</th><th>Meaning</th><th>Better</th></tr></thead>
+          <tbody>
+            <tr><td><code>Silhouette</code></td><td>How well each row fits its own cluster compared with the next one (&minus;1 to 1). Above 0.5 is clear, 0.25 to 0.5 reasonable, below 0.25 weak.</td><td>higher</td></tr>
+            <tr><td><code>Calinski-Harabasz</code></td><td>Between-cluster spread against within-cluster spread.</td><td>higher</td></tr>
+            <tr><td><code>Davies-Bouldin</code></td><td>How similar clusters are to each other.</td><td><strong>lower</strong></td></tr>
+            <tr><td><code>Clusters</code>, <code>Noise Points</code></td><td>What the method found. Noise rows are left out of the scores.</td><td>n/a</td></tr>
+            <tr><td><code>Fit Time (s)</code></td><td>Seconds to fit.</td><td>lower</td></tr>
+            <tr><td><code>ARI</code>, <code>NMI</code>, <code>V-measure</code>, <code>Homogeneity</code>, <code>Completeness</code></td><td>Agreement with <em>known</em> labels; only filled when you pass <code>y=</code>.</td><td>higher</td></tr>
+          </tbody>
+        </table>
+        <p>A method that finds fewer than two clusters (DBSCAN on some data) gets <code>N/A</code> scores and a warning rather than a crash. DBSCAN can also look better than it is by setting hard rows aside as noise, so compare it with the methods that label every row. With true labels (for example to test the tool on iris), pass them as <code>y=</code> and sort by <code>ARI</code>:</p>
+        <div class="code" data-lang="python"><pre><code>cl = MultiModelClusterer(iris.data, y=iris.target, n_clusters=3)
+cl.show_tabular_report(cl.run_all_models(include="all"), sort_by="ARI")</code></pre></div>
+
+        <h3 id="use-clusters">Using the result</h3>
+        <div class="code" data-lang="python"><pre><code>cl.assign_clusters("KMeans")      # your data + a `cluster` column
+cl.get_labels("KMeans")           # just the labels (numpy array)
+cl.cluster_profile("KMeans")      # size and average of every feature per cluster, in your own units
+cl.plot_silhouette("KMeans")      # per-row silhouette, grouped by cluster</code></pre></div>
+        <p><code>cluster_profile</code> is the quickest way to <em>name</em> your groups ("young, low spend" / "older, high spend").</p>
+
+        <h3 id="label-new-rows">Label new rows</h3>
+        <div class="code" data-lang="python"><pre><code>cl.predict(new_rows, model="KMeans")</code></pre></div>
+        <p>This works for KMeans, MiniBatch KMeans, Gaussian Mixture, Birch, Bisecting KMeans, Mean Shift and Affinity Propagation. The others (the three Agglomerative variants, Spectral, DBSCAN, HDBSCAN, OPTICS) cannot place unseen points and raise a clear <code>TypeError</code> instead of guessing. With no <code>model=</code>, the best-ranked model that <em>can</em> predict is used.</p>
+
+        <h3 id="tune-clusters">Tuning</h3>
+        <div class="code" data-lang="python"><pre><code>cl.tune_models(include=["kmeans", "gaussian_mixture", "dbscan"])
+cl.tuning_results_          # best settings and scores
+cl.best_params_
+cl.tune_models(include=["dbscan"], scoring="Calinski-Harabasz",
+               param_grids={"dbscan": {"eps": [0.2, 0.3, 0.5], "min_samples": [4, 8]}})</code></pre></div>
+
+        <h3 id="cluster-big-data">Big data and messy data</h3>
+        <p>Methods that need memory proportional to <em>n&sup2;</em> (Spectral, Agglomerative, Mean Shift, Affinity Propagation, OPTICS) are <strong>skipped above a size limit</strong> and listed in <code>failed_models_</code>. Pass <code>allow_large=True</code> to run them anyway. KMeans, MiniBatch KMeans, Birch, Gaussian Mixture and DBSCAN always run. For missing values or text columns use <code>MultiModelClusterer(customers, n_clusters=2, preprocess=True)</code>.</p>
+      </section>
+
+      <!-- ============ ANOMALY ============ -->
+      <section id="anomaly" data-title="Anomaly detection">
+        <h2>Anomaly detection</h2>
+        <p><code>MultiModelAnomalyDetector</code> finds rows that look unlike the rest: faulty sensors, fraud, typos, unusual customers. It needs <strong>no labels</strong>. It runs 6 default detectors (7 in total) and tells you where they agree. The convention is <code>1</code> = anomaly, <code>0</code> = normal.</p>
+        <div class="code" data-lang="python"><pre><code>import numpy as np, pandas as pd
+from multimodel_analysis import MultiModelAnomalyDetector
+
+rng = np.random.RandomState(0)
+normal = rng.randn(300, 3)
+faulty = rng.randn(15, 3) * 0.5 + [4, -4, 4]
+sensors = pd.DataFrame(np.vstack([normal, faulty]),
+                       columns=["temperature", "pressure", "vibration"])
+
+det = MultiModelAnomalyDetector(sensors, contamination=0.05, random_state=0)
+models = det.run_all_models()
+det.show_tabular_report(models)
+det.plot_anomalies(models)</code></pre></div>
+
+        <h3 id="contamination"><code>contamination</code>: how many rows to flag</h3>
+        <p>Anomaly detection always needs a cut-off. <code>contamination</code> is <em>the share of rows you expect to be unusual</em> (between 0 and 0.5, so <code>0.02</code> means 2%, not <code>2</code>). Every detector then flags exactly the top share of rows by anomaly score, which is why the <code>Anomalies</code> counts in the table are nearly equal and the models stay comparable. The default is the share of <code>1</code>s in <code>y</code> if you pass labels, otherwise <strong>5%</strong>. Think about your data: fraud might be 0.5%, a sensor fault 2%.</p>
+
+        <h3 id="anomaly-report">Reading the report</h3>
+        <table class="doc-table">
+          <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>Anomalies</code>, <code>Anomaly Rate (%)</code></td><td>How many rows the model flagged.</td></tr>
+            <tr><td><code>Agreement</code></td><td>How closely this model's <em>ranking</em> of rows matches the other models (1 = identical). A consensus hint, <strong>not</strong> accuracy.</td></tr>
+            <tr><td><code>Precision</code>, <code>Recall</code>, <code>F1 Score</code>, <code>ROC AUC</code>, <code>Avg Precision</code></td><td>Only when you pass <code>y=</code> (1 = known anomaly).</td></tr>
+            <tr><td><code>Fit Time (s)</code></td><td>Seconds to fit.</td></tr>
+          </tbody>
+        </table>
+        <p>Without labels the table is ranked by <code>Agreement</code>; with labels, by <code>F1 Score</code>.</p>
+
+        <h3 id="look-at-rows">Look at the actual rows</h3>
+        <div class="code" data-lang="python"><pre><code>det.top_anomalies(10)               # the 10 strangest rows with their scores
+det.assign_anomalies()              # all rows + `anomaly` (0/1) and `anomaly_score` columns
+det.get_labels("Isolation Forest")  # 0/1 array
+det.get_scores("Isolation Forest")  # higher = stranger
+det.plot_scores()                   # score histogram with the cut-off line</code></pre></div>
+
+        <h3 id="consensus">Consensus: trust rows many models agree on</h3>
+        <div class="code" data-lang="python"><pre><code>votes = det.consensus()             # adds `votes` and `consensus`
+votes[votes["consensus"]]           # flagged by more than half of the models
+det.consensus(min_votes=5)          # stricter</code></pre></div>
+
+        <h3 id="judge-new">Judge new rows</h3>
+        <div class="code" data-lang="python"><pre><code>det.predict(new_rows, model="Isolation Forest")      # 1 = anomaly
+det.score_new(new_rows, model="Isolation Forest")    # the raw scores</code></pre></div>
+        <p>The cut-off learned on the training data is reused, so scores are comparable over time. <code>det.save_model(path)</code> keeps the cut-off with the model.</p>
+
+        <h3 id="anomaly-more">Mixed data, custom detectors, big data</h3>
+        <ul class="plain">
+          <li><strong>Mixed data:</strong> <code>MultiModelAnomalyDetector(orders, contamination=0.02, preprocess=True)</code> encodes text columns and fills missing numbers.</li>
+          <li><strong>Your own detector:</strong> <code>custom_models={"My Forest": IsolationForest(n_estimators=300)}</code>.</li>
+          <li><strong>Big data:</strong> One-Class SVM (above 20,000 rows) and Elliptic Envelope (above 100,000) are skipped unless <code>allow_large=True</code>; skipped models are listed in <code>failed_models_</code>.</li>
+        </ul>
+      </section>
+
+      <!-- ============ REDUCTION ============ -->
+      <section id="reduction" data-title="Dimensionality reduction">
+        <h2>Dimensionality reduction</h2>
+        <p><code>MultiModelReducer</code> squeezes many columns into a few (usually 2, to draw a map). It runs 7 default methods (12 in total) and scores how faithfully each one keeps the structure of your data.</p>
+        <div class="code" data-lang="python"><pre><code>from sklearn.datasets import load_digits
+from multimodel_analysis import MultiModelReducer
+
+digits = load_digits()
+red = MultiModelReducer(digits.data[:1000], y=digits.target[:1000],
+                        n_components=2, random_state=0)
+
+models = red.run_all_models()
+red.show_tabular_report(models)
+red.plot_comparison(models)
+red.plot_embeddings(models, top=4)    # 2-D maps, coloured by y if you gave it</code></pre></div>
+        <p><code>y</code> is optional here; it only colours the maps and feeds <code>Class Separation</code>.</p>
+
+        <h3 id="reduction-scores">Reading the scores</h3>
+        <table class="doc-table">
+          <thead><tr><th>Column</th><th>Question it answers</th><th>Better</th></tr></thead>
+          <tbody>
+            <tr><td><code>Trustworthiness</code></td><td>Are points that look close on the map <em>really</em> close in the original data?</td><td>higher (max 1)</td></tr>
+            <tr><td><code>Continuity</code></td><td>Are points that were close originally still close on the map?</td><td>higher (max 1)</td></tr>
+            <tr><td><code>Global Structure</code></td><td>Do far-apart rows stay far apart?</td><td>higher</td></tr>
+            <tr><td><code>Variance Kept (%)</code></td><td>Share of the data's spread that survives (PCA and other reversible methods; empty otherwise).</td><td>higher</td></tr>
+            <tr><td><code>Class Separation</code></td><td>How well classes are separated on the map (needs <code>y</code>).</td><td>higher</td></tr>
+            <tr><td><code>Can Transform New Data</code></td><td><code>yes</code> if the method can map unseen rows (t-SNE: <code>no</code>).</td><td>n/a</td></tr>
+          </tbody>
+        </table>
+        <p>The table is ranked by <code>Trustworthiness</code> by default (change it with <code>sort_by=</code>). Local scores favour t-SNE and Isomap; PCA keeps the global shape and is the easiest to explain. Pick by purpose: <strong>PCA</strong> to interpret or to feed another model, <strong>t-SNE / UMAP</strong> for a picture.</p>
+
+        <h3 id="n-components">How many components do I need?</h3>
+        <div class="code" data-lang="python"><pre><code>k = red.find_n_components(0.95)     # smallest number of PCA components keeping 95% of the variance
+red.plot_variance()                 # scree plot: variance per component + running total</code></pre></div>
+
+        <h3 id="loadings">What do the components mean? (PCA)</h3>
+        <div class="code" data-lang="python"><pre><code>loads = red.get_loadings("PCA")
+loads["Component 1"].abs().sort_values(ascending=False).head(5)   # columns that drive component 1</code></pre></div>
+
+        <h3 id="reduction-use">Use the result</h3>
+        <div class="code" data-lang="python"><pre><code>red.get_embedding("PCA")                    # new columns: Component 1, Component 2, ...
+red.transform(new_rows, model="PCA")        # map unseen rows
+
+emb = red.get_embedding("PCA")              # reduce first, then cluster
+MultiModelClusterer(emb, n_clusters=3).run_all_models()</code></pre></div>
+        <p>PCA, Kernel PCA, FastICA, Factor Analysis, Truncated SVD, Isomap, LLE and Random Projection (and UMAP, if installed) can transform new rows. <strong>t-SNE, Spectral Embedding and MDS cannot</strong>: they only embed the data they were fitted on, so they raise a clear <code>TypeError</code>.</p>
+
+        <h3 id="reduction-notes">Notes</h3>
+        <ul class="plain">
+          <li>Constant columns are tolerated (FastICA ignores them).</li>
+          <li>t-SNE, Kernel PCA, Isomap, LLE, Spectral Embedding and MDS are skipped on large data unless <code>allow_large=True</code>. Limits: t-SNE and LLE 10,000 rows; Kernel PCA, Isomap and Spectral Embedding 8,000; MDS 1,500.</li>
+          <li>UMAP needs the extra: <code>pip install "multimodel-analysis[umap]"</code>.</li>
+        </ul>
+      </section>
+
+      <!-- ============ EXPLAINABILITY ============ -->
+      <section id="explainability" data-title="Explainability">
+        <h2>Explainability: which features matter?</h2>
+        <p>A ranked table tells you <em>which model</em> is best. These two tools tell you <em>why it predicts what it predicts</em>. They work for every model in <code>MultiModelClassifier</code> and <code>MultiModelRegressor</code>, including ones with no built-in importance (SVM, KNN, neural networks), because they only use predictions. They need no extra packages and are computed on the test split.</p>
+
+        <h3 id="feature-importance">Feature importance (permutation)</h3>
+        <p>Shuffle one column at a time and see how much the test score drops. A big drop means the model relied on that column.</p>
+        <div class="code" data-lang="python"><pre><code>from sklearn.datasets import load_breast_cancer
+from multimodel_analysis import MultiModelClassifier
+
+data = load_breast_cancer(as_frame=True)
+clf = MultiModelClassifier(data.data, data.target, random_state=0)
+models = clf.run_all_models(include=["logistic_regression", "random_forest", "gradient_boosting"])
+clf.show_tabular_report(models)       # picks the best model, which the calls below use by default
+
+clf.feature_importance().head(8)              # table, for the best model
+clf.plot_feature_importance(top=10)           # ranked bars
+clf.plot_feature_importance(model="Random Forest", top=10)</code></pre></div>
+        <p>The table has three columns: <code>Feature</code>, <code>Importance</code> (the mean score drop: accuracy for classifiers, R2 for regressors) and <code>Std</code> (the spread over <code>n_repeats</code> shuffles, default 10). <code>0.10</code> means shuffling the feature costs 10 points. A feature whose drop is about zero, or whose <code>Std</code> is larger than its <code>Importance</code>, does not help the model. Raise <code>n_repeats</code> for steadier numbers; <code>scoring="f1"</code> (or any scorer name) changes the yardstick; <code>max_rows</code> (default 2000) keeps big datasets fast.</p>
+
+        <h3 id="partial-dependence">Partial dependence: how does a feature act?</h3>
+        <p>Sweep one feature over its range, keep everything else as it is, and plot the average prediction.</p>
+        <div class="code" data-lang="python"><pre><code>clf.plot_partial_dependence(model="Random Forest")                       # the top features
+clf.plot_partial_dependence(["worst radius", "worst concave points"], model="Random Forest")
+clf.partial_dependence("worst radius", model="Random Forest", grid_points=6)   # the numbers</code></pre></div>
+        <ul class="plain">
+          <li><strong>Classification:</strong> the curve is the probability of one class; choose it with <code>class_label=0</code>.</li>
+          <li><strong>Regression:</strong> the curve is the predicted value, for example <code>reg.plot_partial_dependence(["bmi", "s5"])</code>.</li>
+          <li>A rising curve means larger values push the prediction up. A flat curve means the feature barely matters.</li>
+        </ul>
+
+        <div class="callout warn">
+          <p class="callout-title">Read importance with care</p>
+          <p>Importance says what the <em>model</em> uses, not what causes the outcome. Two strongly related columns share credit: shuffling one is rescued by the other, so both can look less important than they are. Importance is measured on the <strong>test</strong> split, so it reflects generalisation, not memorisation.</p>
+        </div>
+        <p>See <a href="#charts">the charts</a> for real feature-importance and partial-dependence output.</p>
+      </section>
+
+      <!-- ============ REPORTS ============ -->
+      <section id="reports" data-title="Reports and saving models">
+        <h2>Reports, plots and saving models</h2>
+
+        <h3 id="tables">Tables</h3>
+        <p><code>show_tabular_report(models, return_df=True)</code> prints the ranked table and returns it as a DataFrame (<code>sort_by=</code> picks the column). <code>save_report</code> picks the format from the file extension. It exists both as a module function and as a method on every analyser.</p>
         <table class="doc-table">
           <thead><tr><th>Extension</th><th>Result</th></tr></thead>
           <tbody>
             <tr><td><code>.csv</code></td><td>CSV without the index column</td></tr>
-            <tr><td><code>.xlsx</code>, <code>.xls</code></td><td>Excel workbook (needs <code>openpyxl</code>)</td></tr>
+            <tr><td><code>.xlsx</code></td><td>Excel workbook (needs the <code>excel</code> extra, i.e. <code>openpyxl</code>). The old <code>.xls</code> format is rejected with a clear message.</td></tr>
             <tr><td><code>.html</code>, <code>.htm</code></td><td>HTML table</td></tr>
             <tr><td><code>.json</code></td><td>JSON array of records</td></tr>
             <tr><td>anything else</td><td>CSV</td></tr>
@@ -470,19 +856,115 @@ clf.show_tabular_report(results)   # 8 built-ins + 2 custom rows</code></pre>
         </table>
         <div class="code" data-lang="python"><pre><code>from multimodel_analysis import save_report
 
-df = clf.show_tabular_report(return_df=True)
+df = clf.show_tabular_report(models, return_df=True)
 
 save_report(df, "leaderboard.csv")       # module function
 clf.save_report(df, "leaderboard.xlsx")  # method with an explicit DataFrame
 clf.save_report("leaderboard.json")      # method: reuses the last report
 clf.save_report()                        # defaults to report.csv</code></pre></div>
         <p>Passing <code>None</code> or an empty DataFrame prints a warning and writes nothing.</p>
+
+        <h3 id="plots">Plots</h3>
+        <p>Every plot method accepts <code>save_path="plot.png"</code> (saves a PNG) and <code>show_plot=False</code> (do not open a window, handy on servers). <code>plot_comparison(models, metric="...")</code> draws one plain, ranked bar chart (best on top, value on every bar) for any metric in the table.</p>
+        <table class="doc-table">
+          <thead><tr><th>Class</th><th>Plots</th></tr></thead>
+          <tbody>
+            <tr><td>Classifier</td><td><code>plot_comparison</code>, <code>plot_confusion_matrices</code>, <code>plot_roc_curves</code>, <code>plot_feature_importance</code>, <code>plot_partial_dependence</code></td></tr>
+            <tr><td>Regressor</td><td><code>plot_comparison</code>, <code>plot_true_vs_predicted</code>, <code>plot_feature_importance</code>, <code>plot_partial_dependence</code></td></tr>
+            <tr><td>Clusterer</td><td><code>plot_comparison</code>, <code>plot_clusters</code> (PCA for more than 2 features), <code>plot_k_search</code>, <code>plot_silhouette</code></td></tr>
+            <tr><td>Anomaly detector</td><td><code>plot_comparison</code>, <code>plot_anomalies</code>, <code>plot_scores</code></td></tr>
+            <tr><td>Reducer</td><td><code>plot_comparison</code>, <code>plot_embeddings</code>, <code>plot_variance</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="summary">Everything at once</h3>
+        <div class="code" data-lang="python"><pre><code>tool.get_summary(models, save_prefix="out/run1", show_plot=False)</code></pre></div>
+        <p>This writes the CSV table and the PNG plots, all starting with <code>out/run1_</code>. The folder must already exist, otherwise you get an <code>OSError</code>.</p>
+
+        <h3 id="html-report">One-file HTML report</h3>
+        <div class="code" data-lang="python"><pre><code>tool.save_html_report("report.html", title="Breast cancer classification")</code></pre></div>
+        <p>A single self-contained page with the results table, every plot (embedded as images) and any warnings or failed models. Nothing else is needed to open it, so it is safe to e-mail or attach. An <a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase7_report.html" target="_blank" rel="noopener">example report</a> is in the package repository.</p>
+
+        <h3 id="save-model">Save a model and use it later</h3>
+        <div class="code" data-lang="python"><pre><code>tool.save_model("best.joblib", model="Random Forest")     # model + its preprocessing in one file
+
+from multimodel_analysis import load_model
+loaded = load_model("best.joblib")
+loaded.predict(new_rows)           # raw rows in, original labels out
+loaded.predict_proba(new_rows)     # classifiers: a DataFrame of class probabilities</code></pre></div>
+        <ul class="plain">
+          <li>Scaling and (with <code>preprocess=True</code>) imputing and encoding are saved with the model, so you do not re-create them.</li>
+          <li>Each class saves what it can do: classifier and regressor <code>predict</code>, clusterer <code>predict</code>, anomaly detector <code>predict</code> and <code>score_new</code> (with the learned cut-off), reducer <code>transform</code>.</li>
+          <li><code>tool.export_model("Random Forest")</code> returns the same bundle as a <code>TrainedModel</code> object without writing a file; <code>loaded.save(path)</code> writes it.</li>
+        </ul>
+        <div class="callout warn">
+          <p class="callout-title">Security note</p>
+          <p>Model files are Python pickles (joblib). Only load files you created or trust, exactly as with any pickle. Share the HTML report instead when you only need to show results.</p>
+        </div>
+      </section>
+
+      <!-- ============ READING RESULTS ============ -->
+      <section id="reading-results" data-title="Reading the results">
+        <h2>Reading the results</h2>
+
+        <h3 id="result-objects">What run_all_models returns</h3>
+        <p>A list with one result per successful model, which you pass to the report, plot and explanation methods. Classifier and regressor results are tuples whose first item is the display name; the unsupervised classes return small result objects (<code>ClusterResult</code>, <code>AnomalyResult</code>, <code>ReductionResult</code>). The fitted estimators are kept on the object:</p>
+        <div class="code" data-lang="python"><pre><code>clf.estimators_["Random Forest"]     # fitted estimator, by display name (or clf.get_model("Random Forest"))
+clf.fit_times_                       # seconds per model
+clf.failed_models_                   # {model: reason}</code></pre></div>
+
+        <h3 id="metric-definitions">How each metric is computed</h3>
+        <table class="doc-table">
+          <thead><tr><th>Metric</th><th>Definition in this package</th></tr></thead>
+          <tbody>
+            <tr><td>Accuracy</td><td>Correct predictions divided by all predictions.</td></tr>
+            <tr><td>Precision, Recall, F1 Score</td><td>Support-weighted average over classes (<code>average='weighted'</code>, <code>zero_division=0</code>). For binary data this is not the same as the positive-class-only score.</td></tr>
+            <tr><td>ROC AUC</td><td>Binary: area under the ROC curve of the positive class. Multiclass: one-vs-rest, support-weighted, over the classes present in the test split. <code>NaN</code> if the model has neither probabilities nor decision scores.</td></tr>
+            <tr><td>MAE, MSE, RMSE</td><td>Mean absolute error, mean squared error and its square root, in the units of the target (squared units for MSE).</td></tr>
+            <tr><td>R2 Score</td><td>Coefficient of determination on the test split. 1.0 is perfect, 0.0 matches predicting the mean, and it can be negative.</td></tr>
+            <tr><td>Silhouette, Calinski-Harabasz, Davies-Bouldin</td><td>Internal clustering scores, computed without noise rows; see <a href="#cluster-scores">clustering scores</a>.</td></tr>
+            <tr><td>Agreement</td><td>Rank agreement of a detector's anomaly scores with the other detectors.</td></tr>
+            <tr><td>Trustworthiness, Continuity, Global Structure</td><td>How well a low-dimensional map keeps neighbourhoods and distances; see <a href="#reduction-scores">reduction scores</a>.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="sorting">Sorting</h3>
+        <table class="doc-table">
+          <thead><tr><th>Class</th><th>Default order</th></tr></thead>
+          <tbody>
+            <tr><td>Classifier</td><td><strong>Accuracy</strong>, descending</td></tr>
+            <tr><td>Regressor</td><td><strong>R2 Score</strong>, descending</td></tr>
+            <tr><td>Clusterer</td><td><strong>Silhouette</strong>, descending</td></tr>
+            <tr><td>Anomaly detector</td><td><strong>Agreement</strong> (or <strong>F1 Score</strong> when <code>y</code> is given)</td></tr>
+            <tr><td>Reducer</td><td><strong>Trustworthiness</strong>, descending</td></tr>
+          </tbody>
+        </table>
+        <p>Pass <code>sort_by="..."</code> to <code>show_tabular_report</code> for any column; error metrics and Davies-Bouldin sort ascending. With a single small test split, differences in the third decimal are noise; use <a href="#cross-validation">cross-validation</a> before trusting a small gap.</p>
+
+        <h3 id="attributes">Useful attributes</h3>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Attribute</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>X_train_scaled</code>, <code>X_test_scaled</code></td><td>Feature splits used by every model (scaled only if <code>scaled_data=True</code>). Classifier and regressor.</td></tr>
+              <tr><td><code>y_train</code>, <code>y_test</code></td><td>Target splits. For the classifier these are the encoded integer labels.</td></tr>
+              <tr><td><code>classes_</code>, <code>n_classes_</code>, <code>label_encoder</code></td><td>Classifier only. Original class labels and the fitted encoder.</td></tr>
+              <tr><td><code>models_</code></td><td>The latest result list.</td></tr>
+              <tr><td><code>estimators_</code>, <code>fit_times_</code></td><td>Fitted estimators and fit times by display name.</td></tr>
+              <tr><td><code>failed_models_</code></td><td><code>{model: reason}</code> for every model that was skipped or failed (missing package, too big, error).</td></tr>
+              <tr><td><code>warnings_</code></td><td>Non-fatal notes collected while fitting, such as "DBSCAN found only noise".</td></tr>
+              <tr><td><code>tuning_results_</code>, <code>best_params_</code></td><td>After <code>tune_models()</code>: <code>Model</code>, <code>Best CV &lt;scoring&gt;</code>, <code>Best Params</code>, <code>Candidates</code>, <code>Search Time (s)</code>, and the best parameters per model.</td></tr>
+              <tr><td><code>cv_results_</code>, <code>cv_failed_</code></td><td>After <code>cross_validate_models()</code>.</td></tr>
+              <tr><td><code>auto_params_</code></td><td>Clusterer only. Settings chosen from the data for DBSCAN, Mean Shift and similar methods.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- ============ RESULTS ============ -->
       <section id="results" data-title="Measured results">
         <h2>Measured results</h2>
-        <p>These tables and charts were produced by running the published <code>multimodel-analysis</code> package on public scikit-learn datasets. Nothing on this page is simulated. Your numbers will differ with other data, splits and library versions.</p>
+        <p>These tables and charts were produced by running <code>multimodel-analysis</code> 0.6.1 on public scikit-learn datasets, for all five analysers. Nothing on this page is simulated. Your numbers will differ with other data, splits and library versions.</p>
 
         <div class="run-meta" id="run-meta" aria-live="polite"></div>
 
@@ -490,6 +972,9 @@ clf.save_report()                        # defaults to report.csv</code></pre></
           <div class="segmented" role="tablist" aria-label="Task" id="task-switch">
             <button role="tab" data-task="classification" aria-selected="true">Classification</button>
             <button role="tab" data-task="regression" aria-selected="false" tabindex="-1">Regression</button>
+            <button role="tab" data-task="clustering" aria-selected="false" tabindex="-1">Clustering</button>
+            <button role="tab" data-task="anomaly" aria-selected="false" tabindex="-1">Anomalies</button>
+            <button role="tab" data-task="reduction" aria-selected="false" tabindex="-1">Reduction</button>
           </div>
           <div class="select-wrap">
             <label for="dataset-select">Dataset</label>
@@ -501,45 +986,93 @@ clf.save_report()                        # defaults to report.csv</code></pre></
         <div class="table-wrap">
           <table class="doc-table results-table" id="results-table"></table>
         </div>
-        <p class="hint">Click a column header to re-sort. The highlighted row is the one the package ranks first (by Accuracy, or R2 for regression).</p>
+        <p class="hint">Click a column header to re-sort. The highlighted row is the one the package ranks first: Accuracy for classification, R2 Score for regression, Silhouette for clustering, Agreement for anomalies and Trustworthiness for reduction. Clustering and anomaly runs here use no labels; an empty cell means the method could not be scored (for example DBSCAN finding one cluster).</p>
 
         <details class="console">
           <summary>Console output of this run</summary>
           <pre id="console-out"></pre>
         </details>
 
-        <h3 id="charts">Charts written by get_summary()</h3>
-        <p>Files produced by <code>get_summary(save_prefix=...)</code>. Select a chart to enlarge it.</p>
+        <h3 id="charts">Charts produced by the package</h3>
+        <p>Files written with <code>save_path=</code> or <code>get_summary(save_prefix=...)</code>. Select a chart to enlarge it.</p>
         <div class="gallery" id="gallery">
           <figure>
             <button type="button" class="thumb" data-full="assets/img/clf_confusion_matrices.png" data-cap="Confusion matrices, Breast Cancer Wisconsin (classification)">
               <img src="assets/img/clf_confusion_matrices.png" alt="Grid of confusion matrices, one per classifier, for the breast cancer dataset" loading="lazy">
             </button>
-            <figcaption><strong>Confusion matrices</strong><span>Breast Cancer, 8 classifiers</span></figcaption>
+            <figcaption><strong>Confusion matrices</strong><span>Classification, Breast Cancer</span></figcaption>
           </figure>
           <figure>
             <button type="button" class="thumb" data-full="assets/img/clf_roc_curves.png" data-cap="ROC curves, Breast Cancer Wisconsin (classification)">
-              <img src="assets/img/clf_roc_curves.png" alt="ROC curves for eight classifiers on the breast cancer dataset" loading="lazy">
+              <img src="assets/img/clf_roc_curves.png" alt="ROC curves for the classifiers on the breast cancer dataset" loading="lazy">
             </button>
-            <figcaption><strong>ROC curves</strong><span>Breast Cancer, 8 classifiers</span></figcaption>
+            <figcaption><strong>ROC curves</strong><span>Classification, Breast Cancer</span></figcaption>
           </figure>
           <figure>
-            <button type="button" class="thumb" data-full="assets/img/clf_comparison.png" data-cap="Metric comparison, Breast Cancer Wisconsin (classification)">
-              <img src="assets/img/clf_comparison.png" alt="Grouped bar chart of accuracy, precision, recall and F1 per classifier" loading="lazy">
+            <button type="button" class="thumb" data-full="assets/img/clf_comparison.png" data-cap="Ranked comparison, Breast Cancer Wisconsin (classification)">
+              <img src="assets/img/clf_comparison.png" alt="Ranked bar chart comparing the classifiers on the breast cancer dataset" loading="lazy">
             </button>
-            <figcaption><strong>Metric comparison</strong><span>Accuracy, precision, recall, F1</span></figcaption>
+            <figcaption><strong>Ranked comparison</strong><span>plot_comparison, best on top</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/clf_feature_importance.png" data-cap="Permutation feature importance, Breast Cancer Wisconsin (classification)">
+              <img src="assets/img/clf_feature_importance.png" alt="Bar chart of permutation feature importance for the best classifier" loading="lazy">
+            </button>
+            <figcaption><strong>Feature importance</strong><span>Which columns the model uses</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/clf_partial_dependence.png" data-cap="Partial dependence, Breast Cancer Wisconsin (classification)">
+              <img src="assets/img/clf_partial_dependence.png" alt="Partial dependence curves for the most important features" loading="lazy">
+            </button>
+            <figcaption><strong>Partial dependence</strong><span>How a feature moves the prediction</span></figcaption>
           </figure>
           <figure>
             <button type="button" class="thumb" data-full="assets/img/reg_true_vs_pred.png" data-cap="True vs predicted, Diabetes (regression)">
-              <img src="assets/img/reg_true_vs_pred.png" alt="True versus predicted scatter plots for eight regressors on the diabetes dataset" loading="lazy">
+              <img src="assets/img/reg_true_vs_pred.png" alt="True versus predicted scatter plots for the regressors on the diabetes dataset" loading="lazy">
             </button>
-            <figcaption><strong>True vs predicted</strong><span>Diabetes, 8 regressors</span></figcaption>
+            <figcaption><strong>True vs predicted</strong><span>Regression, Diabetes</span></figcaption>
           </figure>
           <figure>
             <button type="button" class="thumb" data-full="assets/img/reg_comparison.png" data-cap="R2 comparison, Diabetes (regression)">
-              <img src="assets/img/reg_comparison.png" alt="Bar chart of R2 score per regressor on the diabetes dataset" loading="lazy">
+              <img src="assets/img/reg_comparison.png" alt="Ranked bar chart of R2 score per regressor on the diabetes dataset" loading="lazy">
             </button>
-            <figcaption><strong>R&sup2; comparison</strong><span>Diabetes, 8 regressors</span></figcaption>
+            <figcaption><strong>R&sup2; comparison</strong><span>Regression, Diabetes</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/clu_clusters.png" data-cap="Clusters found by each method, Wine Recognition (clustering)">
+              <img src="assets/img/clu_clusters.png" alt="Scatter plots of the clusters found by the best clustering methods on the wine dataset" loading="lazy">
+            </button>
+            <figcaption><strong>Clusters</strong><span>Clustering, Wine (PCA map)</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/clu_silhouette.png" data-cap="Silhouette plot, Wine Recognition (clustering)">
+              <img src="assets/img/clu_silhouette.png" alt="Silhouette plot showing how well each row fits its cluster" loading="lazy">
+            </button>
+            <figcaption><strong>Silhouette plot</strong><span>Clustering, Wine</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/ano_anomalies.png" data-cap="Flagged anomalies, Breast Cancer Wisconsin (anomaly detection)">
+              <img src="assets/img/ano_anomalies.png" alt="Scatter plots of the rows each anomaly detector flagged on the breast cancer dataset" loading="lazy">
+            </button>
+            <figcaption><strong>Flagged rows</strong><span>Anomalies, Breast Cancer</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/ano_scores.png" data-cap="Anomaly score distributions, Breast Cancer Wisconsin (anomaly detection)">
+              <img src="assets/img/ano_scores.png" alt="Anomaly score histograms with the cut-off line for each detector" loading="lazy">
+            </button>
+            <figcaption><strong>Score histograms</strong><span>Anomalies, with cut-off line</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/red_embeddings.png" data-cap="2-D embeddings, Wine Recognition (dimensionality reduction)">
+              <img src="assets/img/red_embeddings.png" alt="Two-dimensional maps of the wine dataset from the best reduction methods, coloured by class" loading="lazy">
+            </button>
+            <figcaption><strong>2-D embeddings</strong><span>Reduction, Wine</span></figcaption>
+          </figure>
+          <figure>
+            <button type="button" class="thumb" data-full="assets/img/red_variance.png" data-cap="Variance per component, Wine Recognition (dimensionality reduction)">
+              <img src="assets/img/red_variance.png" alt="Scree plot of variance explained per PCA component" loading="lazy">
+            </button>
+            <figcaption><strong>Variance plot</strong><span>Reduction, Wine (PCA)</span></figcaption>
           </figure>
         </div>
       </section>
@@ -569,13 +1102,153 @@ clf.save_report()                        # defaults to report.csv</code></pre></
         <p class="hint" id="calc-note"></p>
       </section>
 
+      <!-- ============ MODEL REFERENCE ============ -->
+      <section id="model-reference" data-title="Model reference">
+        <h2>Model reference</h2>
+        <p>37 models run by default and 69 are registered across the five analysers. Use the <strong>key</strong> in <code>include=[...]</code>, <code>exclude=[...]</code>, <code>run_model("key")</code> and <code>tune_models(...)</code>. The <strong>name</strong> is what appears in reports and what <code>get_model(...)</code>, <code>predict(model=...)</code> and <code>save_model(model=...)</code> expect.</p>
+        <ul class="plain">
+          <li><strong>Standard</strong> models run with <code>run_all_models()</code>.</li>
+          <li><strong>Extra</strong> models run when you ask, with <code>include="all"</code> or by key.</li>
+          <li><strong>Needs</strong> names an optional package (<code>xgboost</code>, <code>lightgbm</code>, <code>catboost</code>, <code>umap-learn</code>). Without it the model is skipped with an install hint, never a crash. See the <a href="#optional">extras</a>.</li>
+        </ul>
+        <div class="tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="Analyser">
+            <button role="tab" id="m-clf-t" aria-controls="m-clf" aria-selected="true">Classification</button>
+            <button role="tab" id="m-reg-t" aria-controls="m-reg" aria-selected="false" tabindex="-1">Regression</button>
+            <button role="tab" id="m-clu-t" aria-controls="m-clu" aria-selected="false" tabindex="-1">Clustering</button>
+            <button role="tab" id="m-ano-t" aria-controls="m-ano" aria-selected="false" tabindex="-1">Anomalies</button>
+            <button role="tab" id="m-red-t" aria-controls="m-red" aria-selected="false" tabindex="-1">Reduction</button>
+          </div>
+          <div role="tabpanel" id="m-clf" aria-labelledby="m-clf-t">
+            <p><code>MultiModelClassifier</code>: <strong>8</strong> run by default, <strong>17</strong> in total. Tuned parameters are the ones <code>tune_models()</code> searches by default; override them with <code>param_grids</code>. List them in code with <code>MultiModelClassifier.default_models()</code> and <code>MultiModelClassifier.available_models()</code>.</p>
+            <div class="table-wrap">
+              <table class="doc-table">
+                <thead><tr><th>Key</th><th>Name</th><th>Set</th><th>Needs</th><th>Tuned parameters</th></tr></thead>
+                <tbody>
+                  <tr><td><code>logistic_regression</code></td><td>Logistic Regression</td><td>Standard</td><td>&mdash;</td><td><code>C</code></td></tr>
+                  <tr><td><code>svm</code></td><td>SVM</td><td>Standard</td><td>&mdash;</td><td><code>C</code>, <code>gamma</code>, <code>kernel</code></td></tr>
+                  <tr><td><code>decision_tree</code></td><td>Decision Tree</td><td>Standard</td><td>&mdash;</td><td><code>max_depth</code>, <code>min_samples_split</code>, <code>min_samples_leaf</code>, <code>criterion</code></td></tr>
+                  <tr><td><code>knn</code></td><td>KNN</td><td>Standard</td><td>&mdash;</td><td><code>n_neighbors</code>, <code>weights</code>, <code>p</code></td></tr>
+                  <tr><td><code>naive_bayes</code></td><td>Naive Bayes</td><td>Standard</td><td>&mdash;</td><td><code>var_smoothing</code></td></tr>
+                  <tr><td><code>random_forest</code></td><td>Random Forest</td><td>Standard</td><td>&mdash;</td><td><code>n_estimators</code>, <code>max_depth</code>, <code>min_samples_split</code>, <code>min_samples_leaf</code>, <code>max_features</code></td></tr>
+                  <tr><td><code>gradient_boosting</code></td><td>Gradient Boosting</td><td>Standard</td><td>&mdash;</td><td><code>n_estimators</code>, <code>learning_rate</code>, <code>max_depth</code>, <code>subsample</code></td></tr>
+                  <tr><td><code>adaboost</code></td><td>AdaBoost</td><td>Standard</td><td>&mdash;</td><td><code>n_estimators</code>, <code>learning_rate</code></td></tr>
+                  <tr><td><code>extra_trees</code></td><td>Extra Trees</td><td>Extra</td><td>&mdash;</td><td><code>n_estimators</code>, <code>max_depth</code>, <code>min_samples_split</code>, <code>min_samples_leaf</code></td></tr>
+                  <tr><td><code>hist_gradient_boosting</code></td><td>Hist Gradient Boosting</td><td>Extra</td><td>&mdash;</td><td><code>learning_rate</code>, <code>max_iter</code>, <code>max_depth</code>, <code>l2_regularization</code></td></tr>
+                  <tr><td><code>mlp</code></td><td>Neural Network (MLP)</td><td>Extra</td><td>&mdash;</td><td><code>hidden_layer_sizes</code>, <code>alpha</code>, <code>learning_rate_init</code></td></tr>
+                  <tr><td><code>lda</code></td><td>Linear Discriminant Analysis</td><td>Extra</td><td>&mdash;</td><td><code>solver</code></td></tr>
+                  <tr><td><code>ridge_classifier</code></td><td>Ridge Classifier</td><td>Extra</td><td>&mdash;</td><td><code>alpha</code></td></tr>
+                  <tr><td><code>linear_svm</code></td><td>Linear SVM</td><td>Extra</td><td>&mdash;</td><td><code>C</code></td></tr>
+                  <tr><td><code>xgboost</code></td><td>XGBoost</td><td>Extra</td><td><code>xgboost</code></td><td><code>n_estimators</code>, <code>learning_rate</code>, <code>max_depth</code>, <code>subsample</code>, <code>colsample_bytree</code></td></tr>
+                  <tr><td><code>lightgbm</code></td><td>LightGBM</td><td>Extra</td><td><code>lightgbm</code></td><td><code>n_estimators</code>, <code>learning_rate</code>, <code>num_leaves</code>, <code>subsample</code>, <code>colsample_bytree</code></td></tr>
+                  <tr><td><code>catboost</code></td><td>CatBoost</td><td>Extra</td><td><code>catboost</code></td><td><code>iterations</code>, <code>learning_rate</code>, <code>depth</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div role="tabpanel" id="m-reg" aria-labelledby="m-reg-t" hidden>
+            <p><code>MultiModelRegressor</code>: <strong>9</strong> run by default, <strong>19</strong> in total. Tuned parameters are the ones <code>tune_models()</code> searches by default; override them with <code>param_grids</code>. List them in code with <code>MultiModelRegressor.default_models()</code> and <code>MultiModelRegressor.available_models()</code>.</p>
+            <div class="table-wrap">
+              <table class="doc-table">
+                <thead><tr><th>Key</th><th>Name</th><th>Set</th><th>Needs</th><th>Tuned parameters</th></tr></thead>
+                <tbody>
+                  <tr><td><code>linear_regression</code></td><td>Linear Regression</td><td>Standard</td><td>&mdash;</td><td><code>fit_intercept</code></td></tr>
+                  <tr><td><code>lasso</code></td><td>Lasso Regression</td><td>Standard</td><td>&mdash;</td><td><code>alpha</code></td></tr>
+                  <tr><td><code>ridge</code></td><td>Ridge Regression</td><td>Standard</td><td>&mdash;</td><td><code>alpha</code></td></tr>
+                  <tr><td><code>svr</code></td><td>SVR</td><td>Standard</td><td>&mdash;</td><td><code>C</code>, <code>epsilon</code>, <code>gamma</code></td></tr>
+                  <tr><td><code>knn</code></td><td>KNN Regressor</td><td>Standard</td><td>&mdash;</td><td><code>n_neighbors</code>, <code>weights</code>, <code>p</code></td></tr>
+                  <tr><td><code>decision_tree</code></td><td>Decision Tree Regressor</td><td>Standard</td><td>&mdash;</td><td><code>max_depth</code>, <code>min_samples_split</code>, <code>min_samples_leaf</code></td></tr>
+                  <tr><td><code>random_forest</code></td><td>Random Forest Regressor</td><td>Standard</td><td>&mdash;</td><td><code>n_estimators</code>, <code>max_depth</code>, <code>min_samples_split</code>, <code>min_samples_leaf</code>, <code>max_features</code></td></tr>
+                  <tr><td><code>gradient_boosting</code></td><td>Gradient Boosting Regressor</td><td>Standard</td><td>&mdash;</td><td><code>n_estimators</code>, <code>learning_rate</code>, <code>max_depth</code>, <code>subsample</code></td></tr>
+                  <tr><td><code>adaboost</code></td><td>AdaBoost Regressor</td><td>Standard</td><td>&mdash;</td><td><code>n_estimators</code>, <code>learning_rate</code></td></tr>
+                  <tr><td><code>elastic_net</code></td><td>Elastic Net</td><td>Extra</td><td>&mdash;</td><td><code>alpha</code>, <code>l1_ratio</code></td></tr>
+                  <tr><td><code>bayesian_ridge</code></td><td>Bayesian Ridge</td><td>Extra</td><td>&mdash;</td><td><code>alpha_1</code>, <code>alpha_2</code>, <code>lambda_1</code>, <code>lambda_2</code></td></tr>
+                  <tr><td><code>huber</code></td><td>Huber Regressor</td><td>Extra</td><td>&mdash;</td><td><code>epsilon</code>, <code>alpha</code></td></tr>
+                  <tr><td><code>linear_svr</code></td><td>Linear SVR</td><td>Extra</td><td>&mdash;</td><td><code>C</code>, <code>epsilon</code></td></tr>
+                  <tr><td><code>extra_trees</code></td><td>Extra Trees Regressor</td><td>Extra</td><td>&mdash;</td><td><code>n_estimators</code>, <code>max_depth</code>, <code>min_samples_split</code>, <code>min_samples_leaf</code></td></tr>
+                  <tr><td><code>hist_gradient_boosting</code></td><td>Hist Gradient Boosting Regressor</td><td>Extra</td><td>&mdash;</td><td><code>learning_rate</code>, <code>max_iter</code>, <code>max_depth</code>, <code>l2_regularization</code></td></tr>
+                  <tr><td><code>mlp</code></td><td>Neural Network Regressor (MLP)</td><td>Extra</td><td>&mdash;</td><td><code>hidden_layer_sizes</code>, <code>alpha</code>, <code>learning_rate_init</code></td></tr>
+                  <tr><td><code>xgboost</code></td><td>XGBoost Regressor</td><td>Extra</td><td><code>xgboost</code></td><td><code>n_estimators</code>, <code>learning_rate</code>, <code>max_depth</code>, <code>subsample</code>, <code>colsample_bytree</code></td></tr>
+                  <tr><td><code>lightgbm</code></td><td>LightGBM Regressor</td><td>Extra</td><td><code>lightgbm</code></td><td><code>n_estimators</code>, <code>learning_rate</code>, <code>num_leaves</code>, <code>subsample</code>, <code>colsample_bytree</code></td></tr>
+                  <tr><td><code>catboost</code></td><td>CatBoost Regressor</td><td>Extra</td><td><code>catboost</code></td><td><code>iterations</code>, <code>learning_rate</code>, <code>depth</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div role="tabpanel" id="m-clu" aria-labelledby="m-clu-t" hidden>
+            <p><code>MultiModelClusterer</code>: <strong>7</strong> run by default, <strong>14</strong> in total. Tuned parameters are the ones <code>tune_models()</code> searches by default; override them with <code>param_grids</code>. List them in code with <code>MultiModelClusterer.default_models()</code> and <code>MultiModelClusterer.available_models()</code>.</p>
+            <div class="table-wrap">
+              <table class="doc-table">
+                <thead><tr><th>Key</th><th>Name</th><th>Set</th><th>Needs</th><th>Tuned parameters</th></tr></thead>
+                <tbody>
+                  <tr><td><code>kmeans</code></td><td>KMeans</td><td>Standard</td><td>&mdash;</td><td><code>n_clusters</code></td></tr>
+                  <tr><td><code>minibatch_kmeans</code></td><td>MiniBatch KMeans</td><td>Standard</td><td>&mdash;</td><td><code>n_clusters</code></td></tr>
+                  <tr><td><code>agglomerative</code></td><td>Agglomerative (Ward)</td><td>Standard</td><td>&mdash;</td><td><code>n_clusters</code>, <code>linkage</code></td></tr>
+                  <tr><td><code>gaussian_mixture</code></td><td>Gaussian Mixture</td><td>Standard</td><td>&mdash;</td><td><code>n_clusters</code>, <code>covariance_type</code></td></tr>
+                  <tr><td><code>birch</code></td><td>Birch</td><td>Standard</td><td>&mdash;</td><td><code>n_clusters</code>, <code>threshold</code></td></tr>
+                  <tr><td><code>spectral</code></td><td>Spectral Clustering</td><td>Standard</td><td>&mdash;</td><td><code>n_clusters</code>, <code>n_neighbors</code></td></tr>
+                  <tr><td><code>dbscan</code></td><td>DBSCAN</td><td>Standard</td><td>&mdash;</td><td><code>min_samples</code></td></tr>
+                  <tr><td><code>bisecting_kmeans</code></td><td>Bisecting KMeans</td><td>Extra</td><td>&mdash;</td><td><code>n_clusters</code></td></tr>
+                  <tr><td><code>agglomerative_average</code></td><td>Agglomerative (Average)</td><td>Extra</td><td>&mdash;</td><td><code>n_clusters</code></td></tr>
+                  <tr><td><code>agglomerative_complete</code></td><td>Agglomerative (Complete)</td><td>Extra</td><td>&mdash;</td><td><code>n_clusters</code></td></tr>
+                  <tr><td><code>hdbscan</code></td><td>HDBSCAN</td><td>Extra</td><td>&mdash;</td><td><code>min_cluster_size</code>, <code>min_samples</code></td></tr>
+                  <tr><td><code>optics</code></td><td>OPTICS</td><td>Extra</td><td>&mdash;</td><td><code>min_samples</code>, <code>xi</code></td></tr>
+                  <tr><td><code>mean_shift</code></td><td>Mean Shift</td><td>Extra</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>affinity_propagation</code></td><td>Affinity Propagation</td><td>Extra</td><td>&mdash;</td><td><code>damping</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div role="tabpanel" id="m-ano" aria-labelledby="m-ano-t" hidden>
+            <p><code>MultiModelAnomalyDetector</code>: <strong>6</strong> run by default, <strong>7</strong> in total. These methods have no tunable search space; they run with fixed, sensible settings. List them in code with <code>MultiModelAnomalyDetector.default_models()</code> and <code>MultiModelAnomalyDetector.available_models()</code>.</p>
+            <div class="table-wrap">
+              <table class="doc-table">
+                <thead><tr><th>Key</th><th>Name</th><th>Set</th><th>Needs</th><th>Tuned parameters</th></tr></thead>
+                <tbody>
+                  <tr><td><code>isolation_forest</code></td><td>Isolation Forest</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>lof</code></td><td>Local Outlier Factor</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>one_class_svm</code></td><td>One-Class SVM</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>elliptic_envelope</code></td><td>Elliptic Envelope</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>knn_distance</code></td><td>KNN Distance</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>robust_zscore</code></td><td>Robust Z-Score</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>sgd_one_class_svm</code></td><td>SGD One-Class SVM</td><td>Extra</td><td>&mdash;</td><td>&mdash;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div role="tabpanel" id="m-red" aria-labelledby="m-red-t" hidden>
+            <p><code>MultiModelReducer</code>: <strong>7</strong> run by default, <strong>12</strong> in total. These methods have no tunable search space; they run with fixed, sensible settings. List them in code with <code>MultiModelReducer.default_models()</code> and <code>MultiModelReducer.available_models()</code>.</p>
+            <div class="table-wrap">
+              <table class="doc-table">
+                <thead><tr><th>Key</th><th>Name</th><th>Set</th><th>Needs</th><th>Tuned parameters</th></tr></thead>
+                <tbody>
+                  <tr><td><code>pca</code></td><td>PCA</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>kernel_pca</code></td><td>Kernel PCA</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>fastica</code></td><td>FastICA</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>factor_analysis</code></td><td>Factor Analysis</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>isomap</code></td><td>Isomap</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>lle</code></td><td>Locally Linear Embedding</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>tsne</code></td><td>t-SNE</td><td>Standard</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>truncated_svd</code></td><td>Truncated SVD</td><td>Extra</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>spectral_embedding</code></td><td>Spectral Embedding</td><td>Extra</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>mds</code></td><td>MDS</td><td>Extra</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>random_projection</code></td><td>Gaussian Random Projection</td><td>Extra</td><td>&mdash;</td><td>&mdash;</td></tr>
+                  <tr><td><code>umap</code></td><td>UMAP</td><td>Extra</td><td><code>umap</code></td><td>&mdash;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p>The same table is in the package repository as <a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/models.md" target="_blank" rel="noopener">docs/models.md</a>.</p>
+      </section>
+
       <!-- ============ API ============ -->
       <section id="api" data-title="API reference">
         <h2>API reference</h2>
-        <p>Signatures and defaults below are taken from version 0.1.3. Select a row to open its parameters and an example.</p>
+        <p>Signatures and defaults below are taken from version 0.6.1 and cover every public class, method and function. Select a row to open its parameters and an example. The same list is in the package repository as <a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/api.md" target="_blank" rel="noopener">docs/api.md</a>.</p>
         <div class="api-tools">
           <label class="visually-hidden" for="api-filter">Filter API entries</label>
-          <input type="search" id="api-filter" placeholder="Filter by name, e.g. KNN or plot" autocomplete="off">
+          <input type="search" id="api-filter" placeholder="Filter by name, e.g. tune or plot_scores" autocomplete="off">
           <span class="api-count" id="api-count" aria-live="polite"></span>
         </div>
         <div id="api-list"></div>
@@ -586,13 +1259,18 @@ clf.save_report()                        # defaults to report.csv</code></pre></
         <h2>Limitations</h2>
         <p>Knowing what the package does not do matters more than knowing what it does.</p>
         <ul class="plain">
-          <li><strong>One split, no cross-validation.</strong> Every score comes from a single hold-out set. On small datasets, rankings can flip with a different <code>random_state</code>. Re-run with several seeds before trusting a small gap.</li>
-          <li><strong>Default hyperparameters.</strong> The leaderboard compares models as configured, not as tuned. A model that loses here may win after tuning.</li>
-          <li><strong>No preprocessing beyond scaling.</strong> There is no imputation, categorical encoding of features or feature selection. Features must already be numeric and free of missing values.</li>
-          <li><strong>Sequential training.</strong> Models are trained one after another. <code>n_jobs</code> only parallelises inside estimators that support it.</li>
-          <li><strong>Fitted models are not returned.</strong> You get metrics, matrices and predictions, not the estimators. Refit the winner yourself.</li>
-          <li><strong>Plots are fixed.</strong> The charts have a fixed design. If you need custom figures, draw them from the result tuples.</li>
-          <li><strong>Weighted averaging.</strong> Precision, recall and F1 are support-weighted, which can hide poor performance on a rare class. Read the per-class <code>report</code> text for that.</li>
+          <li><strong>One hold-out split by default.</strong> Scores come from a single train/test split, so on small datasets rankings can flip with another <code>random_state</code>. Use <a href="#cross-validation"><code>cross_validate_models()</code></a> before trusting a small gap.</li>
+          <li><strong>Defaults unless you tune.</strong> <code>run_all_models()</code> compares models as configured. A model that loses may win after <a href="#hyperparameter-tuning"><code>tune_models()</code></a>, which searches a small, sensible space rather than every setting.</li>
+          <li><strong>Classical models on tabular data.</strong> The package wraps scikit-learn estimators (plus optional XGBoost, LightGBM, CatBoost). It does not do deep learning, images, text or time-series forecasting.</li>
+          <li><strong>Basic preprocessing.</strong> With <code>preprocess=True</code> you get imputation, one-hot encoding and scaling. There is no feature engineering, feature selection or outlier handling.</li>
+          <li><strong>Sequential training.</strong> Models are fitted one after another. <code>n_jobs</code> only parallelises inside estimators that support it.</li>
+          <li><strong>Weighted averaging.</strong> Precision, recall and F1 are support-weighted, which can hide poor performance on a rare class. Look at the confusion matrices for that.</li>
+          <li><strong>Unsupervised scores are not accuracy.</strong> Silhouette, Agreement and Trustworthiness describe structure, not correctness. Judge clusters and anomalies with domain knowledge and, where you have them, labels via <code>y=</code>.</li>
+          <li><strong>Some methods cannot handle new rows.</strong> Spectral, DBSCAN, HDBSCAN, OPTICS, Agglomerative, t-SNE, Spectral Embedding and MDS only describe the data they were fitted on.</li>
+          <li><strong>Size limits on slow methods.</strong> Memory-heavy clustering, anomaly and embedding methods are skipped above fixed row counts unless <code>allow_large=True</code>.</li>
+          <li><strong>Importance is not causation.</strong> Permutation importance and partial dependence describe the fitted model on the test split.</li>
+          <li><strong>Saved models are pickles.</strong> Only load <code>.joblib</code> files from sources you trust.</li>
+          <li><strong>Plots have a fixed design.</strong> If you need custom figures, draw them from <code>show_tabular_report(..., return_df=True)</code> or the fitted estimators.</li>
         </ul>
       </section>
 
@@ -602,31 +1280,63 @@ clf.save_report()                        # defaults to report.csv</code></pre></
         <div class="faq">
           <details>
             <summary>A model is missing from the table</summary>
-            <p>It raised an error and was skipped. Look for a line starting with <code>[WARNING] Model '&hellip;' failed</code> in the console. Typical causes are NaN values in <code>X</code> or a non-numeric column.</p>
+            <p>It was skipped or failed. Read the reason: <code>tool.failed_models_</code> and <code>tool.warnings_</code>. Common causes: an optional package is not installed (<code>pip install "multimodel-analysis[boost]"</code>), the data is too big for a slow method (use <code>allow_large=True</code> or leave it out), or the data does not suit the method (for example too few rows).</p>
+          </details>
+          <details>
+            <summary>It says my data has missing values or text columns</summary>
+            <p>By default the data must be numeric and complete. Clean it yourself, or pass <code>preprocess=True</code>: numbers are filled with the median, scaled, and text columns are filled with the most common value and one-hot encoded.</p>
           </details>
           <details>
             <summary>ROC AUC shows NaN</summary>
-            <p>The model offered neither <code>predict_proba</code> nor <code>decision_function</code>, or the AUC calculation failed (a warning is printed). It can also happen if a class is missing from the test split.</p>
+            <p>The model offered neither <code>predict_proba</code> nor <code>decision_function</code>, the AUC calculation failed (a warning is recorded), or a class is missing from the test split.</p>
           </details>
           <details>
-            <summary>ValueError: Both features 'X' and target 'y' must be provided</summary>
-            <p>The constructor needs both arguments. Pass them by keyword: <code>MultiModelClassifier(X=X, y=y)</code>.</p>
+            <summary>ValueError: contamination must be a number between 0 and 0.5</summary>
+            <p><code>contamination</code> is a <em>share</em> of rows: <code>0.02</code> means 2%, not <code>2</code>.</p>
+          </details>
+          <details>
+            <summary>DBSCAN or HDBSCAN found one big cluster, or only noise</summary>
+            <p>These methods choose the number of clusters from the data's density. Check <code>tool.auto_params_</code> and <code>tool.warnings_</code>, then try <code>tune_models(include=["dbscan"])</code> or your own <code>param_grids</code>. Noise rows have label <code>-1</code>.</p>
+          </details>
+          <details>
+            <summary>predict() raises a TypeError for a clustering or reduction method</summary>
+            <p>That method cannot place unseen rows (DBSCAN, Spectral, Agglomerative, t-SNE, ...). Use one that can (KMeans, Gaussian Mixture, PCA, ...). Calling <code>predict</code> without <code>model=</code> picks the best-ranked model that works.</p>
+          </details>
+          <details>
+            <summary>The numbers change every run</summary>
+            <p>Pass <code>random_state=0</code> (or any number) when you create the object.</p>
           </details>
           <details>
             <summary>The split is not stratified</summary>
-            <p>Stratification is skipped, silently, when any class has fewer than two samples. Check <code>np.bincount(clf.label_encoder.transform(y))</code>.</p>
+            <p>Stratification is skipped, silently, when any class has fewer than two samples. Check the class counts, or pass <code>stratify=False</code>.</p>
           </details>
           <details>
             <summary>No figure appears, or too many windows open</summary>
-            <p>Plots call <code>plt.show()</code> by default. In scripts without a display use <code>show_plot=False</code> and save with <code>save_path</code> or <code>save_prefix</code>.</p>
+            <p>Plots open in a window, or inline in a notebook. In scripts, on a server or in CI use <code>show_plot=False</code> with <code>save_path="x.png"</code>, or set <code>MPLBACKEND=Agg</code>.</p>
           </details>
           <details>
-            <summary>Saving .xlsx fails</summary>
-            <p>Excel output needs <code>openpyxl</code>: <code>pip install openpyxl</code>.</p>
+            <summary>Saving .xlsx fails, or .xls is rejected</summary>
+            <p>Excel output needs <code>openpyxl</code>: <code>pip install "multimodel-analysis[excel]"</code>. The old <code>.xls</code> format is not supported; use <code>.xlsx</code>.</p>
+          </details>
+          <details>
+            <summary>get_summary raises OSError</summary>
+            <p>The folder in <code>save_prefix</code> must already exist. Create it first, for example <code>os.makedirs("out", exist_ok=True)</code>.</p>
+          </details>
+          <details>
+            <summary>Why do my results differ from scikit-learn alone?</summary>
+            <p>The tool standardises features (<code>scaled_data=True</code>) and uses a fixed train/test split. Set <code>scaled_data=False</code> to turn scaling off. A different <code>test_size</code> or <code>random_state</code> gives different numbers.</p>
           </details>
           <details>
             <summary>It is slow on a large dataset</summary>
-            <p>Gradient Boosting, Random Forest, SVM and KNN grow quickly with rows. Sub-sample for a first pass. For reference, the 1,797-row digits run on this page took about 12 seconds with ten classes.</p>
+            <p>Gradient Boosting, Random Forest, SVM and KNN grow quickly with rows. Sub-sample for a first pass, run fewer models with <code>include=[...]</code>, and look at <code>fit_times_</code> to see which one costs the most.</p>
+          </details>
+          <details>
+            <summary>Old code stopped working after upgrading</summary>
+            <p>The original methods (<code>Logistic_model()</code>, <code>KNN_model()</code>, <code>get_summary()</code>, ...) and the old spelling <code>MultiModelRegressior</code> still work. If you find something that does not, please <a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+          </details>
+          <details>
+            <summary>Which Python versions work?</summary>
+            <p>Python 3.10, 3.11 and 3.12 are tested on every change. Version 0.6.0 raised the minimum from 3.8 to 3.10.</p>
           </details>
         </div>
       </section>
@@ -634,11 +1344,106 @@ clf.save_report()                        # defaults to report.csv</code></pre></
       <!-- ============ CHANGELOG ============ -->
       <section id="changelog" data-title="Changelog">
         <h2>Changelog</h2>
+        <p>Release notes for every version after 0.1.3. The full text is in the package's <a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md</a> and on the <a href="https://pypi.org/project/multimodel-analysis/#history" target="_blank" rel="noopener">PyPI release history</a>.</p>
+
         <div class="release">
-          <h3>0.1.3 <span class="pill">current</span></h3>
-          <p>The version documented here. Classifier and regressor with 8 built-in models each, custom estimators, multi-format <code>save_report</code>, <code>get_summary</code> and the <code>MultiModelRegressior</code> alias.</p>
+          <h3>0.6.1 <span class="pill">current</span></h3>
+          <p>Documentation release. New readme (also the PyPI page) and a <code>docs/</code> folder of guides. <code>docs/models.md</code> and <code>docs/api.md</code> are generated from the code. <code>func_code.md</code> was removed in favour of <code>docs/api.md</code>. No behaviour change.</p>
         </div>
-        <p>Earlier release notes are on <a href="https://pypi.org/project/multimodel-analysis/#history" target="_blank" rel="noopener">the PyPI release history</a>.</p>
+        <div class="release">
+          <h3>0.6.0</h3>
+          <ul class="plain">
+            <li>New <code>MultiModelAnomalyDetector</code>: 6 default detectors plus SGD One-Class SVM, shared <code>contamination</code>, <code>consensus</code>, <code>top_anomalies</code>, <code>predict</code> / <code>score_new</code>.</li>
+            <li>New <code>MultiModelReducer</code>: PCA, Kernel PCA, FastICA, Factor Analysis, Isomap, LLE, t-SNE, plus Truncated SVD, Spectral Embedding, MDS, Random Projection and UMAP. Scored with Trustworthiness, Continuity, Global Structure, Variance Kept and Class Separation.</li>
+            <li>Explainability for classifiers and regressors: <code>feature_importance</code>, <code>plot_feature_importance</code>, <code>partial_dependence</code>, <code>plot_partial_dependence</code>.</li>
+            <li><code>save_html_report(path, title=)</code> on every analyser.</li>
+            <li>Minimum Python is now 3.10.</li>
+          </ul>
+        </div>
+        <div class="release">
+          <h3>0.5.0</h3>
+          <p>New <code>MultiModelClusterer</code> with 7 default and 7 optional methods, Silhouette / Calinski-Harabasz / Davies-Bouldin scores, optional external scores with <code>y=</code>, <code>n_clusters="auto"</code>, <code>find_optimal_k</code>, <code>tune_models</code>, <code>assign_clusters</code>, <code>cluster_profile</code>, <code>predict</code> and the clustering plots.</p>
+        </div>
+        <div class="release">
+          <h3>0.4.0</h3>
+          <ul class="plain">
+            <li>Extra models, run with <code>include=[...]</code> or <code>include="all"</code>: Extra Trees, Hist Gradient Boosting, MLP, LDA, Ridge Classifier, Linear SVM (classification); Elastic Net, Bayesian Ridge, Huber, Linear SVR, Extra Trees, Hist Gradient Boosting, MLP (regression).</li>
+            <li>Optional boosters XGBoost, LightGBM and CatBoost via the <code>[boost]</code> extra.</li>
+            <li><code>default_models()</code> and <code>available_models(installed_only=False)</code>.</li>
+            <li>SVR, Linear SVR and the MLP regressor standardise the target internally.</li>
+            <li><code>plot_comparison</code> redesigned as one ranked bar chart with <code>metric=</code>.</li>
+          </ul>
+        </div>
+        <div class="release">
+          <h3>0.3.0</h3>
+          <p>Hyper-parameter tuning: <code>tune_models(search="random" | "grid" | "halving", n_iter, cv, scoring, param_grids)</code> with leak-free cross-validation, plus <code>best_params_</code> and <code>tuning_results_</code>. Every model ships a default search space.</p>
+        </div>
+        <div class="release">
+          <h3>0.2.0</h3>
+          <ul class="plain">
+            <li>Restructured into <code>core</code> and <code>supervised</code> with a model registry; <code>include</code> / <code>exclude</code>, <code>run_model</code>, <code>get_model</code>, <code>available_models</code>, <code>estimators_</code> and <code>fit_times_</code>. The old method names keep working through a compatibility layer.</li>
+            <li><code>preprocess=True</code> (imputation, one-hot encoding, scaling), <code>predict</code>, <code>export_model</code>, <code>save_model</code> and <code>load_model</code>, <code>cross_validate_models</code>, <code>class_weight="balanced"</code> and a <code>Fit Time (s)</code> column.</li>
+          </ul>
+        </div>
+        <div class="release">
+          <h3>0.1.4</h3>
+          <p>Bug-fix release: <code>scaled_data</code> now defaults to <code>True</code>, SVC defaults to the RBF kernel, ROC AUC no longer fails silently, <code>warnings_</code> and <code>failed_models_</code> added, KNN added to the regressors (9 models), SVR standardises its target. First release with a <code>pyproject.toml</code>, CI and tests.</p>
+        </div>
+        <div class="release">
+          <h3>0.1.3</h3>
+          <p>Classifier and regressor with 8 built-in models each, custom estimators, multi-format <code>save_report</code>, <code>get_summary</code> and the <code>MultiModelRegressior</code> alias. This was the version this site documented before the update.</p>
+        </div>
+      </section>
+
+      <!-- ============ RESOURCES ============ -->
+      <section id="resources" data-title="Links &amp; resources">
+        <h2>Links &amp; resources</h2>
+        <p>Everything about the package lives in these places.</p>
+
+        <h3 id="package-links">Package</h3>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Resource</th><th>Link</th></tr></thead>
+            <tbody>
+              <tr><td>Package on PyPI</td><td><a href="https://pypi.org/project/multimodel-analysis/" target="_blank" rel="noopener">pypi.org/project/multimodel-analysis</a></td></tr>
+              <tr><td>PyPI release history</td><td><a href="https://pypi.org/project/multimodel-analysis/#history" target="_blank" rel="noopener">all published versions</a></td></tr>
+              <tr><td>Source code on GitHub</td><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge" target="_blank" rel="noopener">udityamerit/Multimodel-Analysis-Pacakge</a></td></tr>
+              <tr><td>Report a bug or ask a question</td><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/issues" target="_blank" rel="noopener">GitHub issues</a></td></tr>
+              <tr><td>Changelog</td><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md</a></td></tr>
+              <tr><td>Download statistics</td><td><a href="https://pepy.tech/projects/multimodel-analysis" target="_blank" rel="noopener">pepy.tech</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="package-guides">Guides in the package repository</h3>
+        <div class="table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Guide</th><th>Covers</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/getting-started.md" target="_blank" rel="noopener">getting-started.md</a></td><td>Install, first run, picking the right class</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/supervised.md" target="_blank" rel="noopener">supervised.md</a></td><td>Classification, regression, tuning, cross-validation</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/clustering.md" target="_blank" rel="noopener">clustering.md</a></td><td>Clustering</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/anomaly-detection.md" target="_blank" rel="noopener">anomaly-detection.md</a></td><td>Anomaly detection</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/dimensionality-reduction.md" target="_blank" rel="noopener">dimensionality-reduction.md</a></td><td>Dimensionality reduction</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/explainability.md" target="_blank" rel="noopener">explainability.md</a></td><td>Feature importance and partial dependence</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/reports-and-persistence.md" target="_blank" rel="noopener">reports-and-persistence.md</a></td><td>Reports, HTML report, saving and loading models</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/models.md" target="_blank" rel="noopener">models.md</a></td><td>Every model key and tuned parameter</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/api.md" target="_blank" rel="noopener">api.md</a></td><td>Every public method with its signature</td></tr>
+              <tr><td><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/docs/faq.md" target="_blank" rel="noopener">faq.md</a></td><td>FAQ and troubleshooting</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="package-notebooks">Example notebooks</h3>
+        <p>Notebooks with executed output, in the repository's <a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/tree/main/examples" target="_blank" rel="noopener">examples/</a> folder:</p>
+        <ul class="plain">
+          <li><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase1_results.ipynb" target="_blank" rel="noopener">phase1_results.ipynb</a>: classification and regression basics</li>
+          <li><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase4_tuning.ipynb" target="_blank" rel="noopener">phase4_tuning.ipynb</a>: hyper-parameter tuning</li>
+          <li><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase5_more_models.ipynb" target="_blank" rel="noopener">phase5_more_models.ipynb</a>: extra models and boosters</li>
+          <li><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase6_clustering.ipynb" target="_blank" rel="noopener">phase6_clustering.ipynb</a>: clustering</li>
+          <li><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase7_anomaly_reduction_explain.ipynb" target="_blank" rel="noopener">phase7_anomaly_reduction_explain.ipynb</a>: anomalies, reduction and explainability</li>
+          <li><a href="https://github.com/udityamerit/Multimodel-Analysis-Pacakge/blob/main/examples/phase7_report.html" target="_blank" rel="noopener">phase7_report.html</a>: an example of the one-file HTML report</li>
+        </ul>
       </section>
 
       <!-- ============ LICENCE ============ -->
@@ -656,7 +1461,7 @@ clf.save_report()                        # defaults to report.csv</code></pre></
       </section>
 
       <footer class="page-foot">
-        <span>multimodel-analysis 0.1.3 documentation</span>
+        <span>multimodel-analysis 0.6.1 documentation</span>
         <a href="#introduction">Back to top</a>
       </footer>
     </main>

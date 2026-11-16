@@ -373,11 +373,13 @@
   /* ----------------------------------------------------------- results explorer */
   var DATA = null, task = 'classification', dsId = null, sortKey = null, sortDir = 1;
   var tableEl = $('#results-table'), selectEl = $('#dataset-select');
-  var LOWER_BETTER = { MAE: 1, MSE: 1, RMSE: 1 };
+  var LOWER_BETTER = { MAE: 1, MSE: 1, RMSE: 1, 'Davies-Bouldin': 1, 'Fit Time (s)': 1, 'Noise Points': 1 };
 
-  function fmt(v) {
+  var COUNT_COLS = { Components: 1, Clusters: 1, 'Noise Points': 1, Anomalies: 1 };
+  function fmt(v, col) {
     if (v === null || v === undefined || (typeof v === 'number' && isNaN(v))) return 'n/a';
     if (typeof v !== 'number') return esc(v);
+    if (COUNT_COLS[col] && Number.isInteger(v)) return String(v);
     return Math.abs(v) >= 100 ? v.toFixed(1) : v.toFixed(4);
   }
   function currentSet() { return DATA[task].filter(function (d) { return d.id === dsId; })[0]; }
@@ -399,11 +401,11 @@
       return '<th scope="col" tabindex="0" data-col="' + esc(c) + '"' + s + '>' + esc(c) + (c === sortKey ? (sortDir > 0 ? ' ↑' : ' ↓') : '') + '</th>';
     }).join('') + '</tr></thead><tbody>' + rows.map(function (r) {
       return '<tr' + (r.Model === best ? ' class="best"' : '') + '>' + cols.map(function (c) {
-        return typeof r[c] === 'string' ? '<td>' + esc(r[c]) + '</td>' : '<td class="num">' + fmt(r[c]) + '</td>';
+        return typeof r[c] === 'string' ? '<td>' + esc(r[c]) + '</td>' : '<td class="num">' + fmt(r[c], c) + '</td>';
       }).join('') + '</tr>';
     }).join('') + '</tbody>';
     var info = ds.title + ' · ' + (ds.kind ? ds.kind + ' · ' : '') + ds.rows.toLocaleString() + ' rows × ' + ds.features + ' features' +
-      (ds.classes ? ' · ' + ds.classes + ' classes' : '') + ' · train ' + ds.train.toLocaleString() + ' / test ' + ds.test.toLocaleString() +
+      (ds.classes ? ' · ' + ds.classes + ' classes' : '') + (ds.train ? ' · train ' + ds.train.toLocaleString() + ' / test ' + ds.test.toLocaleString() : '') +
       ' · ' + ds.seconds + ' s for all models' + (ds.unit ? ' · target: ' + ds.unit : '');
     $('#dataset-info').textContent = info;
     $('#console-out').textContent = ds.console.replace(/\s+$/, '');
